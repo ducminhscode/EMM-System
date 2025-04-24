@@ -1,4 +1,4 @@
-package com.tndm.springeemapp.resources;
+package com.tndm.eemappspring.resources;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
