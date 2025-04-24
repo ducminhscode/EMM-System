@@ -5,12 +5,13 @@
 package com.tndm.repositories;
 
 import com.tndm.pojo.Facility;
+import java.util.List;
 
 /**
  *
  * @author Tran Nguyen Duc Minh
  */
 public interface FacilityRepository {
-
-    Facility getFacilityById(int id);
+    
+    public List<Facility> getFacilities();
 }

@@ -6,12 +6,14 @@ package com.tndm.controllers;
 
 import com.tndm.pojo.Device;
 import com.tndm.services.DeviceService;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -25,13 +27,13 @@ public class DeviceController {
     
     @GetMapping("/devices")
     public String deviceView(Model model){
-        model.addAttribute("product", new Device());
-        return  "devices";
+        model.addAttribute("device", new Device());
+        return "devices";
     }
     
     @PostMapping("/add")
-    public String createDevice(@ModelAttribute(value = "device") Device p){
-        this.devSer.addOrUpdate(p);
+    public String createDevice(@ModelAttribute(value = "device") Device d){
+        this.devSer.addOrUpdate(d);
         
         return "redirect:/";
     }

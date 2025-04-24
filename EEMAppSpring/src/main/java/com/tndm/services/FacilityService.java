@@ -4,10 +4,13 @@
  */
 package com.tndm.services;
 
+import com.tndm.pojo.Facility;
+import java.util.List;
+
 /**
  *
  * @author Tran Nguyen Duc Minh
  */
 public interface FacilityService {
-    
+    List<Facility> getFacilities();
 }

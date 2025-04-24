@@ -26,8 +26,11 @@ public class FacilityRepositoryImpl implements FacilityRepository{
     private LocalSessionFactoryBean factory;
 
     @Override
-    public Facility getFacilityById(int id) {
+    public List<Facility> getFacilities() {
         Session s = this.factory.getObject().getCurrentSession();
-        return s.get(Facility.class, id);
+        Query q = s.createQuery("FROM Facility", Facility.class);
+
+        return q.getResultList();
     }
+    
 }

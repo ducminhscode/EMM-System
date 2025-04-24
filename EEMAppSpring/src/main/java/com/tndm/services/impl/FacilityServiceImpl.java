@@ -4,10 +4,23 @@
  */
 package com.tndm.services.impl;
 
+import com.tndm.pojo.Facility;
+import com.tndm.repositories.FacilityRepository;
+import com.tndm.services.FacilityService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  *
  * @author Tran Nguyen Duc Minh
  */
-public class FacilityServiceImpl {
-    
+public class FacilityServiceImpl implements FacilityService {
+
+    @Autowired
+    private FacilityRepository faciRepo;
+
+    @Override
+    public List<Facility> getFacilities() {
+        return this.faciRepo.getFacilities();
+    }
 }

@@ -12,7 +12,7 @@
                 <i class="fas fa-tools text-2xl"></i>
                 <h1 class="text-xl font-bold">Quản lý Bảo trì</h1>
             </div>
-
+            
             <nav>
                 <ul class="space-y-2">
                     <li>
@@ -128,80 +128,11 @@
                     </div>
                 </div>
 
-                <!-- Phần modal thêm thiết bị -->
-                <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" id="addDeviceModal">
-                    <div class="bg-white rounded-lg w-full max-w-md">
-                        <div class="p-4 border-b flex justify-between items-center">
-                            <h3 class="font-semibold text-lg">Thêm thiết bị mới</h3>
-                            <button class="text-gray-500 hover:text-gray-700" onclick="closeModal()">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="p-4">
-                            <form id="deviceForm" th:action="@{/devices/add}" method="post" class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tên thiết bị</label>
-                                    <input type="text" name="name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Loại thiết bị</label>
-                                    <select name="type" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                                        <option value="">Chọn loại thiết bị</option>
-                                        <option value="Máy tính">Máy tính</option>
-                                        <option value="Máy in">Máy in</option>
-                                        <option value="Máy chiếu">Máy chiếu</option>
-                                        <option value="Thiết bị mạng">Thiết bị mạng</option>
-                                        <option value="Khác">Khác</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Nhà sản xuất</label>
-                                    <input type="text" name="manufacturer" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Vị trí</label>
-                                    <select name="type" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                                        <option value="">Chọn loại thiết bị</option>
-                                        <option value="Máy tính">Máy tính</option>
-                                        <option value="Máy in">Máy in</option>
-                                        <option value="Máy chiếu">Máy chiếu</option>
-                                        <option value="Thiết bị mạng">Thiết bị mạng</option>
-                                        <option value="Khác">Khác</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tên khách hàng</label>
-                                    <input type="text" name="code" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                                </div>
-                                <div class="flex space-x-4">
-                                    <div class="flex-1">
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Ngày mua</label>
-                                        <input type="date" name="purchaseDate" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                                    </div>
-                                    <div class="flex-1">
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>
-                                        <select name="status" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                                            <option value="Hoạt động">Hoạt động</option>
-                                            <option value="Bảo trì">Bảo trì</option>
-                                            <option value="Hỏng">Hỏng</option>
-                                            <option value="Ngừng sử dụng">Ngừng sử dụng</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="p-4 border-t flex justify-end space-x-3">
-                            <button type="button" class="px-4 py-2 border rounded-lg hover:bg-gray-100" onclick="closeModal()">Hủy</button>
-                            <button type="submit" form="deviceForm" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Lưu</button>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Device Management Section -->
                 <div class="bg-white rounded-lg shadow mb-6">
                     <div class="p-4 border-b flex justify-between items-center">
-                        <h3 class="font-semibold text-lg">Danh sách thiết bị</h3>
-                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2" onclick="openAddDeviceModal()">
+                        <h3 class="font-semibold text-lg">Danh sách Thiết bị</h3>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
                             <i class="fas fa-plus"></i>
                             <span>Thêm thiết bị</span>
                         </button>
@@ -211,31 +142,51 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Mã</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Tên</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Loại</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Nhà sản xuất</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Ngày mua</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Vị trí</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Khách hàng</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Trạng thái</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Hành động</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã thiết bị</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên thiết bị</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loại</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vị trí</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
-                                    <tr th:each="d:${devices}">
-                                        <td class="px-6 py-4 whitespace-nowrap" th:text="${p.id}"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap" th:text="${p.name}"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap" th:text="${p.type}"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap" th:text="${p.manufacturer}"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap" th:text="${p.purchaseDate}"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap"></td>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">TB-001</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Máy tính Dell XPS</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Máy tính</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Phòng IT</td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800" th:text="${p.status}"></span>
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Hoạt động</span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit" th:href="#"></i></button>
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">TB-002</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Máy in HP LaserJet</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Máy in</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Phòng Kế toán</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Bảo trì</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">TB-003</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Máy chiếu Epson</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Máy chiếu</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Phòng Họp 1</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Hỏng</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit"></i></button>
                                             <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
                                         </td>
                                     </tr>
@@ -384,39 +335,9 @@
     </div>
 
     <script>
-        // Mở modal thêm thiết bị
-        function openAddDeviceModal() {
+        // Simple script to show modal (for demo purposes)
+        document.querySelector('button:contains("Thêm thiết bị")').addEventListener('click', function() {
             document.getElementById('addDeviceModal').classList.remove('hidden');
-        }
-
-        // Đóng modal
-        function closeModal() {
-            document.getElementById('addDeviceModal').classList.add('hidden');
-        }
-
-        // Xử lý sự kiện khi click nút "Thêm thiết bị"
-        document.addEventListener('DOMContentLoaded', function () {
-            const addButton = document.querySelector('button:contains("Thêm thiết bị")');
-            if (addButton) {
-                addButton.addEventListener('click', openAddDeviceModal);
-            }
-
-            // Đóng modal khi click bên ngoài
-            document.getElementById('addDeviceModal').addEventListener('click', function (e) {
-                if (e.target === this) {
-                    closeModal();
-                }
-            });
-        });
-
-        // Xử lý submit form (nếu cần)
-        document.getElementById('deviceForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            // Thêm code xử lý AJAX ở đây nếu cần
-            // Sau khi xử lý xong có thể đóng modal
-            closeModal();
-            // Và reload trang hoặc cập nhật danh sách
-            window.location.reload();
         });
     </script>
 </body>
