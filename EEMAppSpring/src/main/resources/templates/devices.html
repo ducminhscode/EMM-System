@@ -37,7 +37,8 @@
             <div class="mb-3 mt-3">
                 <input type="hidden" th:field="*{id}"/>
                 <button class="btn btn-info">
-                    <span>Them san pham</span>
+                    <span th:if="${device.id == null}">Thêm sản phẩm</span>
+                    <span th:unless="${device.id == null}">Cập nhật sản phẩm</span>
                 </button>
             </div>
         </form>
