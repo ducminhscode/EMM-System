@@ -26,6 +26,8 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -43,8 +45,8 @@ import org.springframework.format.annotation.DateTimeFormat;
     @NamedQuery(name = "Device.findByManufacturer", query = "SELECT d FROM Device d WHERE d.manufacturer = :manufacturer"),
     @NamedQuery(name = "Device.findByPurchaseDate", query = "SELECT d FROM Device d WHERE d.purchaseDate = :purchaseDate"),
     @NamedQuery(name = "Device.findByStatus", query = "SELECT d FROM Device d WHERE d.status = :status"),
-    @NamedQuery(name = "Device.findByCreatedAt", query = "SELECT d FROM Device d WHERE d.createdAt = :createdAt"),
-    @NamedQuery(name = "Device.findByUpdatedAt", query = "SELECT d FROM Device d WHERE d.updatedAt = :updatedAt")})
+    @NamedQuery(name = "Device.findByCreatedDate", query = "SELECT d FROM Device d WHERE d.createdDate = :createdDate"),
+    @NamedQuery(name = "Device.findByUpdatedDate", query = "SELECT d FROM Device d WHERE d.updatedDate = :updatedDate")})
 public class Device implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -70,21 +72,23 @@ public class Device implements Serializable {
     private String manufacturer;
     @Basic(optional = false)
     @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "purchase_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date purchaseDate;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 17)
     @Column(name = "status")
     private String status;
-    @Column(name = "created_at")
+    @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
-    @Column(name = "updated_at")
+    @CreationTimestamp
+    private Date createdDate;
+    @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt;
+    @UpdateTimestamp
+    private Date updatedDate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceId")
     private Set<MaintenanceSchedule> maintenanceScheduleSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceId")
@@ -157,20 +161,20 @@ public class Device implements Serializable {
         this.status = status;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public Date getCreatedDate() {
+        return createdDate;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
+    public Date getUpdatedDate() {
+        return updatedDate;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
     }
 
     @XmlTransient

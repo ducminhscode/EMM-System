@@ -85,6 +85,10 @@ public class DeviceRepositoryImpl implements DeviceRepository {
         if (p.getId() == null) {
             s.persist(p);
         } else {
+            Device existingDevice = s.get(Device.class, p.getId());
+            if (existingDevice != null) {
+                p.setCreatedDate(existingDevice.getCreatedDate());
+            }
             s.merge(p);
         }
         s.refresh(p);
