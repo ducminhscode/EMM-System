@@ -21,6 +21,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -36,7 +37,7 @@ import java.util.Date;
     @NamedQuery(name = "Repair.findByRepairDate", query = "SELECT r FROM Repair r WHERE r.repairDate = :repairDate"),
     @NamedQuery(name = "Repair.findByType", query = "SELECT r FROM Repair r WHERE r.type = :type"),
     @NamedQuery(name = "Repair.findByPrice", query = "SELECT r FROM Repair r WHERE r.price = :price"),
-    @NamedQuery(name = "Repair.findByDescribe", query = "SELECT r FROM Repair r WHERE r.describe = :describe")})
+    @NamedQuery(name = "Repair.findByDescription", query = "SELECT r FROM Repair r WHERE r.description = :description")})
 public class Repair implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -55,13 +56,14 @@ public class Repair implements Serializable {
     @Size(min = 1, max = 22)
     @Column(name = "type")
     private String type;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Column(name = "price")
-    private long price;
+    private BigDecimal price;
     @Size(max = 255)
-    @Column(name = "describe")
-    private String describe;
+    @Column(name = "description")
+    private String description;
     @JoinColumn(name = "personnel_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Personnel personnelId;
@@ -76,7 +78,7 @@ public class Repair implements Serializable {
         this.id = id;
     }
 
-    public Repair(Integer id, Date repairDate, String type, long price) {
+    public Repair(Integer id, Date repairDate, String type, BigDecimal price) {
         this.id = id;
         this.repairDate = repairDate;
         this.type = type;
@@ -107,20 +109,20 @@ public class Repair implements Serializable {
         this.type = type;
     }
 
-    public long getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Personnel getPersonnelId() {

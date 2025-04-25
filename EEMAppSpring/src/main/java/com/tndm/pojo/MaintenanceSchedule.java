@@ -37,9 +37,10 @@ import java.util.Date;
     @NamedQuery(name = "MaintenanceSchedule.findByStartDate", query = "SELECT m FROM MaintenanceSchedule m WHERE m.startDate = :startDate"),
     @NamedQuery(name = "MaintenanceSchedule.findByEndDate", query = "SELECT m FROM MaintenanceSchedule m WHERE m.endDate = :endDate"),
     @NamedQuery(name = "MaintenanceSchedule.findByTitle", query = "SELECT m FROM MaintenanceSchedule m WHERE m.title = :title"),
-    @NamedQuery(name = "MaintenanceSchedule.findByDescribe", query = "SELECT m FROM MaintenanceSchedule m WHERE m.describe = :describe"),
+    @NamedQuery(name = "MaintenanceSchedule.findByDescription", query = "SELECT m FROM MaintenanceSchedule m WHERE m.description = :description"),
     @NamedQuery(name = "MaintenanceSchedule.findByFrequency", query = "SELECT m FROM MaintenanceSchedule m WHERE m.frequency = :frequency"),
-    @NamedQuery(name = "MaintenanceSchedule.findByCreatedDate", query = "SELECT m FROM MaintenanceSchedule m WHERE m.createdDate = :createdDate")})
+    @NamedQuery(name = "MaintenanceSchedule.findByCreatedDate", query = "SELECT m FROM MaintenanceSchedule m WHERE m.createdDate = :createdDate"),
+    @NamedQuery(name = "MaintenanceSchedule.findByUpdatedDate", query = "SELECT m FROM MaintenanceSchedule m WHERE m.updatedDate = :updatedDate")})
 public class MaintenanceSchedule implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -69,8 +70,8 @@ public class MaintenanceSchedule implements Serializable {
     @Column(name = "title")
     private String title;
     @Size(max = 255)
-    @Column(name = "describe")
-    private String describe;
+    @Column(name = "description")
+    private String description;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
@@ -79,6 +80,9 @@ public class MaintenanceSchedule implements Serializable {
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
+    @Column(name = "updated_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedDate;
     @JoinColumn(name = "device_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Device deviceId;
@@ -142,12 +146,12 @@ public class MaintenanceSchedule implements Serializable {
         this.title = title;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getFrequency() {
@@ -164,6 +168,14 @@ public class MaintenanceSchedule implements Serializable {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
     }
 
     public Device getDeviceId() {

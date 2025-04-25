@@ -34,6 +34,7 @@ import java.util.Date;
     @NamedQuery(name = "Report.findAll", query = "SELECT r FROM Report r"),
     @NamedQuery(name = "Report.findById", query = "SELECT r FROM Report r WHERE r.id = :id"),
     @NamedQuery(name = "Report.findByCreatedDate", query = "SELECT r FROM Report r WHERE r.createdDate = :createdDate"),
+    @NamedQuery(name = "Report.findByUpdatedDate", query = "SELECT r FROM Report r WHERE r.updatedDate = :updatedDate"),
     @NamedQuery(name = "Report.findByTitle", query = "SELECT r FROM Report r WHERE r.title = :title"),
     @NamedQuery(name = "Report.findByContent", query = "SELECT r FROM Report r WHERE r.content = :content")})
 public class Report implements Serializable {
@@ -49,6 +50,9 @@ public class Report implements Serializable {
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
+    @Column(name = "updated_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedDate;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
@@ -91,6 +95,14 @@ public class Report implements Serializable {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
     }
 
     public String getTitle() {

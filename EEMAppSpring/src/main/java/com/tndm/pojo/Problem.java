@@ -40,7 +40,9 @@ import java.util.Set;
     @NamedQuery(name = "Problem.findByHappenedDate", query = "SELECT p FROM Problem p WHERE p.happenedDate = :happenedDate"),
     @NamedQuery(name = "Problem.findByDescribe", query = "SELECT p FROM Problem p WHERE p.describe = :describe"),
     @NamedQuery(name = "Problem.findByFatalLevel", query = "SELECT p FROM Problem p WHERE p.fatalLevel = :fatalLevel"),
-    @NamedQuery(name = "Problem.findByStatus", query = "SELECT p FROM Problem p WHERE p.status = :status")})
+    @NamedQuery(name = "Problem.findByStatus", query = "SELECT p FROM Problem p WHERE p.status = :status"),
+    @NamedQuery(name = "Problem.findByCreatedAt", query = "SELECT p FROM Problem p WHERE p.createdAt = :createdAt"),
+    @NamedQuery(name = "Problem.findByUpdatedAt", query = "SELECT p FROM Problem p WHERE p.updatedAt = :updatedAt")})
 public class Problem implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -67,6 +69,12 @@ public class Problem implements Serializable {
     @Size(min = 1, max = 17)
     @Column(name = "status")
     private String status;
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "problemId")
     private Set<Repair> repairSet;
     @JoinColumn(name = "device_id", referencedColumnName = "id")
@@ -128,6 +136,22 @@ public class Problem implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @XmlTransient
