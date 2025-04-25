@@ -38,7 +38,8 @@ import java.util.Date;
     @NamedQuery(name = "MaintenanceSchedule.findByEndDate", query = "SELECT m FROM MaintenanceSchedule m WHERE m.endDate = :endDate"),
     @NamedQuery(name = "MaintenanceSchedule.findByTitle", query = "SELECT m FROM MaintenanceSchedule m WHERE m.title = :title"),
     @NamedQuery(name = "MaintenanceSchedule.findByDescribe", query = "SELECT m FROM MaintenanceSchedule m WHERE m.describe = :describe"),
-    @NamedQuery(name = "MaintenanceSchedule.findByFrequency", query = "SELECT m FROM MaintenanceSchedule m WHERE m.frequency = :frequency")})
+    @NamedQuery(name = "MaintenanceSchedule.findByFrequency", query = "SELECT m FROM MaintenanceSchedule m WHERE m.frequency = :frequency"),
+    @NamedQuery(name = "MaintenanceSchedule.findByCreatedDate", query = "SELECT m FROM MaintenanceSchedule m WHERE m.createdDate = :createdDate")})
 public class MaintenanceSchedule implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -75,6 +76,9 @@ public class MaintenanceSchedule implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "frequency")
     private String frequency;
+    @Column(name = "created_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
     @JoinColumn(name = "device_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Device deviceId;
@@ -152,6 +156,14 @@ public class MaintenanceSchedule implements Serializable {
 
     public void setFrequency(String frequency) {
         this.frequency = frequency;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
     public Device getDeviceId() {

@@ -1,0 +1,48 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Trang chu</title>
+    <th:block th:replace="base :: styles"></th:block>
+</head>
+<body>
+    <main class="container">
+        <h1 class="text-center text-info mt-1">QUAN TRI SAN PHAM</h1>
+        <form method="post" th:action="@{/add}" th:object="${device}">
+            <div class="mb-3 mt-3">
+                <label for="name">Ten thiet bi</label>
+                <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="Ten san pham">
+            </div>
+            <div class="mb-3 mt-3">
+                <label for="type">loai</label>
+                <input type="text" class="form-control" th:field="*{type}" id="type" placeholder="Gia san pham">
+            </div>
+            <div class="mb-3 mt-3">
+                <label for="manufacturer">nha san xuat</label>
+                <input type="text" class="form-control" th:field="*{manufacturer}" id="manufacturer" placeholder="Gia san pham">
+            </div>
+            <div class="mb-3 mt-3">
+                <label for="purchaseDate">ngay mua</label>
+                <input type="date" class="form-control" th:field="*{purchaseDate}" id="purchaseDate" placeholder="Gia san pham">
+            </div>
+            <div class="mb-3 mt-3">
+                <label for="status">trang thai</label>
+                <input type="text" class="form-control" th:field="*{status}" id="status" placeholder="Gia san pham">
+            </div>
+            <div class="mb-3 mt-3">
+                <label for="faci">Vi tri</label>
+                <select class="form-select" id="faci" th:field="*{facilityId}">
+                    <option th:each="f:${facilities}" th:text="${f.name}" th:value="${f.id}"></option>
+                </select>
+            </div>
+            <div class="mb-3 mt-3">
+                <input type="hidden" th:field="*{id}"/>
+                <button class="btn btn-info">
+                    <span>Them san pham</span>
+                </button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
+
+

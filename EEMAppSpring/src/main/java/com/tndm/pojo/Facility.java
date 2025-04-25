@@ -15,11 +15,14 @@ import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -33,7 +36,9 @@ import java.util.Set;
     @NamedQuery(name = "Facility.findAll", query = "SELECT f FROM Facility f"),
     @NamedQuery(name = "Facility.findById", query = "SELECT f FROM Facility f WHERE f.id = :id"),
     @NamedQuery(name = "Facility.findByName", query = "SELECT f FROM Facility f WHERE f.name = :name"),
-    @NamedQuery(name = "Facility.findByAddress", query = "SELECT f FROM Facility f WHERE f.address = :address")})
+    @NamedQuery(name = "Facility.findByAddress", query = "SELECT f FROM Facility f WHERE f.address = :address"),
+    @NamedQuery(name = "Facility.findByCreatedDate", query = "SELECT f FROM Facility f WHERE f.createdDate = :createdDate"),
+    @NamedQuery(name = "Facility.findByUpdatedDate", query = "SELECT f FROM Facility f WHERE f.updatedDate = :updatedDate")})
 public class Facility implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -52,6 +57,12 @@ public class Facility implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "address")
     private String address;
+    @Column(name = "created_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
+    @Column(name = "updated_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedDate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "facilityId")
     private Set<Device> deviceSet;
 
@@ -90,6 +101,22 @@ public class Facility implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
     }
 
     @XmlTransient

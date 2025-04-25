@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DeviceRepositoryImpl implements DeviceRepository {
 
-    private static final int PAGE_SIZE = 5;
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -38,20 +37,37 @@ public class DeviceRepositoryImpl implements DeviceRepository {
         CriteriaQuery<Device> q = b.createQuery(Device.class);
         Root<Device> root = q.from(Device.class);
         q.select(root);
-        
+
         if (params != null) {
-            String kw = params.get("kw");
-            if (kw != null && !kw.isEmpty()) {
-                q.where(b.like(root.get("name"), String.format("%%%s%%", kw)));
+            if (params.containsKey("name") && !params.get("name").isEmpty()) {
+                q.where(b.like(root.get("name"), String.format("%%%s%%", params.get("name"))));
+            }
+
+            if (params.containsKey("type") && !params.get("type").isEmpty()) {
+                q.where(b.equal(root.get("type"), params.get("type")));
+            }
+        }
+
+        if (params != null && params.containsKey("sortBy")) {
+            String sortBy = params.get("sortBy");
+            if (params.get("sortOrder") != null && params.get("sortOrder").equalsIgnoreCase("desc")) {
+                q.orderBy(b.desc(root.get(sortBy)));
+            } else {
+                q.orderBy(b.asc(root.get(sortBy)));
             }
         }
 
         Query query = s.createQuery(q);
         if (params != null) {
-            int page = Integer.parseInt(params.getOrDefault("page", "1"));
-            int start = (page - 1) * PAGE_SIZE;
-            query.setMaxResults(PAGE_SIZE);
-            query.setFirstResult(start);
+            String page = params.get("page");
+            String pageSize = params.get("pageSize");
+
+            if (page != null && pageSize != null) {
+                int p = Integer.parseInt(page);
+                int size = Integer.parseInt(pageSize);
+                query.setMaxResults(size);
+                query.setFirstResult((p - 1) * size);
+            }
         }
 
         return query.getResultList();
@@ -81,7 +97,5 @@ public class DeviceRepositoryImpl implements DeviceRepository {
         Device p = this.getDeviceById(id);
         s.remove(p);
     }
-
-    
 
 }

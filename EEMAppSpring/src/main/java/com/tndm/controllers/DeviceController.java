@@ -12,8 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -36,5 +36,12 @@ public class DeviceController {
         this.devSer.addOrUpdate(d);
         
         return "redirect:/";
+    }
+    
+    @GetMapping("/devices/{deviceId}")
+    public String deviceView(Model model, @PathVariable(value = "deviceId") int id){
+        model.addAttribute("device", this.devSer.getDeviceById(id));
+        
+        return "devices";
     }
 }

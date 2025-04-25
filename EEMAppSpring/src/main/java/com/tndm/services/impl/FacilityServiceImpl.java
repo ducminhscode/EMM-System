@@ -9,11 +9,13 @@ import com.tndm.repositories.FacilityRepository;
 import com.tndm.services.FacilityService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Tran Nguyen Duc Minh
  */
+@Service
 public class FacilityServiceImpl implements FacilityService {
 
     @Autowired
