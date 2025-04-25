@@ -26,6 +26,7 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -69,6 +70,7 @@ public class Device implements Serializable {
     private String manufacturer;
     @Basic(optional = false)
     @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "purchase_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date purchaseDate;

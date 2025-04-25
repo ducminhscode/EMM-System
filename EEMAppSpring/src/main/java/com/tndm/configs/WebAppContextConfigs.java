@@ -23,7 +23,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ComponentScan(basePackages = {
     "com.tndm.controllers",
     "com.tndm.repositories",
-    "com.tndm.services"
+    "com.tndm.services",
+    "com.tndm.formatters"
 })
 @EnableTransactionManagement
 public class WebAppContextConfigs implements WebMvcConfigurer {

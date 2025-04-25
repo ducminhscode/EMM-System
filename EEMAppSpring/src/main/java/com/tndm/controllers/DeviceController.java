@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,27 +22,26 @@ import org.springframework.web.bind.annotation.PostMapping;
  */
 @Controller
 public class DeviceController {
-    
+
     @Autowired
     private DeviceService devSer;
-    
+
     @GetMapping("/devices")
-    public String deviceView(Model model){
+    public String deviceView(Model model) {
         model.addAttribute("device", new Device());
         return "devices";
     }
-    
+
     @PostMapping("/add")
-    public String createDevice(@ModelAttribute(value = "device") Device d){
+    public String createDevice(@ModelAttribute(value = "device") Device d) {
         this.devSer.addOrUpdate(d);
-        
         return "redirect:/";
     }
-    
+
     @GetMapping("/devices/{deviceId}")
-    public String deviceView(Model model, @PathVariable(value = "deviceId") int id){
+    public String deviceView(Model model, @PathVariable(value = "deviceId") int id) {
         model.addAttribute("device", this.devSer.getDeviceById(id));
-        
+
         return "devices";
     }
 }
