@@ -5,6 +5,8 @@
 package com.tndm.controllers;
 
 import com.tndm.services.DeviceService;
+import com.tndm.services.DeviceStatusService;
+import com.tndm.services.DeviceTypeService;
 import com.tndm.services.FacilityService;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +31,17 @@ public class IndexController {
     @Autowired
     private FacilityService facService;
     
+    @Autowired
+    private DeviceTypeService deviceTypeService;
+    
+    @Autowired
+    private DeviceStatusService devStatusService;
+    
     @ModelAttribute
     public void commonResponse(Model model){
         model.addAttribute("facilities", this.facService.getFacilities());
+        model.addAttribute("deviceTypes", this.deviceTypeService.getDeviceTypes());
+        model.addAttribute("deviceStatus", this.devStatusService.getDeviceStatus());
     }
     
     @RequestMapping("/")

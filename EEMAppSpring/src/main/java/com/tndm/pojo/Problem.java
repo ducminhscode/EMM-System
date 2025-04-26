@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -40,9 +41,7 @@ import org.hibernate.annotations.UpdateTimestamp;
     @NamedQuery(name = "Problem.findAll", query = "SELECT p FROM Problem p"),
     @NamedQuery(name = "Problem.findById", query = "SELECT p FROM Problem p WHERE p.id = :id"),
     @NamedQuery(name = "Problem.findByHappenedDate", query = "SELECT p FROM Problem p WHERE p.happenedDate = :happenedDate"),
-    @NamedQuery(name = "Problem.findByDescribe", query = "SELECT p FROM Problem p WHERE p.describe = :describe"),
-    @NamedQuery(name = "Problem.findByFatalLevel", query = "SELECT p FROM Problem p WHERE p.fatalLevel = :fatalLevel"),
-    @NamedQuery(name = "Problem.findByStatus", query = "SELECT p FROM Problem p WHERE p.status = :status"),
+    @NamedQuery(name = "Problem.findByDescription", query = "SELECT p FROM Problem p WHERE p.description = :description"),
     @NamedQuery(name = "Problem.findByCreatedDate", query = "SELECT p FROM Problem p WHERE p.createdDate = :createdDate"),
     @NamedQuery(name = "Problem.findByUpdatedDate", query = "SELECT p FROM Problem p WHERE p.updatedDate = :updatedDate")})
 public class Problem implements Serializable {
@@ -57,20 +56,11 @@ public class Problem implements Serializable {
     @NotNull
     @Column(name = "happened_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date happenedDate;
     @Size(max = 255)
-    @Column(name = "describe")
-    private String describe;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 15)
-    @Column(name = "fatal_level")
-    private String fatalLevel;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
-    @Column(name = "status")
-    private String status;
+    @Column(name = "description")
+    private String description;
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
@@ -84,9 +74,15 @@ public class Problem implements Serializable {
     @JoinColumn(name = "device_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Device deviceId;
+    @JoinColumn(name = "fatal_level_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private FatalLevel fatalLevelId;
     @JoinColumn(name = "personnel_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Personnel personnelId;
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private ProblemStatus statusId;
 
     public Problem() {
     }
@@ -95,11 +91,9 @@ public class Problem implements Serializable {
         this.id = id;
     }
 
-    public Problem(Integer id, Date happenedDate, String fatalLevel, String status) {
+    public Problem(Integer id, Date happenedDate) {
         this.id = id;
         this.happenedDate = happenedDate;
-        this.fatalLevel = fatalLevel;
-        this.status = status;
     }
 
     public Integer getId() {
@@ -118,28 +112,12 @@ public class Problem implements Serializable {
         this.happenedDate = happenedDate;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
-    }
-
-    public String getFatalLevel() {
-        return fatalLevel;
-    }
-
-    public void setFatalLevel(String fatalLevel) {
-        this.fatalLevel = fatalLevel;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getCreatedDate() {
@@ -175,12 +153,28 @@ public class Problem implements Serializable {
         this.deviceId = deviceId;
     }
 
+    public FatalLevel getFatalLevelId() {
+        return fatalLevelId;
+    }
+
+    public void setFatalLevelId(FatalLevel fatalLevelId) {
+        this.fatalLevelId = fatalLevelId;
+    }
+
     public Personnel getPersonnelId() {
         return personnelId;
     }
 
     public void setPersonnelId(Personnel personnelId) {
         this.personnelId = personnelId;
+    }
+
+    public ProblemStatus getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(ProblemStatus statusId) {
+        this.statusId = statusId;
     }
 
     @Override

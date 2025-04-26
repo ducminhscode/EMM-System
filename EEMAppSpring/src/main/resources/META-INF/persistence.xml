@@ -10,5 +10,12 @@
     <class>com.tndm.pojo.User</class>
     <class>com.tndm.pojo.Device</class>
     <class>com.tndm.pojo.MaintenanceSchedule</class>
+    <class>com.tndm.pojo.FatalLevel</class>
+    <class>com.tndm.pojo.DeviceType</class>
+    <class>com.tndm.pojo.DeviceStatus</class>
+    <class>com.tndm.pojo.ProblemStatus</class>
+    <class>com.tndm.pojo.MaintenanceType</class>
+    <class>com.tndm.pojo.RepairType</class>
+    <class>com.tndm.pojo.UserRole</class>
   </persistence-unit>
 </persistence>

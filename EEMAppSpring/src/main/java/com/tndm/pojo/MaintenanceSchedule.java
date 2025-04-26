@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.Date;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -35,7 +36,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NamedQueries({
     @NamedQuery(name = "MaintenanceSchedule.findAll", query = "SELECT m FROM MaintenanceSchedule m"),
     @NamedQuery(name = "MaintenanceSchedule.findById", query = "SELECT m FROM MaintenanceSchedule m WHERE m.id = :id"),
-    @NamedQuery(name = "MaintenanceSchedule.findByType", query = "SELECT m FROM MaintenanceSchedule m WHERE m.type = :type"),
     @NamedQuery(name = "MaintenanceSchedule.findByStartDate", query = "SELECT m FROM MaintenanceSchedule m WHERE m.startDate = :startDate"),
     @NamedQuery(name = "MaintenanceSchedule.findByEndDate", query = "SELECT m FROM MaintenanceSchedule m WHERE m.endDate = :endDate"),
     @NamedQuery(name = "MaintenanceSchedule.findByTitle", query = "SELECT m FROM MaintenanceSchedule m WHERE m.title = :title"),
@@ -53,18 +53,15 @@ public class MaintenanceSchedule implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 13)
-    @Column(name = "type")
-    private String type;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "start_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
     @Basic(optional = false)
     @NotNull
     @Column(name = "end_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
     @Basic(optional = false)
     @NotNull
@@ -90,6 +87,9 @@ public class MaintenanceSchedule implements Serializable {
     @JoinColumn(name = "device_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Device deviceId;
+    @JoinColumn(name = "type_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private MaintenanceType typeId;
     @JoinColumn(name = "personnel_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Personnel personnelId;
@@ -101,9 +101,8 @@ public class MaintenanceSchedule implements Serializable {
         this.id = id;
     }
 
-    public MaintenanceSchedule(Integer id, String type, Date startDate, Date endDate, String title, String frequency) {
+    public MaintenanceSchedule(Integer id, Date startDate, Date endDate, String title, String frequency) {
         this.id = id;
-        this.type = type;
         this.startDate = startDate;
         this.endDate = endDate;
         this.title = title;
@@ -116,14 +115,6 @@ public class MaintenanceSchedule implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public Date getStartDate() {
@@ -188,6 +179,14 @@ public class MaintenanceSchedule implements Serializable {
 
     public void setDeviceId(Device deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public MaintenanceType getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(MaintenanceType typeId) {
+        this.typeId = typeId;
     }
 
     public Personnel getPersonnelId() {

@@ -6,6 +6,8 @@ package com.tndm.controllers;
 
 import com.tndm.pojo.Device;
 import com.tndm.services.DeviceService;
+import com.tndm.services.DeviceStatusService;
+import com.tndm.services.DeviceTypeService;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,7 @@ public class DeviceController {
     @Autowired
     private DeviceService devSer;
 
+
     @GetMapping("/devices")
     public String deviceView(Model model) {
         model.addAttribute("device", new Device());
@@ -41,7 +44,6 @@ public class DeviceController {
     @GetMapping("/devices/{deviceId}")
     public String deviceView(Model model, @PathVariable(value = "deviceId") int id) {
         model.addAttribute("device", this.devSer.getDeviceById(id));
-
         return "devices";
     }
 }

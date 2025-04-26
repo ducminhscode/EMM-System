@@ -4,21 +4,14 @@
  */
 package com.tndm.services;
 
-import com.tndm.pojo.Device;
+import com.tndm.pojo.DeviceStatus;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
  * @author Tran Nguyen Duc Minh
  */
-public interface DeviceService {
-    
-    List<Device> getDevices(Map<String, String> params);
-    
-    Device getDeviceById(int id);
+public interface DeviceStatusService {
 
-    Device addOrUpdate(Device d);
-
-    void deleteDevice(int id);
+    List<DeviceStatus> getDeviceStatus();
 }

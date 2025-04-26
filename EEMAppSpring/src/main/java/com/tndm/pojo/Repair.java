@@ -23,6 +23,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -35,7 +36,6 @@ import java.util.Date;
     @NamedQuery(name = "Repair.findAll", query = "SELECT r FROM Repair r"),
     @NamedQuery(name = "Repair.findById", query = "SELECT r FROM Repair r WHERE r.id = :id"),
     @NamedQuery(name = "Repair.findByRepairDate", query = "SELECT r FROM Repair r WHERE r.repairDate = :repairDate"),
-    @NamedQuery(name = "Repair.findByType", query = "SELECT r FROM Repair r WHERE r.type = :type"),
     @NamedQuery(name = "Repair.findByPrice", query = "SELECT r FROM Repair r WHERE r.price = :price"),
     @NamedQuery(name = "Repair.findByDescription", query = "SELECT r FROM Repair r WHERE r.description = :description")})
 public class Repair implements Serializable {
@@ -50,12 +50,8 @@ public class Repair implements Serializable {
     @NotNull
     @Column(name = "repair_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date repairDate;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 22)
-    @Column(name = "type")
-    private String type;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
@@ -70,6 +66,9 @@ public class Repair implements Serializable {
     @JoinColumn(name = "problem_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Problem problemId;
+    @JoinColumn(name = "type_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private RepairType typeId;
 
     public Repair() {
     }
@@ -78,10 +77,9 @@ public class Repair implements Serializable {
         this.id = id;
     }
 
-    public Repair(Integer id, Date repairDate, String type, BigDecimal price) {
+    public Repair(Integer id, Date repairDate, BigDecimal price) {
         this.id = id;
         this.repairDate = repairDate;
-        this.type = type;
         this.price = price;
     }
 
@@ -99,14 +97,6 @@ public class Repair implements Serializable {
 
     public void setRepairDate(Date repairDate) {
         this.repairDate = repairDate;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public BigDecimal getPrice() {
@@ -139,6 +129,14 @@ public class Repair implements Serializable {
 
     public void setProblemId(Problem problemId) {
         this.problemId = problemId;
+    }
+
+    public RepairType getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(RepairType typeId) {
+        this.typeId = typeId;
     }
 
     @Override

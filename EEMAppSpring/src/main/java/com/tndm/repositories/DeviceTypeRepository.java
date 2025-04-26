@@ -4,21 +4,14 @@
  */
 package com.tndm.repositories;
 
-import com.tndm.pojo.Device;
+import com.tndm.pojo.DeviceType;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
  * @author Tran Nguyen Duc Minh
  */
-public interface DeviceRepository {
+public interface DeviceTypeRepository {
 
-    List<Device> getDevices(Map<String, String> params);
-
-    Device getDeviceById(int id);
-
-    Device addOrUpdate(Device d);
-
-    void deleteDevice(int id);
+    List<DeviceType> getDeviceTypes();
 }

@@ -41,10 +41,8 @@ import org.springframework.format.annotation.DateTimeFormat;
     @NamedQuery(name = "Device.findAll", query = "SELECT d FROM Device d"),
     @NamedQuery(name = "Device.findById", query = "SELECT d FROM Device d WHERE d.id = :id"),
     @NamedQuery(name = "Device.findByName", query = "SELECT d FROM Device d WHERE d.name = :name"),
-    @NamedQuery(name = "Device.findByType", query = "SELECT d FROM Device d WHERE d.type = :type"),
     @NamedQuery(name = "Device.findByManufacturer", query = "SELECT d FROM Device d WHERE d.manufacturer = :manufacturer"),
     @NamedQuery(name = "Device.findByPurchaseDate", query = "SELECT d FROM Device d WHERE d.purchaseDate = :purchaseDate"),
-    @NamedQuery(name = "Device.findByStatus", query = "SELECT d FROM Device d WHERE d.status = :status"),
     @NamedQuery(name = "Device.findByCreatedDate", query = "SELECT d FROM Device d WHERE d.createdDate = :createdDate"),
     @NamedQuery(name = "Device.findByUpdatedDate", query = "SELECT d FROM Device d WHERE d.updatedDate = :updatedDate")})
 public class Device implements Serializable {
@@ -62,11 +60,6 @@ public class Device implements Serializable {
     private String name;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 15)
-    @Column(name = "type")
-    private String type;
-    @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "manufacturer")
     private String manufacturer;
@@ -76,11 +69,6 @@ public class Device implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date purchaseDate;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
-    @Column(name = "status")
-    private String status;
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
@@ -93,6 +81,12 @@ public class Device implements Serializable {
     private Set<MaintenanceSchedule> maintenanceScheduleSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceId")
     private Set<Problem> problemSet;
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private DeviceStatus statusId;
+    @JoinColumn(name = "type_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private DeviceType typeId;
     @JoinColumn(name = "facility_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Facility facilityId;
@@ -104,13 +98,11 @@ public class Device implements Serializable {
         this.id = id;
     }
 
-    public Device(Integer id, String name, String type, String manufacturer, Date purchaseDate, String status) {
+    public Device(Integer id, String name, String manufacturer, Date purchaseDate) {
         this.id = id;
         this.name = name;
-        this.type = type;
         this.manufacturer = manufacturer;
         this.purchaseDate = purchaseDate;
-        this.status = status;
     }
 
     public Integer getId() {
@@ -129,14 +121,6 @@ public class Device implements Serializable {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getManufacturer() {
         return manufacturer;
     }
@@ -151,14 +135,6 @@ public class Device implements Serializable {
 
     public void setPurchaseDate(Date purchaseDate) {
         this.purchaseDate = purchaseDate;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public Date getCreatedDate() {
@@ -193,6 +169,22 @@ public class Device implements Serializable {
 
     public void setProblemSet(Set<Problem> problemSet) {
         this.problemSet = problemSet;
+    }
+
+    public DeviceStatus getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(DeviceStatus statusId) {
+        this.statusId = statusId;
+    }
+
+    public DeviceType getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(DeviceType typeId) {
+        this.typeId = typeId;
     }
 
     public Facility getFacilityId() {

@@ -148,6 +148,7 @@
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Nhà Sản Xuất</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Ngày Mua</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Trạng Thái</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Cơ sở</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Hành Động</th>
                                     </tr>
                                 </thead>
@@ -155,12 +156,13 @@
                                     <tr th:each='d:${devices}'>
                                         <td class="px-6 py-4 whitespace-nowrap" th:text='${d.id}'></td>
                                         <td class="px-6 py-4 whitespace-nowrap" th:text='${d.name}'></td>
-                                        <td class="px-6 py-4 whitespace-nowrap" th:text='${d.type}'></td>
+                                        <td class="px-6 py-4 whitespace-nowrap" th:text='${d.typeId.name}'></td>
                                         <td class="px-6 py-4 whitespace-nowrap" th:text='${d.manufacturer}'></td>
                                         <td class="px-6 py-4 whitespace-nowrap" th:text='${d.purchaseDate}'></td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800" th:text='${d.status}'></span>
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800" th:text='${d.statusId.name}'></span>
                                         </td>
+                                        <td class="px-6 py-4 whitespace-nowrap" th:text='${d.facilityId.name}'></td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <a class="text-blue-600 hover:text-blue-900 mr-3" th:href ="@{'/devices/' + ${d.id}}"><i class="fas fa-edit"></i></a>
                                             <button class="text-red-600 hover:text-red-900" th:onclick="'deleteDevice(\' '+@{/api/devices/}+'\','+${d.id}+')'">
@@ -251,63 +253,6 @@
                     </div>
                 </div>
             </main>
-        </div>
-    </div>
-
-    <!-- Add Device Modal (Hidden by default) -->
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" id="addDeviceModal">
-        <div class="bg-white rounded-lg w-full max-w-md">
-            <div class="p-4 border-b flex justify-between items-center">
-                <h3 class="font-semibold text-lg">Thêm thiết bị mới</h3>
-                <button class="text-gray-500 hover:text-gray-700" onclick="document.getElementById('addDeviceModal').classList.add('hidden')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="p-4">
-                <form class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tên thiết bị</label>
-                        <input type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Mã thiết bị</label>
-                        <input type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Loại thiết bị</label>
-                        <select class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option>Máy tính</option>
-                            <option>Máy in</option>
-                            <option>Máy chiếu</option>
-                            <option>Thiết bị mạng</option>
-                            <option>Khác</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Vị trí</label>
-                        <input type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    <div class="flex space-x-4">
-                        <div class="flex-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Ngày mua</label>
-                            <input type="date" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        <div class="flex-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>
-                            <select class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option>Hoạt động</option>
-                                <option>Bảo trì</option>
-                                <option>Hỏng</option>
-                                <option>Ngừng sử dụng</option>
-                            </select>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="p-4 border-t flex justify-end space-x-3">
-                <button class="px-4 py-2 border rounded-lg hover:bg-gray-100" onclick="document.getElementById('addDeviceModal').classList.add('hidden')">Hủy</button>
-                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Lưu</button>
-            </div>
         </div>
     </div>
     <script th:src="@{/js/main.js}"></script>

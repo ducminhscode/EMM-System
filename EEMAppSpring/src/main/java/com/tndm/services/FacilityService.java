@@ -12,5 +12,6 @@ import java.util.List;
  * @author Tran Nguyen Duc Minh
  */
 public interface FacilityService {
+
     List<Facility> getFacilities();
 }

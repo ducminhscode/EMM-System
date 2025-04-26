@@ -4,6 +4,8 @@
  */
 package com.tndm.configs;
 
+import com.tndm.formatters.DeviceStatusFormatter;
+import com.tndm.formatters.DeviceTypeFormatter;
 import com.tndm.formatters.FacilityFormatter;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +40,8 @@ public class WebAppContextConfigs implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addFormatter(new FacilityFormatter());
+        registry.addFormatter(new DeviceStatusFormatter());
+        registry.addFormatter(new DeviceTypeFormatter());
     }
     
     @Override

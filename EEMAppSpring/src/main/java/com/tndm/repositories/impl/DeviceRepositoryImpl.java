@@ -80,19 +80,19 @@ public class DeviceRepositoryImpl implements DeviceRepository {
     }
 
     @Override
-    public Device addOrUpdate(Device p) {
+    public Device addOrUpdate(Device d) {
         Session s = this.factory.getObject().getCurrentSession();
-        if (p.getId() == null) {
-            s.persist(p);
+        if (d.getId() == null) {
+            s.persist(d);
         } else {
-            Device existingDevice = s.get(Device.class, p.getId());
+            Device existingDevice = s.get(Device.class, d.getId());
             if (existingDevice != null) {
-                p.setCreatedDate(existingDevice.getCreatedDate());
+                d.setCreatedDate(existingDevice.getCreatedDate());
             }
-            s.merge(p);
+            s.merge(d);
         }
-        s.refresh(p);
-        return p;
+        s.refresh(d);
+        return d;
     }
 
     @Override

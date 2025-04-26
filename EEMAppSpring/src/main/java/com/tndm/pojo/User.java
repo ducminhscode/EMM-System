@@ -11,6 +11,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -42,7 +44,6 @@ import org.hibernate.annotations.UpdateTimestamp;
     @NamedQuery(name = "User.findByLastName", query = "SELECT u FROM User u WHERE u.lastName = :lastName"),
     @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username"),
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
-    @NamedQuery(name = "User.findByUserRole", query = "SELECT u FROM User u WHERE u.userRole = :userRole"),
     @NamedQuery(name = "User.findByAvatar", query = "SELECT u FROM User u WHERE u.avatar = :avatar"),
     @NamedQuery(name = "User.findByActive", query = "SELECT u FROM User u WHERE u.active = :active"),
     @NamedQuery(name = "User.findByCreatedDate", query = "SELECT u FROM User u WHERE u.createdDate = :createdDate"),
@@ -75,11 +76,6 @@ public class User implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "password")
     private String password;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 14)
-    @Column(name = "user_role")
-    private String userRole;
     @Size(max = 255)
     @Column(name = "avatar")
     private String avatar;
@@ -97,6 +93,9 @@ public class User implements Serializable {
     private Set<Report> reportSet;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     private Personnel personnel;
+    @JoinColumn(name = "user_role_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private UserRole userRoleId;
 
     public User() {
     }
@@ -105,13 +104,12 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public User(Integer id, String firstName, String lastName, String username, String password, String userRole) {
+    public User(Integer id, String firstName, String lastName, String username, String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
-        this.userRole = userRole;
     }
 
     public Integer getId() {
@@ -152,14 +150,6 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
     }
 
     public String getAvatar() {
@@ -209,6 +199,14 @@ public class User implements Serializable {
 
     public void setPersonnel(Personnel personnel) {
         this.personnel = personnel;
+    }
+
+    public UserRole getUserRoleId() {
+        return userRoleId;
+    }
+
+    public void setUserRoleId(UserRole userRoleId) {
+        this.userRoleId = userRoleId;
     }
 
     @Override
