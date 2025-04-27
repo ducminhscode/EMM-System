@@ -26,6 +26,9 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -64,12 +67,15 @@ public class Device implements Serializable {
     @NotNull
     @Column(name = "purchase_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date purchaseDate;
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private Date createdDate;
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
     private Date updatedDate;
     @OneToMany(mappedBy = "deviceId")
     private Set<MaintenanceDetail> maintenanceDetailSet;

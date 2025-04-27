@@ -25,6 +25,9 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -55,11 +58,13 @@ public class MaintenanceSchedule implements Serializable {
     @NotNull
     @Column(name = "start_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
     @Basic(optional = false)
     @NotNull
     @Column(name = "end_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
     @Basic(optional = false)
     @NotNull
@@ -76,9 +81,11 @@ public class MaintenanceSchedule implements Serializable {
     private String frequency;
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private Date createdDate;
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
     private Date updatedDate;
     @OneToMany(mappedBy = "maintenanceScheduleId")
     private Set<MaintenanceDetail> maintenanceDetailSet;
