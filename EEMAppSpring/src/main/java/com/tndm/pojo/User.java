@@ -27,8 +27,6 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  *
@@ -44,6 +42,8 @@ import org.hibernate.annotations.UpdateTimestamp;
     @NamedQuery(name = "User.findByLastName", query = "SELECT u FROM User u WHERE u.lastName = :lastName"),
     @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username"),
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
+    @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
+    @NamedQuery(name = "User.findByPhone", query = "SELECT u FROM User u WHERE u.phone = :phone"),
     @NamedQuery(name = "User.findByAvatar", query = "SELECT u FROM User u WHERE u.avatar = :avatar"),
     @NamedQuery(name = "User.findByActive", query = "SELECT u FROM User u WHERE u.active = :active"),
     @NamedQuery(name = "User.findByCreatedDate", query = "SELECT u FROM User u WHERE u.createdDate = :createdDate"),
@@ -76,6 +76,14 @@ public class User implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "password")
     private String password;
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Size(max = 50)
+    @Column(name = "email")
+    private String email;
+    // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
+    @Size(max = 10)
+    @Column(name = "phone")
+    private String phone;
     @Size(max = 255)
     @Column(name = "avatar")
     private String avatar;
@@ -83,16 +91,20 @@ public class User implements Serializable {
     private Boolean active;
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @CreationTimestamp
     private Date createdDate;
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
     private Date updatedDate;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
-    private Set<Report> reportSet;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
-    private Personnel personnel;
+    private Technician technician;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    private Employee employee;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    private Set<MaintenanceSchedule> maintenanceScheduleSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    private Set<Device> deviceSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    private Set<Facility> facilitySet;
     @JoinColumn(name = "user_role_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private UserRole userRoleId;
@@ -152,6 +164,22 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getAvatar() {
         return avatar;
     }
@@ -184,21 +212,47 @@ public class User implements Serializable {
         this.updatedDate = updatedDate;
     }
 
+    public Technician getTechnician() {
+        return technician;
+    }
+
+    public void setTechnician(Technician technician) {
+        this.technician = technician;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
     @XmlTransient
-    public Set<Report> getReportSet() {
-        return reportSet;
+    public Set<MaintenanceSchedule> getMaintenanceScheduleSet() {
+        return maintenanceScheduleSet;
     }
 
-    public void setReportSet(Set<Report> reportSet) {
-        this.reportSet = reportSet;
+    public void setMaintenanceScheduleSet(Set<MaintenanceSchedule> maintenanceScheduleSet) {
+        this.maintenanceScheduleSet = maintenanceScheduleSet;
     }
 
-    public Personnel getPersonnel() {
-        return personnel;
+    @XmlTransient
+    public Set<Device> getDeviceSet() {
+        return deviceSet;
     }
 
-    public void setPersonnel(Personnel personnel) {
-        this.personnel = personnel;
+    public void setDeviceSet(Set<Device> deviceSet) {
+        this.deviceSet = deviceSet;
+    }
+
+    @XmlTransient
+    public Set<Facility> getFacilitySet() {
+        return facilitySet;
+    }
+
+    public void setFacilitySet(Set<Facility> facilitySet) {
+        this.facilitySet = facilitySet;
     }
 
     public UserRole getUserRoleId() {

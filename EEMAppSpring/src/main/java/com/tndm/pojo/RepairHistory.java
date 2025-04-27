@@ -14,33 +14,32 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Set;
 
 /**
  *
  * @author Tran Nguyen Duc Minh
  */
 @Entity
-@Table(name = "problem")
+@Table(name = "repair_history")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Problem.findAll", query = "SELECT p FROM Problem p"),
-    @NamedQuery(name = "Problem.findById", query = "SELECT p FROM Problem p WHERE p.id = :id"),
-    @NamedQuery(name = "Problem.findByHappenedDate", query = "SELECT p FROM Problem p WHERE p.happenedDate = :happenedDate"),
-    @NamedQuery(name = "Problem.findByDescription", query = "SELECT p FROM Problem p WHERE p.description = :description"),
-    @NamedQuery(name = "Problem.findByCreatedDate", query = "SELECT p FROM Problem p WHERE p.createdDate = :createdDate"),
-    @NamedQuery(name = "Problem.findByUpdatedDate", query = "SELECT p FROM Problem p WHERE p.updatedDate = :updatedDate")})
-public class Problem implements Serializable {
+    @NamedQuery(name = "RepairHistory.findAll", query = "SELECT r FROM RepairHistory r"),
+    @NamedQuery(name = "RepairHistory.findById", query = "SELECT r FROM RepairHistory r WHERE r.id = :id"),
+    @NamedQuery(name = "RepairHistory.findByRepairDate", query = "SELECT r FROM RepairHistory r WHERE r.repairDate = :repairDate"),
+    @NamedQuery(name = "RepairHistory.findByExpense", query = "SELECT r FROM RepairHistory r WHERE r.expense = :expense"),
+    @NamedQuery(name = "RepairHistory.findByDescription", query = "SELECT r FROM RepairHistory r WHERE r.description = :description"),
+    @NamedQuery(name = "RepairHistory.findByCreatedDate", query = "SELECT r FROM RepairHistory r WHERE r.createdDate = :createdDate"),
+    @NamedQuery(name = "RepairHistory.findByUpdatedDate", query = "SELECT r FROM RepairHistory r WHERE r.updatedDate = :updatedDate")})
+public class RepairHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -50,9 +49,14 @@ public class Problem implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "happened_date")
+    @Column(name = "repair_date")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date happenedDate;
+    private Date repairDate;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "expense")
+    private BigDecimal expense;
     @Size(max = 255)
     @Column(name = "description")
     private String description;
@@ -62,31 +66,27 @@ public class Problem implements Serializable {
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
-    @OneToMany(mappedBy = "problemId")
-    private Set<Repair> repairSet;
-    @JoinColumn(name = "device_id", referencedColumnName = "id")
+    @JoinColumn(name = "repair_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Device deviceId;
-    @JoinColumn(name = "employee_id", referencedColumnName = "id")
+    private Repair repairId;
+    @JoinColumn(name = "type_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Employee employeeId;
-    @JoinColumn(name = "fatal_level_id", referencedColumnName = "id")
+    private RepairType typeId;
+    @JoinColumn(name = "technician_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private FatalLevel fatalLevelId;
-    @JoinColumn(name = "status_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private ProblemStatus statusId;
+    private Technician technicianId;
 
-    public Problem() {
+    public RepairHistory() {
     }
 
-    public Problem(Integer id) {
+    public RepairHistory(Integer id) {
         this.id = id;
     }
 
-    public Problem(Integer id, Date happenedDate) {
+    public RepairHistory(Integer id, Date repairDate, BigDecimal expense) {
         this.id = id;
-        this.happenedDate = happenedDate;
+        this.repairDate = repairDate;
+        this.expense = expense;
     }
 
     public Integer getId() {
@@ -97,12 +97,20 @@ public class Problem implements Serializable {
         this.id = id;
     }
 
-    public Date getHappenedDate() {
-        return happenedDate;
+    public Date getRepairDate() {
+        return repairDate;
     }
 
-    public void setHappenedDate(Date happenedDate) {
-        this.happenedDate = happenedDate;
+    public void setRepairDate(Date repairDate) {
+        this.repairDate = repairDate;
+    }
+
+    public BigDecimal getExpense() {
+        return expense;
+    }
+
+    public void setExpense(BigDecimal expense) {
+        this.expense = expense;
     }
 
     public String getDescription() {
@@ -129,45 +137,28 @@ public class Problem implements Serializable {
         this.updatedDate = updatedDate;
     }
 
-    @XmlTransient
-    public Set<Repair> getRepairSet() {
-        return repairSet;
+    public Repair getRepairId() {
+        return repairId;
     }
 
-    public void setRepairSet(Set<Repair> repairSet) {
-        this.repairSet = repairSet;
+    public void setRepairId(Repair repairId) {
+        this.repairId = repairId;
     }
 
-    public Device getDeviceId() {
-        return deviceId;
+    public RepairType getTypeId() {
+        return typeId;
     }
 
-    public void setDeviceId(Device deviceId) {
-        this.deviceId = deviceId;
+    public void setTypeId(RepairType typeId) {
+        this.typeId = typeId;
     }
 
-    public Employee getEmployeeId() {
-        return employeeId;
+    public Technician getTechnicianId() {
+        return technicianId;
     }
 
-    public void setEmployeeId(Employee employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public FatalLevel getFatalLevelId() {
-        return fatalLevelId;
-    }
-
-    public void setFatalLevelId(FatalLevel fatalLevelId) {
-        this.fatalLevelId = fatalLevelId;
-    }
-
-    public ProblemStatus getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(ProblemStatus statusId) {
-        this.statusId = statusId;
+    public void setTechnicianId(Technician technicianId) {
+        this.technicianId = technicianId;
     }
 
     @Override
@@ -180,10 +171,10 @@ public class Problem implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Problem)) {
+        if (!(object instanceof RepairHistory)) {
             return false;
         }
-        Problem other = (Problem) object;
+        RepairHistory other = (RepairHistory) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -192,7 +183,7 @@ public class Problem implements Serializable {
 
     @Override
     public String toString() {
-        return "com.tndm.pojo.Problem[ id=" + id + " ]";
+        return "com.tndm.pojo.RepairHistory[ id=" + id + " ]";
     }
     
 }

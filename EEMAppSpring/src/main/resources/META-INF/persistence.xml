@@ -17,5 +17,10 @@
     <class>com.tndm.pojo.MaintenanceType</class>
     <class>com.tndm.pojo.RepairType</class>
     <class>com.tndm.pojo.UserRole</class>
+    <class>com.tndm.pojo.MaintenanceAssignment</class>
+    <class>com.tndm.pojo.RepairHistory</class>
+    <class>com.tndm.pojo.Employee</class>
+    <class>com.tndm.pojo.Technician</class>
+    <class>com.tndm.pojo.MaintenanceDetail</class>
   </persistence-unit>
 </persistence>

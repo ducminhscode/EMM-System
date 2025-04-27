@@ -11,6 +11,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -24,8 +26,6 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  *
@@ -61,14 +61,15 @@ public class Facility implements Serializable {
     private String address;
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @CreationTimestamp
     private Date createdDate;
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
     private Date updatedDate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "facilityId")
     private Set<Device> deviceSet;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private User userId;
 
     public Facility() {
     }
@@ -130,6 +131,14 @@ public class Facility implements Serializable {
 
     public void setDeviceSet(Set<Device> deviceSet) {
         this.deviceSet = deviceSet;
+    }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setUserId(User userId) {
+        this.userId = userId;
     }
 
     @Override

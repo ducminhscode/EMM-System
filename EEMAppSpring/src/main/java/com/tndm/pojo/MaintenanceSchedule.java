@@ -14,17 +14,17 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
+import java.util.Set;
 
 /**
  *
@@ -55,13 +55,11 @@ public class MaintenanceSchedule implements Serializable {
     @NotNull
     @Column(name = "start_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
     @Basic(optional = false)
     @NotNull
     @Column(name = "end_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
     @Basic(optional = false)
     @NotNull
@@ -78,21 +76,20 @@ public class MaintenanceSchedule implements Serializable {
     private String frequency;
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @CreationTimestamp
     private Date createdDate;
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
     private Date updatedDate;
-    @JoinColumn(name = "device_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Device deviceId;
+    @OneToMany(mappedBy = "maintenanceScheduleId")
+    private Set<MaintenanceDetail> maintenanceDetailSet;
     @JoinColumn(name = "type_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private MaintenanceType typeId;
-    @JoinColumn(name = "personnel_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Personnel personnelId;
+    private User userId;
+    @OneToMany(mappedBy = "maintenanceScheduleId")
+    private Set<MaintenanceAssignment> maintenanceAssignmentSet;
 
     public MaintenanceSchedule() {
     }
@@ -173,12 +170,13 @@ public class MaintenanceSchedule implements Serializable {
         this.updatedDate = updatedDate;
     }
 
-    public Device getDeviceId() {
-        return deviceId;
+    @XmlTransient
+    public Set<MaintenanceDetail> getMaintenanceDetailSet() {
+        return maintenanceDetailSet;
     }
 
-    public void setDeviceId(Device deviceId) {
-        this.deviceId = deviceId;
+    public void setMaintenanceDetailSet(Set<MaintenanceDetail> maintenanceDetailSet) {
+        this.maintenanceDetailSet = maintenanceDetailSet;
     }
 
     public MaintenanceType getTypeId() {
@@ -189,12 +187,21 @@ public class MaintenanceSchedule implements Serializable {
         this.typeId = typeId;
     }
 
-    public Personnel getPersonnelId() {
-        return personnelId;
+    public User getUserId() {
+        return userId;
     }
 
-    public void setPersonnelId(Personnel personnelId) {
-        this.personnelId = personnelId;
+    public void setUserId(User userId) {
+        this.userId = userId;
+    }
+
+    @XmlTransient
+    public Set<MaintenanceAssignment> getMaintenanceAssignmentSet() {
+        return maintenanceAssignmentSet;
+    }
+
+    public void setMaintenanceAssignmentSet(Set<MaintenanceAssignment> maintenanceAssignmentSet) {
+        this.maintenanceAssignmentSet = maintenanceAssignmentSet;
     }
 
     @Override

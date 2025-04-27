@@ -5,7 +5,6 @@
 package com.tndm.pojo;
 
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,24 +14,21 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  *
  * @author Tran Nguyen Duc Minh
  */
 @Entity
-@Table(name = "repair")
+@Table(name = "maintenance_assignment")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Repair.findAll", query = "SELECT r FROM Repair r"),
-    @NamedQuery(name = "Repair.findById", query = "SELECT r FROM Repair r WHERE r.id = :id")})
-public class Repair implements Serializable {
+    @NamedQuery(name = "MaintenanceAssignment.findAll", query = "SELECT m FROM MaintenanceAssignment m"),
+    @NamedQuery(name = "MaintenanceAssignment.findById", query = "SELECT m FROM MaintenanceAssignment m WHERE m.id = :id")})
+public class MaintenanceAssignment implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -40,19 +36,17 @@ public class Repair implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @JoinColumn(name = "problem_id", referencedColumnName = "id")
+    @JoinColumn(name = "maintenance_schedule_id", referencedColumnName = "id")
     @ManyToOne
-    private Problem problemId;
+    private MaintenanceSchedule maintenanceScheduleId;
     @JoinColumn(name = "technician_id", referencedColumnName = "id")
     @ManyToOne
     private Technician technicianId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "repairId")
-    private Set<RepairHistory> repairHistorySet;
 
-    public Repair() {
+    public MaintenanceAssignment() {
     }
 
-    public Repair(Integer id) {
+    public MaintenanceAssignment(Integer id) {
         this.id = id;
     }
 
@@ -64,12 +58,12 @@ public class Repair implements Serializable {
         this.id = id;
     }
 
-    public Problem getProblemId() {
-        return problemId;
+    public MaintenanceSchedule getMaintenanceScheduleId() {
+        return maintenanceScheduleId;
     }
 
-    public void setProblemId(Problem problemId) {
-        this.problemId = problemId;
+    public void setMaintenanceScheduleId(MaintenanceSchedule maintenanceScheduleId) {
+        this.maintenanceScheduleId = maintenanceScheduleId;
     }
 
     public Technician getTechnicianId() {
@@ -78,15 +72,6 @@ public class Repair implements Serializable {
 
     public void setTechnicianId(Technician technicianId) {
         this.technicianId = technicianId;
-    }
-
-    @XmlTransient
-    public Set<RepairHistory> getRepairHistorySet() {
-        return repairHistorySet;
-    }
-
-    public void setRepairHistorySet(Set<RepairHistory> repairHistorySet) {
-        this.repairHistorySet = repairHistorySet;
     }
 
     @Override
@@ -99,10 +84,10 @@ public class Repair implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Repair)) {
+        if (!(object instanceof MaintenanceAssignment)) {
             return false;
         }
-        Repair other = (Repair) object;
+        MaintenanceAssignment other = (MaintenanceAssignment) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -111,7 +96,7 @@ public class Repair implements Serializable {
 
     @Override
     public String toString() {
-        return "com.tndm.pojo.Repair[ id=" + id + " ]";
+        return "com.tndm.pojo.MaintenanceAssignment[ id=" + id + " ]";
     }
     
 }

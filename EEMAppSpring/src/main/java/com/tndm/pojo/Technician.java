@@ -8,12 +8,12 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -27,38 +27,45 @@ import java.util.Set;
  * @author Tran Nguyen Duc Minh
  */
 @Entity
-@Table(name = "repair_type")
+@Table(name = "technician")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "RepairType.findAll", query = "SELECT r FROM RepairType r"),
-    @NamedQuery(name = "RepairType.findById", query = "SELECT r FROM RepairType r WHERE r.id = :id"),
-    @NamedQuery(name = "RepairType.findByName", query = "SELECT r FROM RepairType r WHERE r.name = :name")})
-public class RepairType implements Serializable {
+    @NamedQuery(name = "Technician.findAll", query = "SELECT t FROM Technician t"),
+    @NamedQuery(name = "Technician.findById", query = "SELECT t FROM Technician t WHERE t.id = :id"),
+    @NamedQuery(name = "Technician.findBySpecialization", query = "SELECT t FROM Technician t WHERE t.specialization = :specialization")})
+public class Technician implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @NotNull
     @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "name")
-    private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "typeId")
+    @Column(name = "specialization")
+    private String specialization;
+    @OneToMany(mappedBy = "technicianId")
+    private Set<Repair> repairSet;
+    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
+    @OneToOne(optional = false)
+    private User user;
+    @OneToMany(mappedBy = "technicianId")
+    private Set<MaintenanceAssignment> maintenanceAssignmentSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "technicianId")
     private Set<RepairHistory> repairHistorySet;
 
-    public RepairType() {
+    public Technician() {
     }
 
-    public RepairType(Integer id) {
+    public Technician(Integer id) {
         this.id = id;
     }
 
-    public RepairType(Integer id, String name) {
+    public Technician(Integer id, String specialization) {
         this.id = id;
-        this.name = name;
+        this.specialization = specialization;
     }
 
     public Integer getId() {
@@ -69,12 +76,38 @@ public class RepairType implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getSpecialization() {
+        return specialization;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
+
+    @XmlTransient
+    public Set<Repair> getRepairSet() {
+        return repairSet;
+    }
+
+    public void setRepairSet(Set<Repair> repairSet) {
+        this.repairSet = repairSet;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @XmlTransient
+    public Set<MaintenanceAssignment> getMaintenanceAssignmentSet() {
+        return maintenanceAssignmentSet;
+    }
+
+    public void setMaintenanceAssignmentSet(Set<MaintenanceAssignment> maintenanceAssignmentSet) {
+        this.maintenanceAssignmentSet = maintenanceAssignmentSet;
     }
 
     @XmlTransient
@@ -96,10 +129,10 @@ public class RepairType implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof RepairType)) {
+        if (!(object instanceof Technician)) {
             return false;
         }
-        RepairType other = (RepairType) object;
+        Technician other = (Technician) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -108,7 +141,7 @@ public class RepairType implements Serializable {
 
     @Override
     public String toString() {
-        return "com.tndm.pojo.RepairType[ id=" + id + " ]";
+        return "com.tndm.pojo.Technician[ id=" + id + " ]";
     }
     
 }

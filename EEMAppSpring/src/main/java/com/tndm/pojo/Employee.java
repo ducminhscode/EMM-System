@@ -8,15 +8,15 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
@@ -27,33 +27,41 @@ import java.util.Set;
  * @author Tran Nguyen Duc Minh
  */
 @Entity
-@Table(name = "repair")
+@Table(name = "employee")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Repair.findAll", query = "SELECT r FROM Repair r"),
-    @NamedQuery(name = "Repair.findById", query = "SELECT r FROM Repair r WHERE r.id = :id")})
-public class Repair implements Serializable {
+    @NamedQuery(name = "Employee.findAll", query = "SELECT e FROM Employee e"),
+    @NamedQuery(name = "Employee.findById", query = "SELECT e FROM Employee e WHERE e.id = :id"),
+    @NamedQuery(name = "Employee.findByDepartment", query = "SELECT e FROM Employee e WHERE e.department = :department")})
+public class Employee implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @NotNull
     @Column(name = "id")
     private Integer id;
-    @JoinColumn(name = "problem_id", referencedColumnName = "id")
-    @ManyToOne
-    private Problem problemId;
-    @JoinColumn(name = "technician_id", referencedColumnName = "id")
-    @ManyToOne
-    private Technician technicianId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "repairId")
-    private Set<RepairHistory> repairHistorySet;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 50)
+    @Column(name = "department")
+    private String department;
+    @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
+    @OneToOne(optional = false)
+    private User user;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employeeId")
+    private Set<Problem> problemSet;
 
-    public Repair() {
+    public Employee() {
     }
 
-    public Repair(Integer id) {
+    public Employee(Integer id) {
         this.id = id;
+    }
+
+    public Employee(Integer id, String department) {
+        this.id = id;
+        this.department = department;
     }
 
     public Integer getId() {
@@ -64,29 +72,29 @@ public class Repair implements Serializable {
         this.id = id;
     }
 
-    public Problem getProblemId() {
-        return problemId;
+    public String getDepartment() {
+        return department;
     }
 
-    public void setProblemId(Problem problemId) {
-        this.problemId = problemId;
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
-    public Technician getTechnicianId() {
-        return technicianId;
+    public User getUser() {
+        return user;
     }
 
-    public void setTechnicianId(Technician technicianId) {
-        this.technicianId = technicianId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @XmlTransient
-    public Set<RepairHistory> getRepairHistorySet() {
-        return repairHistorySet;
+    public Set<Problem> getProblemSet() {
+        return problemSet;
     }
 
-    public void setRepairHistorySet(Set<RepairHistory> repairHistorySet) {
-        this.repairHistorySet = repairHistorySet;
+    public void setProblemSet(Set<Problem> problemSet) {
+        this.problemSet = problemSet;
     }
 
     @Override
@@ -99,10 +107,10 @@ public class Repair implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Repair)) {
+        if (!(object instanceof Employee)) {
             return false;
         }
-        Repair other = (Repair) object;
+        Employee other = (Employee) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -111,7 +119,7 @@ public class Repair implements Serializable {
 
     @Override
     public String toString() {
-        return "com.tndm.pojo.Repair[ id=" + id + " ]";
+        return "com.tndm.pojo.Employee[ id=" + id + " ]";
     }
     
 }

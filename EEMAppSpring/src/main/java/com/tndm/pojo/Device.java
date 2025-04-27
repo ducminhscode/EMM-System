@@ -26,9 +26,6 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -67,18 +64,15 @@ public class Device implements Serializable {
     @NotNull
     @Column(name = "purchase_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date purchaseDate;
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @CreationTimestamp
     private Date createdDate;
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
     private Date updatedDate;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceId")
-    private Set<MaintenanceSchedule> maintenanceScheduleSet;
+    @OneToMany(mappedBy = "deviceId")
+    private Set<MaintenanceDetail> maintenanceDetailSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceId")
     private Set<Problem> problemSet;
     @JoinColumn(name = "status_id", referencedColumnName = "id")
@@ -90,6 +84,9 @@ public class Device implements Serializable {
     @JoinColumn(name = "facility_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Facility facilityId;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private User userId;
 
     public Device() {
     }
@@ -154,12 +151,12 @@ public class Device implements Serializable {
     }
 
     @XmlTransient
-    public Set<MaintenanceSchedule> getMaintenanceScheduleSet() {
-        return maintenanceScheduleSet;
+    public Set<MaintenanceDetail> getMaintenanceDetailSet() {
+        return maintenanceDetailSet;
     }
 
-    public void setMaintenanceScheduleSet(Set<MaintenanceSchedule> maintenanceScheduleSet) {
-        this.maintenanceScheduleSet = maintenanceScheduleSet;
+    public void setMaintenanceDetailSet(Set<MaintenanceDetail> maintenanceDetailSet) {
+        this.maintenanceDetailSet = maintenanceDetailSet;
     }
 
     @XmlTransient
@@ -193,6 +190,14 @@ public class Device implements Serializable {
 
     public void setFacilityId(Facility facilityId) {
         this.facilityId = facilityId;
+    }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setUserId(User userId) {
+        this.userId = userId;
     }
 
     @Override
