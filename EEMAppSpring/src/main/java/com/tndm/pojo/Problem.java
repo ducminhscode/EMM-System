@@ -73,15 +73,15 @@ public class Problem implements Serializable {
     @JoinColumn(name = "device_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Device deviceId;
-    @JoinColumn(name = "employee_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Employee employeeId;
     @JoinColumn(name = "fatal_level_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private FatalLevel fatalLevelId;
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private ProblemStatus statusId;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private User userId;
 
     public Problem() {
     }
@@ -152,14 +152,6 @@ public class Problem implements Serializable {
         this.deviceId = deviceId;
     }
 
-    public Employee getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Employee employeeId) {
-        this.employeeId = employeeId;
-    }
-
     public FatalLevel getFatalLevelId() {
         return fatalLevelId;
     }
@@ -174,6 +166,14 @@ public class Problem implements Serializable {
 
     public void setStatusId(ProblemStatus statusId) {
         this.statusId = statusId;
+    }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setUserId(User userId) {
+        this.userId = userId;
     }
 
     @Override
