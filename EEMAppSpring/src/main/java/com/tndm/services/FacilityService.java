@@ -14,4 +14,11 @@ import java.util.List;
 public interface FacilityService {
 
     List<Facility> getFacilities();
+    
+    Facility addOrUpdateFacility(Facility d);
+    
+    Facility getFacilityById(int id);
+    
+    void deleteFacility(int id);
+
 }

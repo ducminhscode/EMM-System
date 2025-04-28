@@ -20,8 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class FacilityRepositoryImpl implements FacilityRepository{
-    
+public class FacilityRepositoryImpl implements FacilityRepository {
+
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -31,6 +31,35 @@ public class FacilityRepositoryImpl implements FacilityRepository{
         Query q = s.createQuery("FROM Facility", Facility.class);
 
         return q.getResultList();
+    }
+
+    @Override
+    public Facility addOrUpdateFacility(Facility f) {
+        Session s = this.factory.getObject().getCurrentSession();
+        if (f.getId() == null) {
+            s.persist(f);
+        } else {
+            Facility existingFacility = s.get(Facility.class, f.getId());
+            if (existingFacility != null) {
+                f.setCreatedDate(existingFacility.getCreatedDate());
+            }
+            s.merge(f);
+        }
+        s.refresh(f);
+        return f;
+    }
+
+    @Override
+    public Facility getFacilityById(int id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        return s.get(Facility.class, id);
+    }
+
+    @Override
+    public void deleteFacility(int id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Facility p = this.getFacilityById(id);
+        s.remove(p);
     }
     
 }

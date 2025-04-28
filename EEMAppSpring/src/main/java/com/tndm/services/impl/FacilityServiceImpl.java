@@ -25,4 +25,19 @@ public class FacilityServiceImpl implements FacilityService {
     public List<Facility> getFacilities() {
         return this.faciRepo.getFacilities();
     }
+
+    @Override
+    public Facility addOrUpdateFacility(Facility f) {
+        return this.faciRepo.addOrUpdateFacility(f);
+    }
+
+    @Override
+    public Facility getFacilityById(int id) {
+        return this.faciRepo.getFacilityById(id);
+    }
+
+    @Override
+    public void deleteFacility(int id) {
+        this.faciRepo.deleteFacility(id);
+    }
 }

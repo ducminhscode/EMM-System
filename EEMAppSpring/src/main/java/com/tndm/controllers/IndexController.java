@@ -49,4 +49,10 @@ public class IndexController {
         model.addAttribute("devices", this.devService.getDevices(params));
         return "index";
     }
+
+    @RequestMapping("/indexFacilities")
+    public String indexFacilities(Model model) {
+        model.addAttribute("facilities", this.facService.getFacilities());
+        return "indexFacilities";
+    }
 }

@@ -7,11 +7,18 @@ package com.tndm.repositories;
 import com.tndm.pojo.Facility;
 import java.util.List;
 
+
 /**
  *
  * @author Tran Nguyen Duc Minh
  */
 public interface FacilityRepository {
     
-    public List<Facility> getFacilities();
+    List<Facility> getFacilities();
+    
+    Facility addOrUpdateFacility(Facility f);
+    
+    Facility getFacilityById(int id);
+    
+    void deleteFacility(int id);
 }
