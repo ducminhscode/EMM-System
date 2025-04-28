@@ -7,11 +7,12 @@ package com.tndm.configs;
 import com.tndm.formatters.DeviceStatusFormatter;
 import com.tndm.formatters.DeviceTypeFormatter;
 import com.tndm.formatters.FacilityFormatter;
-import com.tndm.formatters.UserFormatter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -43,12 +44,16 @@ public class WebAppContextConfigs implements WebMvcConfigurer {
         registry.addFormatter(new FacilityFormatter());
         registry.addFormatter(new DeviceStatusFormatter());
         registry.addFormatter(new DeviceTypeFormatter());
-        registry.addFormatter(new UserFormatter());
     }
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/js/**").addResourceLocations("classpath:/static/js/");           
     }
-
+    
+    @Bean
+    public StandardServletMultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
+    }
+    
 }

@@ -22,9 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @CrossOrigin
 public class ApiDeviceController {
+
     @Autowired
     private DeviceService devSer;
-    
+
     @DeleteMapping("/devices/{deviceId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void destroy(@PathVariable(value = "deviceId") int id) {

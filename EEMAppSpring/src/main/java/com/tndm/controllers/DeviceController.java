@@ -35,7 +35,7 @@ public class DeviceController {
         return "devices";
     }
 
-    @PostMapping("/add")
+    @PostMapping("/devices/add")
     public String createDevice(@ModelAttribute(value = "device") Device d) {
         this.devSer.addOrUpdate(d);
         return "redirect:/";

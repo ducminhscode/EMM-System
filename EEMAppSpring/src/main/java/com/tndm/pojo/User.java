@@ -4,29 +4,23 @@
  */
 package com.tndm.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -46,6 +40,7 @@ import org.hibernate.annotations.UpdateTimestamp;
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
     @NamedQuery(name = "User.findByPhone", query = "SELECT u FROM User u WHERE u.phone = :phone"),
+    @NamedQuery(name = "User.findByUserRole", query = "SELECT u FROM User u WHERE u.userRole = :userRole"),
     @NamedQuery(name = "User.findByAvatar", query = "SELECT u FROM User u WHERE u.avatar = :avatar"),
     @NamedQuery(name = "User.findByActive", query = "SELECT u FROM User u WHERE u.active = :active"),
     @NamedQuery(name = "User.findByCreatedDate", query = "SELECT u FROM User u WHERE u.createdDate = :createdDate"),
@@ -77,6 +72,7 @@ public class User implements Serializable {
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "password")
+    @JsonIgnore
     private String password;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Size(max = 50)
@@ -86,6 +82,12 @@ public class User implements Serializable {
     @Size(max = 10)
     @Column(name = "phone")
     private String phone;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 15)
+    @Column(name = "user_role")
+    @JsonIgnore
+    private String userRole;
     @Size(max = 255)
     @Column(name = "avatar")
     private String avatar;
@@ -99,19 +101,6 @@ public class User implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     private Date updatedDate;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
-    private Technician technician;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
-    private Employee employee;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
-    private Set<MaintenanceSchedule> maintenanceScheduleSet;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
-    private Set<Device> deviceSet;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
-    private Set<Facility> facilitySet;
-    @JoinColumn(name = "user_role_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private UserRole userRoleId;
 
     public User() {
     }
@@ -120,12 +109,13 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public User(Integer id, String firstName, String lastName, String username, String password) {
+    public User(Integer id, String firstName, String lastName, String username, String password, String userRole) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
+        this.userRole = userRole;
     }
 
     public Integer getId() {
@@ -184,6 +174,14 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
+
     public String getAvatar() {
         return avatar;
     }
@@ -214,57 +212,6 @@ public class User implements Serializable {
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
-    }
-
-    public Technician getTechnician() {
-        return technician;
-    }
-
-    public void setTechnician(Technician technician) {
-        this.technician = technician;
-    }
-
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
-
-    @XmlTransient
-    public Set<MaintenanceSchedule> getMaintenanceScheduleSet() {
-        return maintenanceScheduleSet;
-    }
-
-    public void setMaintenanceScheduleSet(Set<MaintenanceSchedule> maintenanceScheduleSet) {
-        this.maintenanceScheduleSet = maintenanceScheduleSet;
-    }
-
-    @XmlTransient
-    public Set<Device> getDeviceSet() {
-        return deviceSet;
-    }
-
-    public void setDeviceSet(Set<Device> deviceSet) {
-        this.deviceSet = deviceSet;
-    }
-
-    @XmlTransient
-    public Set<Facility> getFacilitySet() {
-        return facilitySet;
-    }
-
-    public void setFacilitySet(Set<Facility> facilitySet) {
-        this.facilitySet = facilitySet;
-    }
-
-    public UserRole getUserRoleId() {
-        return userRoleId;
-    }
-
-    public void setUserRoleId(UserRole userRoleId) {
-        this.userRoleId = userRoleId;
     }
 
     @Override
