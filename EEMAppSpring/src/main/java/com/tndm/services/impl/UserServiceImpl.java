@@ -71,13 +71,14 @@ public class UserServiceImpl implements UserService {
         u.setPhone(params.get("phone"));
         u.setUsername(params.get("username"));
         u.setPassword(this.passwordEncoder.encode(params.get("password")));
-        u.setUserRole("ROLE_ADMIN");
+        u.setUserRole("ROLE_EMPLOYEE");
         u.setActive(Boolean.TRUE);
 
         if (!avatar.isEmpty()) {
             try {
                 Map res = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.asMap(
-                        "resource_type", "auto"
+                        "resource_type", "auto",
+                        "folder", "BaoTriThietBi"
                 ));
                 u.setAvatar(res.get("secure_url").toString());
             } catch (IOException ex) {
