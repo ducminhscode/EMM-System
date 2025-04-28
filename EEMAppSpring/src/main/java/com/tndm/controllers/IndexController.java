@@ -37,6 +37,7 @@ public class IndexController {
     @Autowired
     private DeviceStatusService devStatusService;
     
+    
     @ModelAttribute
     public void commonResponse(Model model){
         model.addAttribute("facilities", this.facService.getFacilities());
@@ -54,5 +55,11 @@ public class IndexController {
     public String indexFacilities(Model model) {
         model.addAttribute("facilities", this.facService.getFacilities());
         return "indexFacilities";
+    }
+    
+    @RequestMapping("/accessDenied")
+    public String accessDenied()
+    {
+        return "accessDenied";
     }
 }
