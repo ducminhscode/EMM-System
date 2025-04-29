@@ -1,178 +1,107 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Trang chu</title>
+<head>
     <th:block th:replace="base :: styles"></th:block>
+    <title>Dashboard</title>
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <div class="w-64 bg-blue-800 text-white p-4">
-            <div class="flex items-center space-x-2 mb-8">
-                <i class="fas fa-tools text-2xl"></i>
-                <h1 class="text-xl font-bold">Quản lý Bảo trì</h1>
-            </div>
-
-            <nav>
-                <ul class="space-y-2">
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700 bg-blue-700">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-laptop"></i>
-                            <span>Quản lý Thiết bị</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-calendar-check"></i>
-                            <span>Lịch Bảo trì</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="indexFacilities" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <span>Quản lí cơ sở</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <span>Sự cố Thiết bị</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-history"></i>
-                            <span>Lịch sử Sửa chữa</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>Báo cáo</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-cog"></i>
-                            <span>Cài đặt</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+        <th:block th:replace="base :: sidebar"></th:block>
 
         <!-- Main Content -->
-        <div class="flex-1 overflow-auto">
+        <div class="flex-1 ml-64 overflow-auto">
             <!-- Header -->
-            <header class="bg-white shadow-sm p-4 flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-800">Quản lý Thiết bị</h2>
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <input type="text" placeholder="Tìm kiếm..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <img src="https://via.placeholder.com/40" alt="User" class="rounded-full">
-                        <span class="text-gray-700">Admin</span>
-                    </div>
-                </div>
-            </header>
+            <th:block th:replace="base :: header (pageTitle='Quản lý thiết bị')"></th:block>
 
             <!-- Content -->
             <main class="p-6">
                 <!-- Quick Stats -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                    <div class="bg-white p-6 rounded-lg shadow">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-gray-500">Tổng thiết bị</p>
-                                <h3 class="text-2xl font-bold">128</h3>
+                                <p class="text-gray-500 text-sm">Tổng thiết bị</p>
+                                <h3 class="text-2xl font-bold text-gray-800">128</h3>
                             </div>
                             <div class="bg-blue-100 p-3 rounded-full">
-                                <i class="fas fa-laptop text-blue-600"></i>
+                                <i class="fas fa-laptop text-blue-600 text-xl"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-gray-500">Bảo trì sắp tới</p>
-                                <h3 class="text-2xl font-bold">15</h3>
+                                <p class="text-gray-500 text-sm">Bảo trì sắp tới</p>
+                                <h3 class="text-2xl font-bold text-gray-800">15</h3>
                             </div>
                             <div class="bg-yellow-100 p-3 rounded-full">
-                                <i class="fas fa-calendar-check text-yellow-600"></i>
+                                <i class="fas fa-calendar-check text-yellow-600 text-xl"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-gray-500">Sự cố chưa xử lý</p>
-                                <h3 class="text-2xl font-bold">7</h3>
+                                <p class="text-gray-500 text-sm">Sự cố chưa xử lý</p>
+                                <h3 class="text-2xl font-bold text-gray-800">7</h3>
                             </div>
                             <div class="bg-red-100 p-3 rounded-full">
-                                <i class="fas fa-exclamation-triangle text-red-600"></i>
+                                <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-gray-500">Thiết bị hoạt động</p>
-                                <h3 class="text-2xl font-bold">118</h3>
+                                <p class="text-gray-500 text-sm">Thiết bị hoạt động</p>
+                                <h3 class="text-2xl font-bold text-gray-800">118</h3>
                             </div>
                             <div class="bg-green-100 p-3 rounded-full">
-                                <i class="fas fa-check-circle text-green-600"></i>
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Device Management Section -->
-                <div class="bg-white rounded-lg shadow mb-6">
-                    <div class="p-4 border-b flex justify-between items-center">
-                        <h3 class="font-semibold text-lg">Danh sách Thiết bị</h3>
-                        <a th:href="@{/devices}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+                <div class="bg-white rounded-xl shadow-md mb-8 overflow-hidden">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-semibold text-lg text-gray-800">Danh sách thiết bị</h3>
+                        <a th:href="@{/devices}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
                             <i class="fas fa-plus"></i>
                             <span>Thêm thiết bị</span>
                         </a>
                     </div>
-                    <div class="p-4">
+                    <div class="p-6">
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Mã</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Tên Thiết Bị</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Loại</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Nhà Sản Xuất</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Ngày Mua</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Trạng Thái</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Cơ sở</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">Hành Động</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên Thiết Bị</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loại</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nhà Sản Xuất</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày Mua</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng Thái</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cơ sở</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành Động</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    <tr th:each='d:${devices}'>
-                                        <td class="px-6 py-4 whitespace-nowrap" th:text='${d.id}'></td>
-                                        <td class="px-6 py-4 whitespace-nowrap" th:text='${d.name}'></td>
-                                        <td class="px-6 py-4 whitespace-nowrap" th:text='${d.typeId.name}'></td>
-                                        <td class="px-6 py-4 whitespace-nowrap" th:text='${d.manufacturer}'></td>
-                                        <td class="px-6 py-4 whitespace-nowrap" th:text='${d.purchaseDate}'></td>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr th:each="d : ${devices}" class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${d.id}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${d.name}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${d.typeId.name}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${d.manufacturer}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${d.purchaseDate}"></td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800" th:text='${d.statusId.name}'></span>
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800" th:text="${d.statusId.name}"></span>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap" th:text='${d.facilityId.name}'></td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <a class="text-blue-600 hover:text-blue-900 mr-3" th:href ="@{'/devices/' + ${d.id}}"><i class="fas fa-edit"></i></a>
-                                            <button class="text-red-600 hover:text-red-900" th:onclick="'deleteApi(\' '+@{/api/devices/}+'\','+${d.id}+')'">
-                                                <i class="fas fa-trash"></i></button>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${d.facilityId.name}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <a th:href="@{'/devices/' + ${d.id}}" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></a>
+                                            <button th:onclick="'deleteApi(\'' + @{/api/devices/} + '\',' + ${d.id} + ')'" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -184,75 +113,71 @@
                 <!-- Maintenance and Issues Section -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Upcoming Maintenance -->
-                    <div class="bg-white rounded-lg shadow">
-                        <div class="p-4 border-b">
-                            <h3 class="font-semibold text-lg">Bảo trì sắp tới</h3>
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="font-semibold text-lg text-gray-800">Bảo trì sắp tới</h3>
                         </div>
-                        <div class="p-4">
-                            <div class="space-y-4">
-                                <div class="border-l-4 border-blue-500 pl-4 py-2">
-                                    <div class="flex justify-between">
-                                        <h4 class="font-medium">Máy in HP LaserJet</h4>
-                                        <span class="text-sm text-gray-500">2 ngày tới</span>
-                                    </div>
-                                    <p class="text-sm text-gray-600">Bảo trì định kỳ 6 tháng</p>
+                        <div class="p-6 space-y-4">
+                            <div class="border-l-4 border-blue-500 pl-4 py-2">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-medium text-gray-800">Máy in HP LaserJet</h4>
+                                    <span class="text-sm text-gray-500">2 ngày tới</span>
                                 </div>
-                                <div class="border-l-4 border-yellow-500 pl-4 py-2">
-                                    <div class="flex justify-between">
-                                        <h4 class="font-medium">Máy chủ Dell R740</h4>
-                                        <span class="text-sm text-gray-500">5 ngày tới</span>
-                                    </div>
-                                    <p class="text-sm text-gray-600">Kiểm tra hệ thống làm mát</p>
+                                <p class="text-sm text-gray-600">Bảo trì định kỳ 6 tháng</p>
+                            </div>
+                            <div class="border-l-4 border-yellow-500 pl-4 py-2">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-medium text-gray-800">Máy chủ Dell R740</h4>
+                                    <span class="text-sm text-gray-500">5 ngày tới</span>
                                 </div>
-                                <div class="border-l-4 border-red-500 pl-4 py-2">
-                                    <div class="flex justify-between">
-                                        <h4 class="font-medium">Máy lạnh Panasonic</h4>
-                                        <span class="text-sm text-gray-500">Quá hạn 3 ngày</span>
-                                    </div>
-                                    <p class="text-sm text-gray-600">Vệ sinh bộ lọc</p>
+                                <p class="text-sm text-gray-600">Kiểm tra hệ thống làm mát</p>
+                            </div>
+                            <div class="border-l-4 border-red-500 pl-4 py-2">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-medium text-gray-800">Máy lạnh Panasonic</h4>
+                                    <span class="text-sm text-gray-500">Quá hạn 3 ngày</span>
                                 </div>
+                                <p class="text-sm text-gray-600">Vệ sinh bộ lọc</p>
                             </div>
                             <button class="mt-4 text-blue-600 hover:text-blue-800 text-sm font-medium">Xem tất cả</button>
                         </div>
                     </div>
 
                     <!-- Recent Issues -->
-                    <div class="bg-white rounded-lg shadow">
-                        <div class="p-4 border-b">
-                            <h3 class="font-semibold text-lg">Sự cố gần đây</h3>
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="font-semibold text-lg text-gray-800">Sự cố gần đây</h3>
                         </div>
-                        <div class="p-4">
-                            <div class="space-y-4">
-                                <div>
-                                    <div class="flex justify-between">
-                                        <h4 class="font-medium flex items-center">
-                                            <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                            Máy chiếu Epson
-                                        </h4>
-                                        <span class="text-sm text-gray-500">Hôm nay</span>
-                                    </div>
-                                    <p class="text-sm text-gray-600">Không bật được, có tiếng kêu lạ</p>
+                        <div class="p-6 space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-medium text-gray-800 flex items-center">
+                                        <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                                        Máy chiếu Epson
+                                    </h4>
+                                    <span class="text-sm text-gray-500">Hôm nay</span>
                                 </div>
-                                <div>
-                                    <div class="flex justify-between">
-                                        <h4 class="font-medium flex items-center">
-                                            <span class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
-                                            Máy tính Lenovo
-                                        </h4>
-                                        <span class="text-sm text-gray-500">2 ngày trước</span>
-                                    </div>
-                                    <p class="text-sm text-gray-600">Màn hình nhấp nháy</p>
+                                <p class="text-sm text-gray-600">Không bật được, có tiếng kêu lạ</p>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-medium text-gray-800 flex items-center">
+                                        <span class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
+                                        Máy tính Lenovo
+                                    </h4>
+                                    <span class="text-sm text-gray-500">2 ngày trước</span>
                                 </div>
-                                <div>
-                                    <div class="flex justify-between">
-                                        <h4 class="font-medium flex items-center">
-                                            <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                                            Máy in Canon
-                                        </h4>
-                                        <span class="text-sm text-gray-500">5 ngày trước</span>
-                                    </div>
-                                    <p class="text-sm text-gray-600">Đã sửa - Thay mực in</p>
+                                <p class="text-sm text-gray-600">Màn hình nhấp nháy</p>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-medium text-gray-800 flex items-center">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                                        Máy in Canon
+                                    </h4>
+                                    <span class="text-sm text-gray-500">5 ngày trước</span>
                                 </div>
+                                <p class="text-sm text-gray-600">Đã sửa - Thay mực in</p>
                             </div>
                             <button class="mt-4 text-blue-600 hover:text-blue-800 text-sm font-medium">Xem tất cả</button>
                         </div>
@@ -261,6 +186,8 @@
             </main>
         </div>
     </div>
-    <script th:src="@{/js/main.js}"></script>
+
+    <!-- Scripts -->
+    <th:block th:replace="base :: scripts"></th:block>
 </body>
 </html>

@@ -1,120 +1,69 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Trang chu</title>
+<head>
     <th:block th:replace="base :: styles"></th:block>
+    <title>Quản lý Cơ sở</title>
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <div class="w-64 bg-blue-800 text-white p-4">
-            <div class="flex items-center space-x-2 mb-8">
-                <i class="fas fa-tools text-2xl"></i>
-                <h1 class="text-xl font-bold">Quản lý Bảo trì</h1>
-            </div>
-            <nav>
-                <ul class="space-y-2">
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700 bg-blue-700">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-laptop"></i>
-                            <span>Quản lý Thiết bị</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-calendar-check"></i>
-                            <span>Lịch Bảo trì</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <span>Quản lí cơ sở</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <span>Sự cố Thiết bị</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-history"></i>
-                            <span>Lịch sử Sửa chữa</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>Báo cáo</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center space-x-2 p-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-cog"></i>
-                            <span>Cài đặt</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+        <th:block th:replace="base :: sidebar"></th:block>
 
-
-        </div>
         <!-- Main Content -->
-        <div class="flex-1 p-8">
-            <div class="p-4 border-b flex justify-between items-center">
-                <h3 class="font-semibold text-lg">Danh sách cơ sở</h3>
-                <a th:href="@{/facilities}"   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
-                    <i class="fas fa-plus"></i>
-                    <span>Thêm cơ sở</span>
-                </a>
-            </div>
-            <div class="bg-white p-4 rounded shadow">
-                <table class="min-w-full bg-white">
-                    <thead>
-                        <tr>
-                            <th class="py-2 px-4 border-b text-left">ID</th>
-                            <th class="py-2 px-4 border-b text-left">Tên cơ sở</th>
-                            <th class="py-2 px-4 border-b text-left">Địa chỉ</th>
-                            <th class="py-2 px-4 border-b text-left">Ngày tạo</th>
-                            <th class="py-2 px-4 border-b text-left">Ngày cập nhật</th>
-                            <th class="py-2 px-4 border-b text-left">Người quản lý</th>
-                            <th class="py-2 px-4 border-b text-left">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="f : ${facilities}">
-                            <td class="py-2 px-4 border-b" th:text="${f.id}"></td>
-                            <td class="py-2 px-4 border-b" th:text="${f.name}"></td>
-                            <td class="py-2 px-4 border-b" th:text="${f.address}"></td>
-                            <td class="py-2 px-4 border-b" th:text="${#dates.format(f.createdDate, 'dd/MM/yyyy HH:mm')}"></td>
-                            <td class="py-2 px-4 border-b" th:text="${#dates.format(f.updatedDate, 'dd/MM/yyyy HH:mm')}"></td>
-                            <td class="py-2 px-4 border-b" th:text="${f.userId.username}"></td> <!-- Hoặc facility.userId.id nếu không có username -->
-                            <td class="py-2 px-4 border-b">
-                                <a th:href ="@{'/facilities/' + ${f.id}}" class="text-blue-500 hover:underline mr-2" > 
-                                    Sửa
-                                </a>
-                                <a th:onclick="'deleteApi(\' '+@{/api/facilities/}+'\','+${f.id}+')'" class="text-red-500 hover:underline">Xóa</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div class="flex-1 ml-64 overflow-auto">
+            <!-- Header -->
+            <th:block th:replace="base :: header (pageTitle='Quản lý Cơ sở')"></th:block>
 
-                <div th:if="${#lists.isEmpty(facilities)}" class="text-center text-gray-500 mt-4">
-                    Chưa có cơ sở nào.
+            <!-- Content -->
+            <main class="p-6">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-semibold text-lg text-gray-800">Danh sách Cơ sở</h3>
+                        <a th:href="@{/facilities}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Thêm cơ sở</span>
+                        </a>
+                    </div>
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên Cơ sở</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Địa chỉ</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày Tạo</th>
+                                        <th class="px-6 py-3 text-left text-xs BINARY XML file://localhost/C:/Users/ADMIN/AppData/Local/Temp/Rar$EXa11244.16052/upper tracking-wider">Ngày Cập Nhật</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Người Quản lý</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành Động</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr th:each="f : ${facilities}" class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${f.id}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${f.name}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${f.address}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${#dates.format(f.createdDate, 'dd/MM/yyyy HH:mm')}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${#dates.format(f.updatedDate, 'dd/MM/yyyy HH:mm')}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${f.userId.username}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <a th:href="@{'/facilities/' + ${f.id}}" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i> Sửa</a>
+                                            <button th:onclick="'deleteApi(\'' + @{/api/facilities/} + '\',' + ${f.id} + ')'" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i> Xóa</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:if="${#lists.isEmpty(facilities)}" class="text-center text-gray-500 py-6">
+                            Chưa có cơ sở nào.
+                        </div>
+                    </div>
                 </div>
-
-            </div>
+            </main>
         </div>
     </div>
-</body>
-<script th:src="@{/js/main.js}"></script>
 
+    <!-- Scripts -->
+    <th:block th:replace="base :: scripts"></th:block>
+</body>
 </html>

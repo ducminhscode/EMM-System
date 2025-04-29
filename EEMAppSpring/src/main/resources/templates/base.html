@@ -1,19 +1,129 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Trang chu</title>
     <th:block th:fragment="styles">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-        <script src="https://cdn.tailwindcss.com"></script>
+        <title th:text="${pageTitle} ?: 'Quản lý Bảo trì'"></title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     </th:block>
 </head>
-<body>
+<body class="bg-gray-100 font-sans">
 
+    <!-- Sidebar Fragment -->
+<th:block th:fragment="sidebar">
+    <div class="w-64 bg-blue-900 text-white h-screen p-6 fixed">
+        <div class="flex items-center space-x-3 mb-10">
+            <i class="fas fa-tools text-3xl"></i>
+            <h1 class="text-2xl font-bold">Quản lý Bảo trì</h1>
+        </div>
+        <nav>
+            <ul class="space-y-3">
+                <li>
+                    <a th:href="@{/}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Quản lý Thiết bị">
+                        <i class="fas fa-laptop"></i>
+                        <span>Quản lý Thiết bị</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Lịch Bảo trì">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Lịch Bảo trì</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="indexFacilities" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Quản lý Cơ sở">
+                        <i class="fas fa-building"></i>
+                        <span>Quản lý Cơ sở</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Sự cố Thiết bị">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Sự cố Thiết bị</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Lịch sử Sửa chữa">
+                        <i class="fas fa-history"></i>
+                        <span>Lịch sử Sửa chữa</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Báo cáo">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Báo cáo</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Cài đặt">
+                        <i class="fas fa-cog"></i>
+                        <span>Cài đặt</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</th:block>
+
+<!-- Header Fragment -->
+<th:block th:fragment="header">
+    <header class="bg-white shadow-md p-4 flex justify-between items-center ml-64">
+        <h2 class="text-xl font-semibold text-gray-800" th:text="${pageTitle} ?: 'Quản lý Bảo trì'"></h2>
+        <div class="flex items-center space-x-6">
+            <div class="relative">
+                <input type="text" placeholder="Tìm kiếm..." class="pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+            <div class="flex items-center space-x-3">
+                <img src="https://via.placeholder.com/40" alt="User" class="rounded-full w-10 h-10">
+                <span class="text-gray-700 font-medium">Admin</span>
+            </div>
+        </div>
+    </header>
+</th:block>
+
+<!-- Scripts Fragment -->
+<th:block th:fragment="scripts">
+    <script th:src="@{/js/main.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuItems = document.querySelectorAll('.menu-item');
+            const currentPath = window.location.pathname;
+
+            // Function to set active menu item
+            function setActiveMenuItem(item) {
+                menuItems.forEach(menu => menu.classList.remove('bg-blue-700'));
+                item.classList.add('bg-blue-700');
+                const title = item.getAttribute('data-title');
+                document.title = title;
+                localStorage.setItem('activeMenu', item.getAttribute('href'));
+                localStorage.setItem('pageTitle', title);
+            }
+
+            // Highlight menu item based on current URL or localStorage
+            menuItems.forEach(item => {
+                const href = item.getAttribute('href');
+                if (href === currentPath || href === localStorage.getItem('activeMenu')) {
+                    setActiveMenuItem(item);
+                }
+
+                item.addEventListener('click', (e) => {
+                    setActiveMenuItem(item);
+                });
+            });
+
+            // Update header title if pageTitle is stored
+            const storedTitle = localStorage.getItem('pageTitle');
+            if (storedTitle) {
+                const headerTitle = document.querySelector('header h2');
+                if (headerTitle) {
+                    headerTitle.textContent = storedTitle;
+                }
+            }
+        });
+    </script>
+</th:block>
 </body>
-
-
 </html>
