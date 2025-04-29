@@ -5,7 +5,6 @@
 package com.tndm.pojo;
 
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -46,14 +45,12 @@ public class Technician implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "specialization")
     private String specialization;
-    @OneToMany(mappedBy = "technicianId")
-    private Set<Repair> repairSet;
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private User user;
     @OneToMany(mappedBy = "technicianId")
     private Set<MaintenanceAssignment> maintenanceAssignmentSet;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "technicianId")
+    @OneToMany(mappedBy = "technicianId")
     private Set<RepairHistory> repairHistorySet;
 
     public Technician() {
@@ -82,15 +79,6 @@ public class Technician implements Serializable {
 
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
-    }
-
-    @XmlTransient
-    public Set<Repair> getRepairSet() {
-        return repairSet;
-    }
-
-    public void setRepairSet(Set<Repair> repairSet) {
-        this.repairSet = repairSet;
     }
 
     public User getUser() {

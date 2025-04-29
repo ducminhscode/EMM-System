@@ -37,11 +37,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NamedQueries({
     @NamedQuery(name = "RepairHistory.findAll", query = "SELECT r FROM RepairHistory r"),
     @NamedQuery(name = "RepairHistory.findById", query = "SELECT r FROM RepairHistory r WHERE r.id = :id"),
-    @NamedQuery(name = "RepairHistory.findByRepairDate", query = "SELECT r FROM RepairHistory r WHERE r.repairDate = :repairDate"),
     @NamedQuery(name = "RepairHistory.findByExpense", query = "SELECT r FROM RepairHistory r WHERE r.expense = :expense"),
     @NamedQuery(name = "RepairHistory.findByDescription", query = "SELECT r FROM RepairHistory r WHERE r.description = :description"),
-    @NamedQuery(name = "RepairHistory.findByCreatedDate", query = "SELECT r FROM RepairHistory r WHERE r.createdDate = :createdDate"),
-    @NamedQuery(name = "RepairHistory.findByUpdatedDate", query = "SELECT r FROM RepairHistory r WHERE r.updatedDate = :updatedDate")})
+    @NamedQuery(name = "RepairHistory.findByStartDate", query = "SELECT r FROM RepairHistory r WHERE r.startDate = :startDate"),
+    @NamedQuery(name = "RepairHistory.findByEndDate", query = "SELECT r FROM RepairHistory r WHERE r.endDate = :endDate")})
 public class RepairHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -50,12 +49,6 @@ public class RepairHistory implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "repair_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date repairDate;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
@@ -64,22 +57,26 @@ public class RepairHistory implements Serializable {
     @Size(max = 255)
     @Column(name = "description")
     private String description;
-    @Column(name = "created_date")
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "start_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @CreationTimestamp
-    private Date createdDate;
-    @Column(name = "updated_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date startDate;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "end_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
-    private Date updatedDate;
-    @JoinColumn(name = "repair_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Repair repairId;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date endDate;
+    @JoinColumn(name = "problem_id", referencedColumnName = "id")
+    @ManyToOne
+    private Problem problemId;
     @JoinColumn(name = "type_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private RepairType typeId;
     @JoinColumn(name = "technician_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Technician technicianId;
 
     public RepairHistory() {
@@ -89,10 +86,11 @@ public class RepairHistory implements Serializable {
         this.id = id;
     }
 
-    public RepairHistory(Integer id, Date repairDate, BigDecimal expense) {
+    public RepairHistory(Integer id, BigDecimal expense, Date startDate, Date endDate) {
         this.id = id;
-        this.repairDate = repairDate;
         this.expense = expense;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public Integer getId() {
@@ -101,14 +99,6 @@ public class RepairHistory implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Date getRepairDate() {
-        return repairDate;
-    }
-
-    public void setRepairDate(Date repairDate) {
-        this.repairDate = repairDate;
     }
 
     public BigDecimal getExpense() {
@@ -127,28 +117,28 @@ public class RepairHistory implements Serializable {
         this.description = description;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    public Date getUpdatedDate() {
-        return updatedDate;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
-    public Repair getRepairId() {
-        return repairId;
+    public Problem getProblemId() {
+        return problemId;
     }
 
-    public void setRepairId(Repair repairId) {
-        this.repairId = repairId;
+    public void setProblemId(Problem problemId) {
+        this.problemId = problemId;
     }
 
     public RepairType getTypeId() {

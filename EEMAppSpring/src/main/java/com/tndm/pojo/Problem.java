@@ -68,8 +68,6 @@ public class Problem implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     private Date updatedDate;
-    @OneToMany(mappedBy = "problemId")
-    private Set<Repair> repairSet;
     @JoinColumn(name = "device_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Device deviceId;
@@ -82,6 +80,8 @@ public class Problem implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private User userId;
+    @OneToMany(mappedBy = "problemId")
+    private Set<RepairHistory> repairHistorySet;
 
     public Problem() {
     }
@@ -135,15 +135,6 @@ public class Problem implements Serializable {
         this.updatedDate = updatedDate;
     }
 
-    @XmlTransient
-    public Set<Repair> getRepairSet() {
-        return repairSet;
-    }
-
-    public void setRepairSet(Set<Repair> repairSet) {
-        this.repairSet = repairSet;
-    }
-
     public Device getDeviceId() {
         return deviceId;
     }
@@ -174,6 +165,15 @@ public class Problem implements Serializable {
 
     public void setUserId(User userId) {
         this.userId = userId;
+    }
+
+    @XmlTransient
+    public Set<RepairHistory> getRepairHistorySet() {
+        return repairHistorySet;
+    }
+
+    public void setRepairHistorySet(Set<RepairHistory> repairHistorySet) {
+        this.repairHistorySet = repairHistorySet;
     }
 
     @Override

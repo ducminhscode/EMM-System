@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
         u.setPhone(params.get("phone"));
         u.setUsername(params.get("username"));
         u.setPassword(this.passwordEncoder.encode(params.get("password")));
-        u.setUserRole("ROLE_CUSTOMER");
+        u.setUserRole("ROLE_EMPLOYEE");
         u.setActive(Boolean.TRUE);
 
         if (!avatar.isEmpty()) {

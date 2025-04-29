@@ -5,14 +5,13 @@
 package com.tndm.controllers;
 
 import com.tndm.pojo.Device;
+import com.tndm.pojo.User;
 import com.tndm.services.DeviceService;
-import com.tndm.services.DeviceStatusService;
-import com.tndm.services.DeviceTypeService;
-import java.util.Map;
+import com.tndm.services.UserService;
+import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +26,9 @@ public class DeviceController {
 
     @Autowired
     private DeviceService devSer;
+    
+    @Autowired
+    private UserService usrSer;
 
 
     @GetMapping("/devices")
@@ -36,7 +38,11 @@ public class DeviceController {
     }
 
     @PostMapping("/devices/add")
-    public String createDevice(@ModelAttribute(value = "device") Device d) {
+    public String createDevice(@ModelAttribute(value = "device") Device d, Principal principal) {
+        String username = principal.getName();
+        User currentUser = usrSer.getUserByUsername(username);
+        d.setUserId(currentUser);
+        
         this.devSer.addOrUpdate(d);
         return "redirect:/";
     }

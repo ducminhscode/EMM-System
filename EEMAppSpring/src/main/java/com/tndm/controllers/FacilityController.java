@@ -5,7 +5,10 @@
 package com.tndm.controllers;
 
 import com.tndm.pojo.Facility;
+import com.tndm.pojo.User;
 import com.tndm.services.FacilityService;
+import com.tndm.services.UserService;
+import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,8 +24,12 @@ import org.springframework.web.bind.annotation.PostMapping;
  */
 @Controller
 public class FacilityController {
+    
     @Autowired
     private FacilityService facSer;
+    
+    @Autowired
+    private UserService usrSer;
     
     @GetMapping("/facilities")
     public String facilityView(Model model) {
@@ -31,7 +38,11 @@ public class FacilityController {
     }
 
     @PostMapping("/facilities/add")
-    public String createDevice(@ModelAttribute(value = "facility") Facility d) {
+    public String createDevice(@ModelAttribute(value = "facility") Facility d, Principal principal) {
+        String username = principal.getName();
+        User currentUser = usrSer.getUserByUsername(username);
+        d.setUserId(currentUser);
+        
         this.facSer.addOrUpdateFacility(d);
         return "redirect:/indexFacilities";
     }
