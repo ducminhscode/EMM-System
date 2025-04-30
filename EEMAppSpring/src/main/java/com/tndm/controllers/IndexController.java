@@ -54,12 +54,14 @@ public class IndexController {
     @RequestMapping("/")
     public String index(Model model, @RequestParam Map<String, String> params, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("devices", this.devService.getDevices(params));
+        
         if (userDetails != null) {
             User user = userService.getUserByUsername(userDetails.getUsername());
             if (user != null) {
                 model.addAttribute("currentUser", user);
             }
         }
+        
         return "index";
     }
 
@@ -67,12 +69,6 @@ public class IndexController {
     public String indexFacilities(Model model) {
         model.addAttribute("facilities", this.facService.getFacilities());
         return "indexFacilities";
-    }
-    
-    @RequestMapping("/indexUser")
-    public String indexUser(Model model) {
-        model.addAttribute("users", this.userService.getAllUser());
-        return "indexUser";
     }
     
     @RequestMapping("/accessDenied")

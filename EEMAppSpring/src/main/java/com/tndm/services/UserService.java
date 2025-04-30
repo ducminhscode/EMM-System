@@ -5,7 +5,6 @@
 package com.tndm.services;
 
 import com.tndm.pojo.User;
-import java.util.List;
 import java.util.Map;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,16 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Tran Nguyen Duc Minh
  */
 public interface UserService extends UserDetailsService {
-    List<User> getAllUser();
-    
-    User addOrUpdateUser(User u);
 
-    User getUserById(int id);
-    
     User getUserByUsername(String username);
 
-//    User addUser(Map<String, String> params, MultipartFile avatar);
-    void deleteUser(int id);
+    User addUser(Map<String, String> params, MultipartFile avatar);
     
     boolean authenticate(String username, String password);
 }

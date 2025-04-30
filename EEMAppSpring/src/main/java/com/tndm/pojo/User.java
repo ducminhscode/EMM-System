@@ -19,7 +19,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -29,7 +28,6 @@ import java.util.Date;
 import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -53,20 +51,6 @@ import org.springframework.web.multipart.MultipartFile;
     @NamedQuery(name = "User.findByCreatedDate", query = "SELECT u FROM User u WHERE u.createdDate = :createdDate"),
     @NamedQuery(name = "User.findByUpdatedDate", query = "SELECT u FROM User u WHERE u.updatedDate = :updatedDate")})
 public class User implements Serializable {
-
-    /**
-     * @return the file
-     */
-    public MultipartFile getFile() {
-        return file;
-    }
-
-    /**
-     * @param file the file to set
-     */
-    public void setFile(MultipartFile file) {
-        this.file = file;
-    }
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -132,8 +116,6 @@ public class User implements Serializable {
     private Set<Device> deviceSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private Set<Facility> facilitySet;
-    @Transient
-    private MultipartFile file;
 
     public User() {
     }
