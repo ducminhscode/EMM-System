@@ -11,6 +11,7 @@ import com.tndm.repositories.UserRepository;
 import com.tndm.services.UserService;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -61,21 +62,63 @@ public class UserServiceImpl implements UserService {
                 u.getUsername(), u.getPassword(), authorities);
     }
 
+//    @Override
+//    public User addUser(Map<String, String> params, MultipartFile avatar) {
+//        User u = new User();
+//        u.setFirstName(params.get("firstName"));
+//        u.setLastName(params.get("lastName"));
+//        u.setEmail(params.get("email"));
+//        u.setPhone(params.get("phone"));
+//        u.setUsername(params.get("username"));
+//        u.setPassword(this.passwordEncoder.encode(params.get("password")));
+//        u.setUserRole(params.get("userRole"));
+//        u.setActive(Boolean.TRUE);
+//
+//        if (!avatar.isEmpty()) {
+//            try {
+//                Map res = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.asMap(
+//                        "resource_type", "auto",
+//                        "folder", "BaoTriThietBi"
+//                ));
+//                u.setAvatar(res.get("secure_url").toString());
+//            } catch (IOException ex) {
+//                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//
+//        return this.usrRepo.addUser(u);
+//    }
     @Override
-    public User addUser(Map<String, String> params, MultipartFile avatar) {
-        User u = new User();
-        u.setFirstName(params.get("firstName"));
-        u.setLastName(params.get("lastName"));
-        u.setEmail(params.get("email"));
-        u.setPhone(params.get("phone"));
-        u.setUsername(params.get("username"));
-        u.setPassword(this.passwordEncoder.encode(params.get("password")));
-        u.setUserRole("ROLE_EMPLOYEE");
-        u.setActive(Boolean.TRUE);
+    public boolean authenticate(String username, String password) {
+        return this.usrRepo.authenticate(username, password);
+    }
 
-        if (!avatar.isEmpty()) {
+    @Override
+    public List<User> getAllUser() {
+        return this.usrRepo.getAllUser();
+    }
+
+    @Override
+    public User addOrUpdateUser(User u) {
+        if (u.getId() != null) {
+            User existingUser = usrRepo.getUserById(u.getId());
+
+            if (u.getPassword() == null || u.getPassword().isEmpty()) {
+                u.setPassword(existingUser.getPassword());
+            } else {
+                u.setPassword(this.passwordEncoder.encode(u.getPassword()));
+            }
+
+            if (u.getAvatar() == null) {
+                u.setAvatar(existingUser.getAvatar());
+            }
+        } else {
+            u.setPassword(this.passwordEncoder.encode(u.getPassword()));
+        }
+
+        if (u.getFile() != null && !u.getFile().isEmpty()) {
             try {
-                Map res = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.asMap(
+                Map res = cloudinary.uploader().upload(u.getFile().getBytes(), ObjectUtils.asMap(
                         "resource_type", "auto",
                         "folder", "BaoTriThietBi"
                 ));
@@ -85,12 +128,16 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        return this.usrRepo.addUser(u);
+        return this.usrRepo.addOrUpdateUser(u);
     }
 
     @Override
-    public boolean authenticate(String username, String password) {
-        return this.usrRepo.authenticate(username, password);
+    public void deleteUser(int id) {
+        this.usrRepo.deleteUser(id);
     }
 
+    @Override
+    public User getUserById(int id) {
+        return this.usrRepo.getUserById(id);
+    }
 }
