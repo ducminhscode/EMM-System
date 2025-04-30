@@ -33,8 +33,8 @@ public class DeviceServiceImpl implements DeviceService{
     }
 
     @Override
-    public Device addOrUpdate(Device d) {
-        return this.devRepo.addOrUpdate(d);
+    public Device addOrUpdateDevice(Device d) {
+        return this.devRepo.addOrUpdateDevice(d);
     }
 
     @Override

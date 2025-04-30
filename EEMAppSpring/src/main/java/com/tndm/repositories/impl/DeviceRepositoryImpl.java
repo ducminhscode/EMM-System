@@ -80,7 +80,7 @@ public class DeviceRepositoryImpl implements DeviceRepository {
     }
 
     @Override
-    public Device addOrUpdate(Device d) {
+    public Device addOrUpdateDevice(Device d) {
         Session s = this.factory.getObject().getCurrentSession();
         if (d.getId() == null) {
             s.persist(d);

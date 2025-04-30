@@ -18,7 +18,7 @@ public interface DeviceRepository {
 
     Device getDeviceById(int id);
 
-    Device addOrUpdate(Device d);
+    Device addOrUpdateDevice(Device d);
 
     void deleteDevice(int id);
 }

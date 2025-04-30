@@ -32,7 +32,7 @@ public class DeviceController {
 
 
     @GetMapping("/devices")
-    public String deviceView(Model model) {
+    public String viewDevice(Model model) {
         model.addAttribute("device", new Device());
         return "devices";
     }
@@ -43,13 +43,14 @@ public class DeviceController {
         User currentUser = usrSer.getUserByUsername(username);
         d.setUserId(currentUser);
         
-        this.devSer.addOrUpdate(d);
+        this.devSer.addOrUpdateDevice(d);
         return "redirect:/";
     }
 
     @GetMapping("/devices/{deviceId}")
-    public String deviceView(Model model, @PathVariable(value = "deviceId") int id) {
+    public String viewDeviceDetail(Model model, @PathVariable(value = "deviceId") int id) {
         model.addAttribute("device", this.devSer.getDeviceById(id));
         return "devices";
     }
+    
 }

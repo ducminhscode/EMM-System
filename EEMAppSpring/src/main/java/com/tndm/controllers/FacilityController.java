@@ -32,23 +32,23 @@ public class FacilityController {
     private UserService usrSer;
     
     @GetMapping("/facilities")
-    public String facilityView(Model model) {
+    public String viewFacility(Model model) {
         model.addAttribute("facility", new Facility());
         return "facilities";
     }
 
     @PostMapping("/facilities/add")
-    public String createDevice(@ModelAttribute(value = "facility") Facility d, Principal principal) {
+    public String createFacility(@ModelAttribute(value = "facility") Facility f, Principal principal) {
         String username = principal.getName();
         User currentUser = usrSer.getUserByUsername(username);
-        d.setUserId(currentUser);
+        f.setUserId(currentUser);
         
-        this.facSer.addOrUpdateFacility(d);
+        this.facSer.addOrUpdateFacility(f);
         return "redirect:/indexFacilities";
     }
     
     @GetMapping("/facilities/{facilityId}")
-    public String facilityView(Model model, @PathVariable(value = "facilityId") int id) {
+    public String viewFacilityDetail(Model model, @PathVariable(value = "facilityId") int id) {
         model.addAttribute("facility", this.facSer.getFacilityById(id));
         return "facilities";
     }
