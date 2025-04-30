@@ -28,32 +28,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @ControllerAdvice
 public class IndexController {
-    
+
     @Autowired
     private DeviceService devService;
-    
+
     @Autowired
     private FacilityService facService;
-    
+
     @Autowired
     private DeviceTypeService deviceTypeService;
-    
+
     @Autowired
     private DeviceStatusService devStatusService;
-    
+
     @Autowired
     private UserService userService;
-    
+
     @ModelAttribute
-    public void commonResponse(Model model){
+    public void commonResponse(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("facilities", this.facService.getFacilities());
         model.addAttribute("deviceTypes", this.deviceTypeService.getDeviceTypes());
         model.addAttribute("deviceStatus", this.devStatusService.getDeviceStatus());
-    }
-    
-    @RequestMapping("/")
-    public String index(Model model, @RequestParam Map<String, String> params, @AuthenticationPrincipal UserDetails userDetails) {
-        model.addAttribute("devices", this.devService.getDevices(params));
         
         if (userDetails != null) {
             User user = userService.getUserByUsername(userDetails.getUsername());
@@ -61,19 +56,24 @@ public class IndexController {
                 model.addAttribute("currentUser", user);
             }
         }
-        
+    }
+
+    @RequestMapping("/")
+    public String index(Model model, @RequestParam Map<String, String> params) {
+        model.addAttribute("devices", this.devService.getDevices(params));
+
         return "index";
     }
 
     @RequestMapping("/indexFacilities")
     public String indexFacilities(Model model) {
         model.addAttribute("facilities", this.facService.getFacilities());
+
         return "indexFacilities";
     }
-    
+
     @RequestMapping("/accessDenied")
-    public String accessDenied()
-    {
+    public String accessDenied() {
         return "accessDenied";
     }
 }
