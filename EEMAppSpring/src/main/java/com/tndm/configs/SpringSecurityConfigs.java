@@ -33,20 +33,20 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
     "com.tndm.formatters"
 })
 public class SpringSecurityConfigs {
-
+    
     @Autowired
     private UserDetailsService userDetailsService;
-
+    
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    
     @Bean
     public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
         return new HandlerMappingIntrospector();
     }
-
+    
     @Bean
     public Cloudinary cloudinary() {
         Cloudinary cloudinary
@@ -55,10 +55,10 @@ public class SpringSecurityConfigs {
                         "api_key", "785552982855161",
                         "api_secret", "v4laZXdEttJZYUUr3sSJFRzGV30",
                         "secure", true));
-
+        
         return cloudinary;
     }
-
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(c -> c.disable()).authorizeHttpRequests(requests
@@ -67,13 +67,16 @@ public class SpringSecurityConfigs {
                         .requestMatchers("/devices").hasRole("ADMIN")
                         .requestMatchers("/devices/**").hasRole("ADMIN").anyRequest().authenticated())
                 .formLogin(form -> form.loginPage("/login")
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/", true)
-                .failureUrl("/login?error=true").permitAll())
-                .logout(logout -> logout.logoutSuccessUrl("/login").permitAll())
+                    .loginProcessingUrl("/login")
+                    .defaultSuccessUrl("/", true)
+                    .failureUrl("/login?error=true").permitAll())
+                .logout(logout -> logout.logoutSuccessUrl("/login")
+                        .logoutUrl("/logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID").permitAll())
                 .exceptionHandling(exception -> exception.accessDeniedPage("/accessDenied"));
-
+        
         return http.build();
     }
-
+    
 }

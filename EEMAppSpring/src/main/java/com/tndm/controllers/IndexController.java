@@ -4,6 +4,7 @@
  */
 package com.tndm.controllers;
 
+import com.tndm.pojo.User;
 import com.tndm.services.DeviceService;
 import com.tndm.services.DeviceStatusService;
 import com.tndm.services.DeviceTypeService;
@@ -11,6 +12,8 @@ import com.tndm.services.FacilityService;
 import com.tndm.services.UserService;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -38,6 +41,8 @@ public class IndexController {
     @Autowired
     private DeviceStatusService devStatusService;
     
+    @Autowired
+    private UserService userService;
     
     @ModelAttribute
     public void commonResponse(Model model){
@@ -47,8 +52,16 @@ public class IndexController {
     }
     
     @RequestMapping("/")
-    public String index(Model model, @RequestParam Map<String, String> params) {
+    public String index(Model model, @RequestParam Map<String, String> params, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("devices", this.devService.getDevices(params));
+        
+        if (userDetails != null) {
+            User user = userService.getUserByUsername(userDetails.getUsername());
+            if (user != null) {
+                model.addAttribute("currentUser", user);
+            }
+        }
+        
         return "index";
     }
 

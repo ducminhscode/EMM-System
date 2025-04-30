@@ -4,7 +4,7 @@
     <th:block th:fragment="styles">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title th:text="${pageTitle} ?: 'Quản lý Bảo trì'"></title>
+        <title th:text="${pageTitle}"></title>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     </th:block>
@@ -16,38 +16,38 @@
     <div class="w-64 bg-blue-900 text-white h-screen p-6 fixed">
         <div class="flex items-center space-x-3 mb-10">
             <i class="fas fa-tools text-3xl"></i>
-            <h1 class="text-2xl font-bold">Quản lý Bảo trì</h1>
+            <h1 class="text-2xl font-bold">Trang chủ</h1>
         </div>
         <nav>
             <ul class="space-y-3">
                 <li>
-                    <a th:href="@{/}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Quản lý Thiết bị">
+                    <a th:href="@{/}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Quản lý thiết bị">
                         <i class="fas fa-laptop"></i>
-                        <span>Quản lý Thiết bị</span>
+                        <span>Quản lý thiết bị</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Lịch Bảo trì">
+                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Lịch bảo trì">
                         <i class="fas fa-calendar-check"></i>
-                        <span>Lịch Bảo trì</span>
+                        <span>Lịch bảo trì</span>
                     </a>
                 </li>
                 <li>
-                    <a href="indexFacilities" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Quản lý Cơ sở">
+                    <a href="indexFacilities" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Quản lý cơ sở">
                         <i class="fas fa-building"></i>
-                        <span>Quản lý Cơ sở</span>
+                        <span>Quản lý cơ sở</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Sự cố Thiết bị">
+                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Sự cố thiết bị">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <span>Sự cố Thiết bị</span>
+                        <span>Sự cố thiết bị</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Lịch sử Sửa chữa">
+                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Lịch sử sửa chữa">
                         <i class="fas fa-history"></i>
-                        <span>Lịch sử Sửa chữa</span>
+                        <span>Lịch sử sửa chữa</span>
                     </a>
                 </li>
                 <li>
@@ -62,6 +62,12 @@
                         <span>Cài đặt</span>
                     </a>
                 </li>
+                <li>
+                    <a th:href="@{/logout}" onclick="confirmLogout()" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Đăng xuất">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Đăng xuất</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
@@ -70,15 +76,15 @@
 <!-- Header Fragment -->
 <th:block th:fragment="header">
     <header class="bg-white shadow-md p-4 flex justify-between items-center ml-64">
-        <h2 class="text-xl font-semibold text-gray-800" th:text="${pageTitle} ?: 'Quản lý Bảo trì'"></h2>
+        <h2 class="text-xl font-semibold text-gray-800" th:text="${pageTitle}"></h2>
         <div class="flex items-center space-x-6">
             <div class="relative">
                 <input type="text" placeholder="Tìm kiếm..." class="pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
             </div>
             <div class="flex items-center space-x-3">
-                <img src="https://via.placeholder.com/40" alt="User" class="rounded-full w-10 h-10">
-                <span class="text-gray-700 font-medium">Admin</span>
+                <img th:src="${currentUser.avatar}" alt="avatar" class="rounded-full w-10 h-10">
+                <span class="text-gray-700 font-medium" th:text="${currentUser.firstName} + ' ' + ${currentUser.lastName}"></span>
             </div>
         </div>
     </header>
@@ -123,6 +129,12 @@
                 }
             }
         });
+        // Function to confirm logout
+        function confirmLogout() {
+            if (confirm('Bạn có chắc chắn muốn đăng xuất không?')) {
+                window.location.href = '/logout';
+            }
+        }
     </script>
 </th:block>
 </body>
