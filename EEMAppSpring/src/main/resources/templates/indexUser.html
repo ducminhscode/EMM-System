@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+    <head>
+    <th:block th:replace="base :: styles"></th:block>
+    <title>Quản lý Cơ sở</title>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <th:block th:replace="base :: sidebar"></th:block>
+        <div class="flex-1 ml-64 overflow-auto">
+            <main class="p-6">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-semibold text-lg text-gray-800">Danh sách Người dùng</h3>
+                        <a th:href="@{/users}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+                            <i class="fas fa-plus"></i>
+                            <span>Thêm người dùng</span>
+                        </a>
+                    </div>
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Họ và Tên</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vai trò</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số điện thoại</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày Tạo</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành Động</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr th:each="user : ${users}" class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${user.id}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            <div class="flex items-center">
+                                                <img th:if="${user.avatar}" th:src="${user.avatar}" class="w-8 h-8 rounded-full mr-2">
+                                                <span th:text="${user.firstName + ' ' + user.lastName}"></span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${user.username}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span th:class="${user.userRole == 'ROLE_ADMIN' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}" 
+                                                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                                  th:text="${#strings.replace(user.userRole, 'ROLE_', '')}"></span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${user.email}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${user.phone}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${#dates.format(user.createdDate, 'dd/MM/yyyy HH:mm')}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <span th:if="${user.active}" class="text-green-600">✔ Hoạt động</span>
+                                            <span th:unless="${user.active}" class="text-red-600">✖ Khóa</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <a th:href="@{'/users/' + ${user.id}}" class="text-blue-600 hover:text-blue-800 mr-3">
+                                                <i class="fas fa-edit"></i> Sửa
+                                            </a>
+                                            <button  th:onclick="'deleteApi(\'' + @{/api/users/} + '\',' + ${user.id} + ')'" 
+                                                    class="text-red-600 hover:text-red-800">
+                                                <i class="fas fa-trash"></i> Xóa
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:if="${#lists.isEmpty(users)}" class="text-center text-gray-500 py-6">
+                            Không có người dùng nào
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <th:block th:replace="base :: scripts"></th:block>
+</body>
+</html>

@@ -5,6 +5,7 @@
 package com.tndm.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.mail.Multipart;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -19,6 +20,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -28,6 +30,7 @@ import java.util.Date;
 import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -116,6 +119,8 @@ public class User implements Serializable {
     private Set<Device> deviceSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private Set<Facility> facilitySet;
+    @Transient
+    private MultipartFile file;
 
     public User() {
     }
@@ -296,6 +301,20 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "com.tndm.pojo.User[ id=" + id + " ]";
+    }
+
+    /**
+     * @return the file
+     */
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    /**
+     * @param file the file to set
+     */
+    public void setFile(MultipartFile file) {
+        this.file = file;
     }
     
 }

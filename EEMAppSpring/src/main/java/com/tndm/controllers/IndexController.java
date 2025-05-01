@@ -49,7 +49,7 @@ public class IndexController {
         model.addAttribute("facilities", this.facService.getFacilities());
         model.addAttribute("deviceTypes", this.deviceTypeService.getDeviceTypes());
         model.addAttribute("deviceStatus", this.devStatusService.getDeviceStatus());
-        
+
         if (userDetails != null) {
             User user = userService.getUserByUsername(userDetails.getUsername());
             if (user != null) {
@@ -70,6 +70,12 @@ public class IndexController {
         model.addAttribute("facilities", this.facService.getFacilities());
 
         return "indexFacilities";
+    }
+
+    @RequestMapping("/indexUser")
+    public String indexUser(Model model) {
+        model.addAttribute("users", this.userService.getAllUser());
+        return "indexUser";
     }
 
     @RequestMapping("/accessDenied")
