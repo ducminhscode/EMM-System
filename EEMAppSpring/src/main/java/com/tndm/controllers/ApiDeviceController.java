@@ -26,9 +26,5 @@ public class ApiDeviceController {
     @Autowired
     private DeviceService devSer;
 
-    @DeleteMapping("/devices/{deviceId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void destroy(@PathVariable(value = "deviceId") int id) {
-        this.devSer.deleteDevice(id);
-    }
+
 }

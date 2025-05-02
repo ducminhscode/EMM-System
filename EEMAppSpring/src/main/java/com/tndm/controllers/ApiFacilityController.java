@@ -26,10 +26,5 @@ public class ApiFacilityController {
     @Autowired
     private FacilityService facSer;
 
-    @DeleteMapping("/facilities/{facilityId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void destroy(@PathVariable(value = "facilityId") int id) {
-        this.facSer.deleteFacility(id);
-    }
     
 }

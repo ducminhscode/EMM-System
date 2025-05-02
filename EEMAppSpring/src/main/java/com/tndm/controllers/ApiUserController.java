@@ -38,10 +38,5 @@ public class ApiUserController {
 //        return new ResponseEntity<>(u, HttpStatus.CREATED);
 //    }
     
-    @DeleteMapping("/users/{userId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void destroy(@PathVariable(value = "userId") int id) {
-        this.userDetailsService.deleteUser(id);
-    }
-    
+
 }
