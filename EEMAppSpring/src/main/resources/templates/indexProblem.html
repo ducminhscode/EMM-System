@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+    <head>
+    <th:block th:replace="base :: styles"></th:block>
+    <title>Quản lý Sự cố</title>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <th:block th:replace="base :: sidebar"></th:block>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-64 overflow-auto">
+            <!-- Header -->
+            <th:block th:replace="base :: header (pageTitle='Quản lý sự cố')"></th:block>
+
+            <!-- Content -->
+            <main class="p-6">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-semibold text-lg text-gray-800">Danh sách Sự cố</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày xảy ra</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mô tả</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thiết bị</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mức độ</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Người báo cáo</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày tạo</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr th:each="problem : ${problems}" class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${problem.id}"></td>
+
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${#dates.format(problem.happenedDate, 'dd/MM/yyyy HH:mm')}"></td>
+
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${problem.description} ?: 'Không có mô tả'"></td>
+
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${problem.deviceId.name}"></td>
+
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${problem.fatalLevelId.name}" ></td>
+
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${problem.statusId.name}"></td>
+
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${problem.userId.email}"></td>
+
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${#dates.format(problem.createdDate, 'dd/MM/yyyy HH:mm')}"></td>
+
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <a th:href="@{'/problems/' + ${problem.id}} " 
+                                               class="text-blue-600 hover:text-blue-800">
+                                                <i class="fas fa-eye mr-2"></i>
+                                                Xem sửa chữa
+                                            </a>
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:if="${#lists.isEmpty(problems)}" class="text-center text-gray-500 py-6">
+                            Chưa có sự cố nào được ghi nhận
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

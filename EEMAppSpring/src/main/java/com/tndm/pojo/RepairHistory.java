@@ -4,6 +4,7 @@
  */
 package com.tndm.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,8 +24,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -71,6 +70,7 @@ public class RepairHistory implements Serializable {
     private Date endDate;
     @JoinColumn(name = "problem_id", referencedColumnName = "id")
     @ManyToOne
+    @JsonIgnore
     private Problem problemId;
     @JoinColumn(name = "type_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
@@ -181,5 +181,5 @@ public class RepairHistory implements Serializable {
     public String toString() {
         return "com.tndm.pojo.RepairHistory[ id=" + id + " ]";
     }
-    
+
 }

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="base :: styles"></th:block>
+    <title>Chi tiết sự cố</title>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="min-h-screen">
+        <!-- Main Content Full Width -->
+        <div class="w-full overflow-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm">
+                <div class="max-w-7xl mx-auto px-4 py-4">
+                    <h1 class="text-2xl font-bold text-gray-900">Chi tiết sự cố</h1>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <main class="max-w-7xl mx-auto px-4 py-6">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <!-- Thông tin chung -->
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-xl font-semibold">
+                            Sự cố #<span th:text="${problem.id}"></span>
+                        </h3>
+                        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="font-medium">Thiết bị:</label>
+                                <span th:text="${problem.deviceId.name}"></span>
+                            </div>
+                            <div>
+                                <label class="font-medium">Ngày xảy ra:</label>
+                                <span th:text="${#dates.format(problem.happenedDate, 'dd/MM/yyyy HH:mm')}"></span>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="font-medium">Mô tả:</label>
+                                <p class="mt-1 text-gray-600" th:text="${problem.description} ?: 'Không có mô tả'"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lịch sử sửa chữa -->
+                    <div class="p-6">
+                        <h4 class="text-lg font-semibold mb-4">Lịch sử sửa chữa</h4>
+                        
+                        <div th:if="${#lists.isEmpty(repairs)}" class="text-center text-gray-500 py-4">
+                            <i class="fas fa-tools text-3xl text-gray-300 mb-2"></i>
+                            <p>Chưa có lịch sử sửa chữa</p>
+                        </div>
+
+                        <div th:unless="${#lists.isEmpty(repairs)}" class="space-y-4">
+                            <div th:each="repair : ${repairs}" class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex flex-col md:flex-row justify-between items-start gap-4">
+                                    <div class="flex-1">
+                                        <div class="flex items-baseline gap-2">
+                                            <h5 class="font-medium text-lg" th:text="${repair.typeId.name}"></h5>
+                                            <span class="text-sm text-gray-500">
+                                                (Kỹ thuật viên: 
+                                                <span th:text="${repair.technicianId.user.username}"></span>)
+                                            </span>
+                                        </div>
+                                        <p class="mt-2 text-sm text-gray-600" 
+                                           th:text="${repair.description} ?: 'Không có mô tả chi tiết'"></p>
+                                    </div>
+                                    
+                                    <div class="md:text-right">
+                                        <div class="text-sm">
+                                            <span th:text="${#dates.format(repair.startDate, 'dd/MM/yyyy')}"></span> 
+                                            - 
+                                            <span th:text="${#dates.format(repair.endDate, 'dd/MM/yyyy')}"></span>
+                                        </div>
+                                        <div class="mt-1 font-medium text-blue-600">
+                                            <span th:if="${repair.expense}" 
+                                                  th:text="${#numbers.formatCurrency(repair.expense)}"></span>
+                                            <span th:unless="${repair.expense}">N/A</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <th:block th:replace="base :: scripts"></th:block>
+</body>
+</html>

@@ -9,6 +9,9 @@ import com.tndm.services.DeviceService;
 import com.tndm.services.DeviceStatusService;
 import com.tndm.services.DeviceTypeService;
 import com.tndm.services.FacilityService;
+import com.tndm.services.FatalLevelService;
+import com.tndm.services.ProblemService;
+import com.tndm.services.ProblemStatusService;
 import com.tndm.services.UserService;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +43,31 @@ public class IndexController {
 
     @Autowired
     private DeviceStatusService devStatusService;
+    
+    @Autowired
+    private ProblemStatusService proStatusService;
+    
+    @Autowired
+    private FatalLevelService fatLevelService;
+    
+    @Autowired
+    private ProblemService proService;
 
+
+    
     @Autowired
     private UserService userService;
+    
+    
 
     @ModelAttribute
     public void commonResponse(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("facilities", this.facService.getFacilities());
         model.addAttribute("deviceTypes", this.deviceTypeService.getDeviceTypes());
         model.addAttribute("deviceStatus", this.devStatusService.getDeviceStatus());
+        model.addAttribute("problemStatus", this.proStatusService.getProblemStatus());
+        model.addAttribute("FatalLevels", this.fatLevelService.getFatalLevel());
+        
 
         if (userDetails != null) {
             User user = userService.getUserByUsername(userDetails.getUsername());
@@ -67,8 +86,6 @@ public class IndexController {
 
     @RequestMapping("/indexFacilities")
     public String indexFacilities(Model model) {
-        model.addAttribute("facilities", this.facService.getFacilities());
-
         return "indexFacilities";
     }
 
@@ -81,5 +98,12 @@ public class IndexController {
     @RequestMapping("/accessDenied")
     public String accessDenied() {
         return "accessDenied";
+    }
+    
+    @RequestMapping("/indexProblem")
+    public String indexProblem(Model model){
+        model.addAttribute("problems", this.proService.getProblem());
+        
+        return "indexProblem";
     }
 }
