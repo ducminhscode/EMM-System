@@ -37,7 +37,7 @@ public class WebAppContextConfigs implements WebMvcConfigurer {
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     }
-    
+
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
@@ -45,12 +45,12 @@ public class WebAppContextConfigs implements WebMvcConfigurer {
         registry.addFormatter(new DeviceStatusFormatter());
         registry.addFormatter(new DeviceTypeFormatter());
     }
-    
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/js/**").addResourceLocations("classpath:/static/js/");           
+        registry.addResourceHandler("/js/**").addResourceLocations("classpath:/static/js/");
     }
-    
+
     @Bean
     public StandardServletMultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();

@@ -5,6 +5,7 @@
 package com.tndm.controllers;
 
 import com.tndm.pojo.User;
+import com.tndm.services.MailService;
 import com.tndm.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MailService mailService;
+    
     @GetMapping("/login")
     public String loginView() {
         return "login";
@@ -47,7 +51,8 @@ public class UserController {
     @PostMapping("/users/add")
     public String addOrUpdateUser(@ModelAttribute(value = "user") User u) {
         this.userService.addOrUpdateUser(u);
-        return "redirect:/index-user";
+        mailService.sendMail(u.getEmail(), "Tài khoản của bạn", "username: " + u.getUsername() + "\npassword: 123");
+        return "redirect:/index-users";
     }
 
     @DeleteMapping("/users/{userId}")
