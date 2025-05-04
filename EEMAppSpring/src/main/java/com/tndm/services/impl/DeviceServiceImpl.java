@@ -42,6 +42,11 @@ public class DeviceServiceImpl implements DeviceService{
         this.devRepo.deleteDevice(id);
     }
 
+    @Override
+    public long countDevices(Map<String, String> params) {
+        return this.devRepo.countDevices(params);
+    }
+
     
     
 }

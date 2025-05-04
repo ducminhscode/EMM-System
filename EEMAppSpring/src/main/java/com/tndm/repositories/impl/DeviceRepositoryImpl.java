@@ -9,9 +9,7 @@ import com.tndm.repositories.DeviceRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
@@ -28,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DeviceRepositoryImpl implements DeviceRepository {
 
-    private static final int PAGE_SIZE = 6;
+    private static final int PAGE_SIZE = 5;
 
     @Autowired
     private LocalSessionFactoryBean factory;
@@ -42,29 +40,12 @@ public class DeviceRepositoryImpl implements DeviceRepository {
         Root<Device> root = q.from(Device.class);
         q.select(root);
 
-        if (params != null) {
-
-            List<Predicate> predicates = new ArrayList<>();
-
-            if (params.containsKey("name") && !params.get("name").isEmpty()) {
-                predicates.add(b.like(root.get("name"), String.format("%%%s%%", params.get("name"))));
-            }
-
-            if (params.containsKey("type") && !params.get("type").isEmpty()) {
-                predicates.add(b.equal(root.get("type"), params.get("type")));
-            }
-
-            q.where(predicates.toArray(Predicate[]::new));
-        }
-
         Query query = s.createQuery(q);
 
-        if (params != null && params.containsKey("page")) {
-            int page = Integer.parseInt(params.getOrDefault("page", "1"));
-            int start = (page - 1) * PAGE_SIZE;
-            query.setMaxResults(PAGE_SIZE);
-            query.setFirstResult(start);
-        }
+        int page = Integer.parseInt(params.getOrDefault("page", "1"));
+        int start = (page - 1) * PAGE_SIZE;
+        query.setMaxResults(PAGE_SIZE);
+        query.setFirstResult(start);
 
         return query.getResultList();
     }
@@ -96,6 +77,17 @@ public class DeviceRepositoryImpl implements DeviceRepository {
         Session s = this.factory.getObject().getCurrentSession();
         Device p = this.getDeviceById(id);
         s.remove(p);
+    }
+
+    @Override
+    public long countDevices(Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Long> q = b.createQuery(Long.class);
+        Root<Device> root = q.from(Device.class);
+        q.select(b.count(root));
+
+        return s.createQuery(q).getSingleResult();
     }
 
 }

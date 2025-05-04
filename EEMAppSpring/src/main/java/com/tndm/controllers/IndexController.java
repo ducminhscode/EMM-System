@@ -4,6 +4,7 @@
  */
 package com.tndm.controllers;
 
+import com.tndm.pojo.Device;
 import com.tndm.pojo.User;
 import com.tndm.services.DeviceService;
 import com.tndm.services.DeviceStatusService;
@@ -13,6 +14,7 @@ import com.tndm.services.FatalLevelService;
 import com.tndm.services.ProblemService;
 import com.tndm.services.ProblemStatusService;
 import com.tndm.services.UserService;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,22 +45,18 @@ public class IndexController {
 
     @Autowired
     private DeviceStatusService devStatusService;
-    
+
     @Autowired
     private ProblemStatusService proStatusService;
-    
+
     @Autowired
     private FatalLevelService fatLevelService;
-    
+
     @Autowired
     private ProblemService proService;
 
-
-    
     @Autowired
     private UserService userService;
-    
-    
 
     @ModelAttribute
     public void commonResponse(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -67,7 +65,6 @@ public class IndexController {
         model.addAttribute("deviceStatus", this.devStatusService.getDeviceStatus());
         model.addAttribute("problemStatus", this.proStatusService.getProblemStatus());
         model.addAttribute("FatalLevels", this.fatLevelService.getFatalLevel());
-        
 
         if (userDetails != null) {
             User user = userService.getUserByUsername(userDetails.getUsername());
@@ -78,8 +75,29 @@ public class IndexController {
     }
 
     @RequestMapping("/")
-    public String index(Model model, @RequestParam Map<String, String> params) {
-        model.addAttribute("devices", this.devService.getDevices(params));
+    public String indexDevices(Model model, @RequestParam Map<String, String> params) {
+        List<Device> devices = this.devService.getDevices(params);
+        model.addAttribute("devices", devices);
+
+        long totalDevices = this.devService.countDevices(params);
+        int totalPages = (int) Math.ceil((double) totalDevices / 5);
+        totalPages = Math.max(1, totalPages);
+        model.addAttribute("totalPages", totalPages);
+
+        int currentPage;
+        try {
+            currentPage = Integer.parseInt(params.getOrDefault("page", "1"));
+            if (currentPage < 1) {
+                currentPage = 1;
+            }
+            if (currentPage > totalPages && totalPages > 0) {
+                currentPage = totalPages;
+            }
+        } catch (NumberFormatException e) {
+            currentPage = 1;
+        }
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("params", params);
 
         return "index-devices";
     }
@@ -99,11 +117,11 @@ public class IndexController {
     public String accessDenied() {
         return "access-deny";
     }
-    
+
     @RequestMapping("/index-problems")
-    public String indexProblem(Model model){
+    public String indexProblem(Model model) {
         model.addAttribute("problems", this.proService.getProblem());
-        
+
         return "index-problems";
     }
 }

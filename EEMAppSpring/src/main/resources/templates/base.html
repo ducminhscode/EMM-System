@@ -70,7 +70,7 @@
                     </a>
                 </li>
                 <li>
-                    <a th:href="@{/logout}" sec:authorize="isAuthenticated()" class="flex items-center space-x-3 p-3 rounded-lg bg-red-600 hover:bg-red-700 transition-colors duration-200 menu-item" data-title="Đăng xuất">
+                    <a onclick="showLogoutDialog()" class="flex items-center space-x-3 p-3 rounded-lg bg-red-600 hover:bg-red-700 transition-colors duration-200 menu-item" data-title="Đăng xuất">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Đăng xuất</span>
                     </a>

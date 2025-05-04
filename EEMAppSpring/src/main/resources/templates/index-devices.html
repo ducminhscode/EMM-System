@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
+    <head>
     <th:block th:replace="base :: styles"></th:block>
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="flex h-screen">
-        
+
         <!-- Sidebar -->
         <th:block th:replace="base :: sidebar"></th:block>
 
@@ -108,6 +108,63 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between px-6 py-4 border-t border-gray-200">
+                        <div class="text-sm text-gray-500"> 
+                            Hiển thị trang <span th:text="${params.containsKey('page') ? params.page : 1}"></span>  
+                            của <span th:text="${totalPages}"></span> 
+                        </div>
+                        <div class="flex space-x-2">
+                            <!-- First Page -->
+                            <a th:href="@{/?page=1}"
+                               class="px-3 py-1 border rounded-md" 
+                               th:if="${currentPage > 1 and totalPages > 1}">
+                                &laquo;
+                            </a>
+                            <span th:if="${currentPage == 1 or totalPages <= 1}"
+                                  class="px-3 py-1 border rounded-md bg-gray-200 cursor-not-allowed">
+                                &laquo;
+                            </span>
+
+                            <!-- Previous Page -->
+                            <a th:with="previousPage=${currentPage} > 1 ? ${currentPage - 1} : 1"
+                               th:href="@{'/?page=' + ${previousPage}}"
+                               class="px-3 py-1 border rounded-md" 
+
+                               th:if="${currentPage > 1 and totalPages > 1}">
+                                &lsaquo;
+                            </a>
+                            <span th:if="${currentPage == 1 or totalPages <= 1}"
+                                  class="px-3 py-1 border rounded-md bg-gray-200 cursor-not-allowed">
+                                &lsaquo;
+                            </span>
+
+                            <!-- Next Page -->
+                            <a th:with="nextPage=${currentPage} < ${totalPages} ? ${currentPage + 1} : ${totalPages}"
+                               th:href="@{'/?page=' + ${nextPage}}"
+                               class="px-3 py-1 border rounded-md" 
+                               th:if="${currentPage < totalPages and totalPages > 1}">
+                                &rsaquo;
+                            </a>
+                            <span th:if="${currentPage == totalPages and totalPages > 1}"
+                                  class="px-3 py-1 border rounded-md bg-gray-200 cursor-not-allowed">
+                                &rsaquo;
+                            </span>
+
+                            <!-- Last Page -->
+                            <a th:href="@{'/?page=' + ${totalPages}}" 
+                               class="px-3 py-1 border rounded-md" 
+                               th:if="${currentPage < totalPages and totalPages > 1}">
+                                &raquo;
+                            </a>
+                            <span th:if="${currentPage == totalPages and totalPages > 1}"
+                                  class="px-3 py-1 border rounded-md bg-gray-200 cursor-not-allowed">
+                                &raquo;
+                            </span>
+                        </div> 
+                    </div>
+
                 </div>
 
                 <!-- Maintenance and Issues Section -->
@@ -188,6 +245,6 @@
     </div>
 
     <!-- Scripts -->
-    <th:block th:replace="base :: scripts"></th:block>
+<th:block th:replace="base :: scripts"></th:block>
 </body>
 </html>

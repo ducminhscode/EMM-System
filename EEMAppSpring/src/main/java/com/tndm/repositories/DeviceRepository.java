@@ -21,4 +21,6 @@ public interface DeviceRepository {
     Device addOrUpdateDevice(Device d);
 
     void deleteDevice(int id);
+    
+    long countDevices(Map<String, String> params);
 }
