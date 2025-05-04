@@ -33,6 +33,4 @@ public class ProblemController {
 
         return "problems";
     }
-
- 
 }

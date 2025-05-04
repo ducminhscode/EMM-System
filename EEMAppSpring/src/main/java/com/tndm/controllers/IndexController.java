@@ -81,7 +81,7 @@ public class IndexController {
     public String index(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("devices", this.devService.getDevices(params));
 
-        return "index";
+        return "index-devices";
     }
 
     @RequestMapping("/index-facilities")
