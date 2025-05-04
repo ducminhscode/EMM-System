@@ -34,7 +34,7 @@ public class ProblemController {
         model.addAttribute("problem", proService.getProblemById(id));
         model.addAttribute("repairs", repHistoryService.getRepairHistoriesByProblemId(id));
 
-        return "problems"; // Trả về template mới
+        return "problems";
     }
 
  

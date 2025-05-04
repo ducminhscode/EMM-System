@@ -46,7 +46,7 @@ public class FacilityController {
         f.setUserId(currentUser);
 
         this.facSer.addOrUpdateFacility(f);
-        return "redirect:/indexFacilities";
+        return "redirect:/index-facilities";
     }
 
     @GetMapping("/facilities/{facilityId}")

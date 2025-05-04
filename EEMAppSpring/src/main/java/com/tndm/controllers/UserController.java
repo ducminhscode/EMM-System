@@ -47,7 +47,7 @@ public class UserController {
     @PostMapping("/users/add")
     public String addOrUpdateUser(@ModelAttribute(value = "user") User u) {
         this.userService.addOrUpdateUser(u);
-        return "redirect:/indexUser";
+        return "redirect:/index-user";
     }
 
     @DeleteMapping("/users/{userId}")
