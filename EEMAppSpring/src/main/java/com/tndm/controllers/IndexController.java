@@ -84,26 +84,26 @@ public class IndexController {
         return "index";
     }
 
-    @RequestMapping("/indexFacilities")
+    @RequestMapping("/index-facilities")
     public String indexFacilities(Model model) {
-        return "indexFacilities";
+        return "index-facilities";
     }
 
-    @RequestMapping("/indexUser")
+    @RequestMapping("/index-users")
     public String indexUser(Model model) {
         model.addAttribute("users", this.userService.getAllUser());
-        return "indexUser";
+        return "index-users";
     }
 
-    @RequestMapping("/accessDenied")
+    @RequestMapping("/access-deny")
     public String accessDenied() {
-        return "accessDenied";
+        return "access-deny";
     }
     
-    @RequestMapping("/indexProblem")
+    @RequestMapping("/index-problems")
     public String indexProblem(Model model){
         model.addAttribute("problems", this.proService.getProblem());
         
-        return "indexProblem";
+        return "index-problems";
     }
 }
