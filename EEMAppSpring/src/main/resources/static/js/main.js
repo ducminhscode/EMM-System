@@ -1,4 +1,4 @@
-function deleteApi(endpoint, id) {
+function deleteConfirm(endpoint, id) {
     if (confirm("Bạn chắc chắn xóa không?") === true) {
         fetch(endpoint + id, {
             method: "delete"
