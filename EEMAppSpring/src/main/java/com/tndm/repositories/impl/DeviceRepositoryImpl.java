@@ -9,7 +9,9 @@ import com.tndm.repositories.DeviceRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
@@ -26,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DeviceRepositoryImpl implements DeviceRepository {
 
+    private static final int PAGE_SIZE = 6;
+
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -39,35 +43,27 @@ public class DeviceRepositoryImpl implements DeviceRepository {
         q.select(root);
 
         if (params != null) {
+
+            List<Predicate> predicates = new ArrayList<>();
+
             if (params.containsKey("name") && !params.get("name").isEmpty()) {
-                q.where(b.like(root.get("name"), String.format("%%%s%%", params.get("name"))));
+                predicates.add(b.like(root.get("name"), String.format("%%%s%%", params.get("name"))));
             }
 
             if (params.containsKey("type") && !params.get("type").isEmpty()) {
-                q.where(b.equal(root.get("type"), params.get("type")));
+                predicates.add(b.equal(root.get("type"), params.get("type")));
             }
-        }
 
-        if (params != null && params.containsKey("sortBy")) {
-            String sortBy = params.get("sortBy");
-            if (params.get("sortOrder") != null && params.get("sortOrder").equalsIgnoreCase("desc")) {
-                q.orderBy(b.desc(root.get(sortBy)));
-            } else {
-                q.orderBy(b.asc(root.get(sortBy)));
-            }
+            q.where(predicates.toArray(Predicate[]::new));
         }
 
         Query query = s.createQuery(q);
-        if (params != null) {
-            String page = params.get("page");
-            String pageSize = params.get("pageSize");
 
-            if (page != null && pageSize != null) {
-                int p = Integer.parseInt(page);
-                int size = Integer.parseInt(pageSize);
-                query.setMaxResults(size);
-                query.setFirstResult((p - 1) * size);
-            }
+        if (params != null && params.containsKey("page")) {
+            int page = Integer.parseInt(params.getOrDefault("page", "1"));
+            int start = (page - 1) * PAGE_SIZE;
+            query.setMaxResults(PAGE_SIZE);
+            query.setFirstResult(start);
         }
 
         return query.getResultList();
