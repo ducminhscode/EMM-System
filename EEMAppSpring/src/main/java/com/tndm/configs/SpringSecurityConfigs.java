@@ -74,7 +74,7 @@ public class SpringSecurityConfigs {
                         .logoutUrl("/logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID").permitAll())
-                .exceptionHandling(exception -> exception.accessDeniedPage("/accessDenied"));
+                .exceptionHandling(exception -> exception.accessDeniedPage("/access-deny"));
         
         return http.build();
     }
