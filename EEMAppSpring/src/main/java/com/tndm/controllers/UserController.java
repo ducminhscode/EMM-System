@@ -30,7 +30,7 @@ public class UserController {
 
     @Autowired
     private MailService mailService;
-    
+
     @GetMapping("/login")
     public String loginView() {
         return "login";
@@ -51,10 +51,14 @@ public class UserController {
     @PostMapping("/users/add")
     public String addOrUpdateUser(@ModelAttribute(value = "user") User u) {
         this.userService.addOrUpdateUser(u);
-<<<<<<< HEAD
-=======
-        mailService.sendMail(u.getEmail(), "Tài khoản của bạn", "username: " + u.getUsername() + "\npassword: 123");
->>>>>>> 64c8a7a79cc74ca9ac972d6bd31f9178f4cd7b02
+        mailService.sendMail(u.getEmail(),
+                "Thông báo tài khoản của bạn",
+                "Chào " + u.getFirstName() + u.getLastName() + ",\n\n"
+                + "Tài khoản của bạn đã được tạo.\n"
+                + "Tên tài khoản: " + u.getUsername() + "\n"
+                + "Mật khẩu: 123" + "\n\n"
+                + "Trân trọng,\n"
+                + "Đội ngũ Admin.");
         return "redirect:/index-users";
     }
 
