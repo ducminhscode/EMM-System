@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,6 +35,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
     "com.tndm.formatters"
 })
 public class SpringSecurityConfigs {
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -79,9 +79,9 @@ public class SpringSecurityConfigs {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(c -> c.disable()).authorizeHttpRequests(requests
                 -> requests.requestMatchers("/").hasRole("ADMIN")
-                        .requestMatchers("/api/users").permitAll()
                         .requestMatchers("/devices").hasRole("ADMIN")
-                        .requestMatchers("/devices/**").hasRole("ADMIN").anyRequest().authenticated())
+                        .requestMatchers("/devices/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
                 .formLogin(form -> form.loginPage("/login")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/", true)

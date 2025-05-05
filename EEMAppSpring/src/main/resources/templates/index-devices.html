@@ -22,7 +22,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-gray-500 text-sm">Tổng thiết bị</p>
-                                <h3 class="text-2xl font-bold text-gray-800">128</h3>
+                                <h3 class="text-2xl font-bold text-gray-800" th:text="${countDevices}"></h3>
                             </div>
                             <div class="bg-blue-100 p-3 rounded-full">
                                 <i class="fas fa-laptop text-blue-600 text-xl"></i>
@@ -68,6 +68,10 @@
                 <div class="bg-white rounded-xl shadow-md mb-8 overflow-hidden">
                     <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                         <h3 class="font-semibold text-lg text-gray-800">Danh sách thiết bị</h3>
+                        <div class="relative">
+                            <input type="text" placeholder="Tìm kiếm..." class="pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
                         <a th:href="@{/devices}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
                             <i class="fas fa-plus"></i>
                             <span>Thêm thiết bị</span>

@@ -78,6 +78,7 @@ public class IndexController {
     public String indexDevices(Model model, @RequestParam Map<String, String> params) {
         List<Device> devices = this.devService.getDevices(params);
         model.addAttribute("devices", devices);
+        model.addAttribute("countDevices", this.devService.countDevices(params));
 
         long totalDevices = this.devService.countDevices(params);
         int totalPages = (int) Math.ceil((double) totalDevices / 5);

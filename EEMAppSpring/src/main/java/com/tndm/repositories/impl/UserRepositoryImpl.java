@@ -37,7 +37,7 @@ public class UserRepositoryImpl implements UserRepository {
 
         return (User) q.getSingleResult();
     }
-
+    
 //    @Override
 //    public User addUser(User u) {
 //        Session s = this.factory.getObject().getCurrentSession();
@@ -48,6 +48,7 @@ public class UserRepositoryImpl implements UserRepository {
 //
 //        return u;
 //    }
+    
     @Override
     public User addOrUpdateUser(User u) {
         Session s = this.factory.getObject().getCurrentSession();
