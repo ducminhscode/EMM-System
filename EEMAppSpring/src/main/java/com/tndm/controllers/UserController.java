@@ -4,10 +4,17 @@
  */
 package com.tndm.controllers;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.tndm.pojo.User;
 import com.tndm.services.MailService;
 import com.tndm.services.UserService;
+import com.tndm.services.impl.UserServiceImpl;
+import java.io.IOException;
 import java.security.Principal;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -33,6 +40,9 @@ public class UserController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private Cloudinary cloudinary;
 
     @GetMapping("/login")
     public String loginView() {
@@ -94,7 +104,15 @@ public class UserController {
 
         // Xử lý avatar nếu có
         if (updatedUser.getFile() != null && !updatedUser.getFile().isEmpty()) {
-            // Logic upload avatar (đã có trong service)
+            try {
+                Map res = cloudinary.uploader().upload(updatedUser.getFile().getBytes(), ObjectUtils.asMap(
+                        "resource_type", "auto",
+                        "folder", "BaoTriThietBi"
+                ));
+                updatedUser.setAvatar(res.get("secure_url").toString());
+            } catch (IOException ex) {
+                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         userService.addOrUpdateUser(currentUser);

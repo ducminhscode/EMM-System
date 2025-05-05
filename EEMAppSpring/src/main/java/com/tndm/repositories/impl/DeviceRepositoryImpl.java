@@ -9,7 +9,9 @@ import com.tndm.repositories.DeviceRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
@@ -26,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DeviceRepositoryImpl implements DeviceRepository {
 
-    private static final int PAGE_SIZE = 5;
+    public static final int PAGE_SIZE = 5;
 
     @Autowired
     private LocalSessionFactoryBean factory;
@@ -39,6 +41,26 @@ public class DeviceRepositoryImpl implements DeviceRepository {
         CriteriaQuery<Device> q = b.createQuery(Device.class);
         Root<Device> root = q.from(Device.class);
         q.select(root);
+
+        if (params != null) {
+            List<Predicate> predicates = new ArrayList<>();
+
+            String searchType = params.get("searchType");
+            String value = params.get("value");
+
+            if (searchType != null && value != null && !value.isEmpty()) {
+                switch (searchType) {
+                    case "name":
+                        predicates.add(b.like(root.get("name"), "%" + value + "%"));
+                        break;
+                    case "manufacturer":
+                        predicates.add(b.like(root.get("manufacturer"), "%" + value + "%"));
+                        break;
+                }
+            }
+
+            q.where(predicates.toArray(Predicate[]::new));
+        }
 
         Query query = s.createQuery(q);
 

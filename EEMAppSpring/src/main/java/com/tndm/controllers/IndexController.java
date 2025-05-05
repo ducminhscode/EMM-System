@@ -6,6 +6,7 @@ package com.tndm.controllers;
 
 import com.tndm.pojo.Device;
 import com.tndm.pojo.User;
+import com.tndm.repositories.impl.DeviceRepositoryImpl;
 import com.tndm.services.DeviceService;
 import com.tndm.services.DeviceStatusService;
 import com.tndm.services.DeviceTypeService;
@@ -81,7 +82,7 @@ public class IndexController {
         model.addAttribute("countDevices", this.devService.countDevices(params));
 
         long totalDevices = this.devService.countDevices(params);
-        int totalPages = (int) Math.ceil((double) totalDevices / 5);
+        int totalPages = (int) Math.ceil((double) totalDevices / DeviceRepositoryImpl.PAGE_SIZE);
         totalPages = Math.max(1, totalPages);
         model.addAttribute("totalPages", totalPages);
 
@@ -99,6 +100,16 @@ public class IndexController {
         }
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("params", params);
+
+        // Lấy các tham số tìm kiếm và phân trang
+        String searchType = params.get("searchType");
+        String searchValue = params.get("value");
+        String pageParam = params.get("page");
+
+        if (searchType != null && searchValue != null) {
+            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchValue", searchValue);
+        }
 
         return "index-devices";
     }
