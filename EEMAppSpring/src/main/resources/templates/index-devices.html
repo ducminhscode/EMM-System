@@ -144,7 +144,7 @@
 
                         <div class="flex space-x-2">
                             <!-- First Page -->
-                            <a th:href="@{/?page=1}"
+                            <a th:href="@{/?page=1(searchType=${param.searchType}, value=${param.value})}"
                                class="px-3 py-1 border rounded-md" 
                                th:if="${currentPage > 1 and totalPages > 1}">
                                 &laquo;
@@ -156,7 +156,7 @@
 
                             <!-- Previous Page -->
                             <a th:with="previousPage=${currentPage} > 1 ? ${currentPage - 1} : 1"
-                               th:href="@{'/?page=' + ${previousPage}}"
+                               th:href="@{'/?page=' + ${previousPage}(searchType=${param.searchType}, value=${param.value})}"
                                class="px-3 py-1 border rounded-md" 
 
                                th:if="${currentPage > 1 and totalPages > 1}">
@@ -169,7 +169,7 @@
 
                             <!-- Next Page -->
                             <a th:with="nextPage=${currentPage} < ${totalPages} ? ${currentPage + 1} : ${totalPages}"
-                               th:href="@{'/?page=' + ${nextPage}}"
+                               th:href="@{'/?page=' + ${nextPage}(searchType=${param.searchType}, value=${param.value})}"
                                class="px-3 py-1 border rounded-md" 
                                th:if="${currentPage < totalPages and totalPages > 1}">
                                 &rsaquo;
@@ -180,7 +180,7 @@
                             </span>
 
                             <!-- Last Page -->
-                            <a th:href="@{'/?page=' + ${totalPages}}" 
+                            <a th:href="@{'/?page=' + ${totalPages}(searchType=${param.searchType}, value=${param.value})}" 
                                class="px-3 py-1 border rounded-md" 
                                th:if="${currentPage < totalPages and totalPages > 1}">
                                 &raquo;
