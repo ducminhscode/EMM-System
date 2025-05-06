@@ -24,7 +24,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -139,5 +138,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(int id) {
         return this.usrRepo.getUserById(id);
+    }
+
+    @Override
+    public List<User> getUsers(Map<String, String> params) {
+        return this.usrRepo.getUsers(params);
+    }
+
+    @Override
+    public long countUsers(Map<String, String> params) {
+        return this.usrRepo.countUsers(params);
+    }
+
+    @Override
+    public long countActiveUsers() {
+        return this.usrRepo.countActiveUsers();
     }
 }

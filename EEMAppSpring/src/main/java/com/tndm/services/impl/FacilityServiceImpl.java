@@ -23,8 +23,8 @@ public class FacilityServiceImpl implements FacilityService {
     private FacilityRepository faciRepo;
 
     @Override
-    public List<Facility> getFacilities() {
-        return this.faciRepo.getFacilities();
+    public List<Facility> getFacilities(Map<String, String> params, boolean paginate) {
+        return this.faciRepo.getFacilities(params, paginate);
     }
 
     @Override

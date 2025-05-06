@@ -7,7 +7,13 @@ package com.tndm.repositories.impl;
 import com.tndm.pojo.User;
 import com.tndm.repositories.UserRepository;
 import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -23,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserRepositoryImpl implements UserRepository {
 
+    public static final int PAGE_SIZE = 5;
+
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -37,7 +45,7 @@ public class UserRepositoryImpl implements UserRepository {
 
         return (User) q.getSingleResult();
     }
-    
+
 //    @Override
 //    public User addUser(User u) {
 //        Session s = this.factory.getObject().getCurrentSession();
@@ -48,7 +56,6 @@ public class UserRepositoryImpl implements UserRepository {
 //
 //        return u;
 //    }
-    
     @Override
     public User addOrUpdateUser(User u) {
         Session s = this.factory.getObject().getCurrentSession();
@@ -94,6 +101,75 @@ public class UserRepositoryImpl implements UserRepository {
     public User getUserById(int id) {
         Session s = this.factory.getObject().getCurrentSession();
         return s.get(User.class, id);
+    }
+
+    @Override
+    public List<User> getUsers(Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<User> q = b.createQuery(User.class);
+        Root<User> root = q.from(User.class);
+        q.select(root);
+
+        if (params != null) {
+            List<Predicate> predicates = new ArrayList<>();
+
+            String searchType = params.get("searchType");
+            String value = params.get("value");
+
+            if (searchType != null && value != null && !value.isEmpty()) {
+                switch (searchType) {
+                    case "name":
+                        Predicate firstNamePredicate = b.like(root.get("firstName"), "%" + value + "%");
+                        Predicate lastNamePredicate = b.like(root.get("lastName"), "%" + value + "%");
+                        predicates.add(b.or(firstNamePredicate, lastNamePredicate));
+                        break;
+                    case "username":
+                        predicates.add(b.like(root.get("username"), "%" + value + "%"));
+                        break;
+                    case "email":
+                        predicates.add(b.like(root.get("email"), "%" + value + "%"));
+                        break;
+                    case "phone":
+                        predicates.add(b.like(root.get("phone"), "%" + value + "%"));
+                        break;
+                }
+            }
+
+            q.where(predicates.toArray(Predicate[]::new));
+        }
+
+        Query query = s.createQuery(q);
+
+        int page = Integer.parseInt(params.getOrDefault("page", "1"));
+        int start = (page - 1) * PAGE_SIZE;
+        query.setMaxResults(PAGE_SIZE);
+        query.setFirstResult(start);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public long countUsers(Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Long> q = b.createQuery(Long.class);
+        Root<User> root = q.from(User.class);
+        q.select(b.count(root));
+
+        return s.createQuery(q).getSingleResult();
+    }
+
+    @Override
+    public long countActiveUsers() {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Long> q = b.createQuery(Long.class);
+        Root<User> root = q.from(User.class);
+
+        q.select(b.count(root)).where(b.equal(root.get("active"), true));
+
+        return s.createQuery(q).getSingleResult();
     }
 
 }

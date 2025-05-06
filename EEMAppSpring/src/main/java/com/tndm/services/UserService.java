@@ -8,7 +8,6 @@ import com.tndm.pojo.User;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -16,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface UserService extends UserDetailsService {
     List<User> getAllUser();
+    
+    List<User> getUsers(Map<String, String> params);
     
     User addOrUpdateUser(User u);
 
@@ -26,4 +27,8 @@ public interface UserService extends UserDetailsService {
     void deleteUser(int id);
     
     boolean authenticate(String username, String password);
+    
+    long countUsers(Map<String, String> params);
+    
+    long countActiveUsers();
 }

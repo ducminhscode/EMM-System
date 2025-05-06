@@ -8,8 +8,12 @@
     <div class="min-h-screen flex flex-col">
         <!-- Header -->
         <header class="bg-blue-600 text-white shadow-md">
-            <div class="container mx-auto px-4 py-6">
-                <h1 class="text-2xl font-bold text-center">QUẢN LÝ THIẾT BỊ</h1>
+            <div class="container mx-auto px-4 py-6 flex justify-between items-center">
+                <a th:href="@{/}" class="flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
+                    <i class="fas fa-arrow-left text-lg"></i>
+                </a>
+                <h1 class="text-2xl font-bold">QUẢN LÝ THIẾT BỊ</h1>
+                <div class="w-24"></div>
             </div>
         </header>
 
@@ -19,8 +23,8 @@
                 <!-- Form Header -->
                 <div class="bg-blue-600 px-6 py-4">
                     <h2 class="text-xl font-semibold text-white">
-                        <span th:if="${device.id == null}">THÊM THIẾT BỊ MỚI</span>
-                        <span th:unless="${device.id == null}">CẬP NHẬT THIẾT BỊ</span>
+                        <span th:if="${device.id == null}">Thêm thiết bị mới</span>
+                        <span th:unless="${device.id == null}">Sửa thông tin thiết bị</span>
                     </h2>
                 </div>
 
@@ -37,7 +41,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Device Type -->
                         <div>
-                            <label for="typeId" class="block text-sm font-medium text-gray-700 mb-1">Loại thiết bị <span class="text-red-500">*</span></label>
+                            <label for="typeId" class="block text-sm font-medium text-gray-700 mb-1">Loại thiết bị</label>
                             <select type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                                     th:field="*{typeId}" id="typeId" required>
                                 <option th:each="t : ${deviceTypes}" th:value="${t.id}" th:text="${t.name}"></option>

@@ -9,7 +9,9 @@ import com.tndm.repositories.FacilityRepository;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
@@ -26,15 +28,49 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class FacilityRepositoryImpl implements FacilityRepository {
 
+    public static final int PAGE_SIZE = 5;
+
     @Autowired
     private LocalSessionFactoryBean factory;
 
     @Override
-    public List<Facility> getFacilities() {
+    public List<Facility> getFacilities(Map<String, String> params, boolean paginate) {
         Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("FROM Facility", Facility.class);
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Facility> q = b.createQuery(Facility.class);
+        Root<Facility> root = q.from(Facility.class);
+        q.select(root);
 
-        return q.getResultList();
+        if (params != null) {
+            List<Predicate> predicates = new ArrayList<>();
+
+            String searchType = params.get("searchType");
+            String value = params.get("value");
+
+            if (searchType != null && value != null && !value.isEmpty()) {
+                switch (searchType) {
+                    case "name":
+                        predicates.add(b.like(root.get("name"), "%" + value + "%"));
+                        break;
+                    case "address":
+                        predicates.add(b.like(root.get("address"), "%" + value + "%"));
+                        break;
+                }
+            }
+
+            q.where(predicates.toArray(Predicate[]::new));
+        }
+
+        Query query = s.createQuery(q);
+
+        if (paginate) {
+            int page = Integer.parseInt(params.getOrDefault("page", "1"));
+            int start = (page - 1) * PAGE_SIZE;
+            query.setMaxResults(PAGE_SIZE);
+            query.setFirstResult(start);
+        }
+
+        return query.getResultList();
     }
 
     @Override
@@ -76,5 +112,5 @@ public class FacilityRepositoryImpl implements FacilityRepository {
 
         return s.createQuery(q).getSingleResult();
     }
-    
+
 }

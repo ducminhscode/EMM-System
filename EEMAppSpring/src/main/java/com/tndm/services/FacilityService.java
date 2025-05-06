@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public interface FacilityService {
 
-    List<Facility> getFacilities();
+    List<Facility> getFacilities(Map<String, String> params, boolean paginate);
     
     Facility addOrUpdateFacility(Facility d);
     

@@ -7,6 +7,8 @@ package com.tndm.controllers;
 import com.tndm.pojo.Device;
 import com.tndm.pojo.User;
 import com.tndm.repositories.impl.DeviceRepositoryImpl;
+import com.tndm.repositories.impl.FacilityRepositoryImpl;
+import com.tndm.repositories.impl.UserRepositoryImpl;
 import com.tndm.services.DeviceService;
 import com.tndm.services.DeviceStatusService;
 import com.tndm.services.DeviceTypeService;
@@ -60,8 +62,8 @@ public class IndexController {
     private UserService userService;
 
     @ModelAttribute
-    public void commonResponse(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        model.addAttribute("facilities", this.facService.getFacilities());
+    public void commonResponse(Model model, @AuthenticationPrincipal UserDetails userDetails, @RequestParam Map<String, String> params) {
+        model.addAttribute("facilities", this.facService.getFacilities(null, false));
         model.addAttribute("deviceTypes", this.deviceTypeService.getDeviceTypes());
         model.addAttribute("deviceStatus", this.devStatusService.getDeviceStatus());
         model.addAttribute("problemStatus", this.proStatusService.getProblemStatus());
@@ -104,7 +106,6 @@ public class IndexController {
         // Lấy các tham số tìm kiếm và phân trang
         String searchType = params.get("searchType");
         String searchValue = params.get("value");
-        String pageParam = params.get("page");
 
         if (searchType != null && searchValue != null) {
             model.addAttribute("searchType", searchType);
@@ -116,13 +117,77 @@ public class IndexController {
 
     @RequestMapping("/index-facilities")
     public String indexFacilities(Model model, @RequestParam Map<String, String> params) {
+        model.addAttribute("facilities", this.facService.getFacilities(params, true));
         model.addAttribute("countFacilities", this.facService.countFacilities(params));
+        
+        long totalFacilities = this.facService.countFacilities(params);
+        int totalPages = (int) Math.ceil((double) totalFacilities / FacilityRepositoryImpl.PAGE_SIZE);
+        totalPages = Math.max(1, totalPages);
+        model.addAttribute("totalPages", totalPages);
+
+        int currentPage;
+        try {
+            currentPage = Integer.parseInt(params.getOrDefault("page", "1"));
+            if (currentPage < 1) {
+                currentPage = 1;
+            }
+            if (currentPage > totalPages && totalPages > 0) {
+                currentPage = totalPages;
+            }
+        } catch (NumberFormatException e) {
+            currentPage = 1;
+        }
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("params", params);
+
+        String searchType = params.get("searchType");
+        String searchValue = params.get("value");
+
+        if (searchType != null && searchValue != null) {
+            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchValue", searchValue);
+        }
+        
         return "index-facilities";
     }
 
     @RequestMapping("/index-users")
-    public String indexUser(Model model) {
+    public String indexUser(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("users", this.userService.getAllUser());
+        model.addAttribute("countActiveUsers", this.userService.countActiveUsers());
+        
+        List<User> users = this.userService.getUsers(params);
+        model.addAttribute("users", users);
+        model.addAttribute("countUsers", this.userService.countUsers(params));
+
+        long totalUsers = this.userService.countUsers(params);
+        int totalPages = (int) Math.ceil((double) totalUsers / UserRepositoryImpl.PAGE_SIZE);
+        totalPages = Math.max(1, totalPages);
+        model.addAttribute("totalPages", totalPages);
+
+        int currentPage;
+        try {
+            currentPage = Integer.parseInt(params.getOrDefault("page", "1"));
+            if (currentPage < 1) {
+                currentPage = 1;
+            }
+            if (currentPage > totalPages && totalPages > 0) {
+                currentPage = totalPages;
+            }
+        } catch (NumberFormatException e) {
+            currentPage = 1;
+        }
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("params", params);
+
+        String searchType = params.get("searchType");
+        String searchValue = params.get("value");
+
+        if (searchType != null && searchValue != null) {
+            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchValue", searchValue);
+        }
+
         return "index-users";
     }
 

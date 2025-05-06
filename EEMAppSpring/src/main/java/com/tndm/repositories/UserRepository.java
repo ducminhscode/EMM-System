@@ -6,6 +6,7 @@ package com.tndm.repositories;
 
 import com.tndm.pojo.User;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -14,14 +15,19 @@ import java.util.List;
 public interface UserRepository {
     List<User> getAllUser();
     
+    List<User> getUsers(Map<String, String> params);
+    
     User getUserByUsername(String username);
     
     User getUserById(int id);
     
     User addOrUpdateUser(User u);
     
-//    User addUser(User u);
     void deleteUser(int id);
     
     boolean authenticate(String username, String password);
+    
+    long countUsers(Map<String, String> params);
+    
+    long countActiveUsers();
 }
