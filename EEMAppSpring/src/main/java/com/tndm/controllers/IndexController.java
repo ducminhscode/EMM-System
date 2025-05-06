@@ -115,7 +115,8 @@ public class IndexController {
     }
 
     @RequestMapping("/index-facilities")
-    public String indexFacilities(Model model) {
+    public String indexFacilities(Model model, @RequestParam Map<String, String> params) {
+        model.addAttribute("countFacilities", this.facService.countFacilities(params));
         return "index-facilities";
     }
 

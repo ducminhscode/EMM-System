@@ -7,7 +7,11 @@ package com.tndm.repositories.impl;
 import com.tndm.pojo.Facility;
 import com.tndm.repositories.FacilityRepository;
 import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.util.List;
+import java.util.Map;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -60,6 +64,17 @@ public class FacilityRepositoryImpl implements FacilityRepository {
         Session s = this.factory.getObject().getCurrentSession();
         Facility p = this.getFacilityById(id);
         s.remove(p);
+    }
+
+    @Override
+    public long countFacilities(Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Long> q = b.createQuery(Long.class);
+        Root<Facility> root = q.from(Facility.class);
+        q.select(b.count(root));
+
+        return s.createQuery(q).getSingleResult();
     }
     
 }

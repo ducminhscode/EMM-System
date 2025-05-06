@@ -8,6 +8,7 @@ import com.tndm.pojo.Facility;
 import com.tndm.repositories.FacilityRepository;
 import com.tndm.services.FacilityService;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,5 +40,10 @@ public class FacilityServiceImpl implements FacilityService {
     @Override
     public void deleteFacility(int id) {
         this.faciRepo.deleteFacility(id);
+    }
+
+    @Override
+    public long countFacilities(Map<String, String> params) {
+        return this.faciRepo.countFacilities(params);
     }
 }

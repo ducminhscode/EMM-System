@@ -63,6 +63,11 @@ public class UserController {
 
     @PostMapping("/users/add")
     public String addOrUpdateUser(@ModelAttribute(value = "user") User u) {
+
+        if (u.getId() == null) {
+            u.setPassword("123");
+        }
+
         this.userService.addOrUpdateUser(u);
         mailService.sendMail(u.getEmail(),
                 "Thông báo tài khoản của bạn",
@@ -101,19 +106,7 @@ public class UserController {
         currentUser.setLastName(updatedUser.getLastName());
         currentUser.setEmail(updatedUser.getEmail());
         currentUser.setPhone(updatedUser.getPhone());
-
-        // Xử lý avatar nếu có
-        if (updatedUser.getFile() != null && !updatedUser.getFile().isEmpty()) {
-            try {
-                Map res = cloudinary.uploader().upload(updatedUser.getFile().getBytes(), ObjectUtils.asMap(
-                        "resource_type", "auto",
-                        "folder", "BaoTriThietBi"
-                ));
-                updatedUser.setAvatar(res.get("secure_url").toString());
-            } catch (IOException ex) {
-                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        currentUser.setFile(updatedUser.getFile());
 
         userService.addOrUpdateUser(currentUser);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin thành công!");

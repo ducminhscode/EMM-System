@@ -88,7 +88,6 @@ public class UserServiceImpl implements UserService {
 //
 //        return this.usrRepo.addUser(u);
 //    }
-    
     @Override
     public boolean authenticate(String username, String password) {
         return this.usrRepo.authenticate(username, password);
@@ -106,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
             if (u.getPassword() == null || u.getPassword().isEmpty()) {
                 u.setPassword(existingUser.getPassword());
-            } else {
+            } else if (!u.getPassword().equals(existingUser.getPassword())) {
                 u.setPassword(this.passwordEncoder.encode(u.getPassword()));
             }
 

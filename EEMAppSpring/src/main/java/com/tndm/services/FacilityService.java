@@ -6,6 +6,7 @@ package com.tndm.services;
 
 import com.tndm.pojo.Facility;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -20,5 +21,7 @@ public interface FacilityService {
     Facility getFacilityById(int id);
     
     void deleteFacility(int id);
+    
+    long countFacilities(Map<String, String> params);
 
 }
