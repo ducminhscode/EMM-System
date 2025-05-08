@@ -16,7 +16,8 @@ import org.springframework.stereotype.Service;
  * @author ADMIN
  */
 @Service
-public class RepairHistoryServiceImpl implements RepairHistoryService{
+public class RepairHistoryServiceImpl implements RepairHistoryService {
+
     @Autowired
     private RepairHistoryRepository repairHistoryRepo;
 
@@ -24,5 +25,9 @@ public class RepairHistoryServiceImpl implements RepairHistoryService{
     public List<RepairHistory> getRepairHistoriesByProblemId(int problemId) {
         return this.repairHistoryRepo.getRepairHistoriesByProblemId(problemId);
     }
-    
+
+    @Override
+    public List<RepairHistory> getAllRepairHistorires() {
+        return this.repairHistoryRepo.getAllRepairHistorires();
+    }
 }

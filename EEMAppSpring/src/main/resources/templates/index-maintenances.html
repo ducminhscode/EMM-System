@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+    <head>
+    <th:block th:replace="base :: styles"></th:block>
+    <title>Quản lý Lịch Bảo trì</title>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <th:block th:replace="base :: sidebar"></th:block>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-64 overflow-auto">
+            <!-- Header -->
+            <th:block th:replace="base :: header (pageTitle='Quản lý lịch bảo trì')"></th:block>
+
+            <!-- Content -->
+            <main class="p-6">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-semibold text-lg text-gray-800">Danh sách Lịch Bảo trì</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiêu đề</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thiết bị</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cơ sở</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Người tạo</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr th:each="maintenance : ${maintenances}" class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${maintenance.id}"></td>
+
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${maintenance.title}"></td>
+
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${maintenance.deviceId.name}"></td>
+
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${maintenance.deviceId.facilityId.name}"></td>
+
+
+                                        <td  class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                             th:text="${maintenance.maintenanceStatus}">
+                                        </td>
+
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${maintenance.userId.firstName} + ' ' + ${maintenance.userId.lastName}"></td>
+                                        
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                                            <div class="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-3">
+                                                <!-- Nút Xem - Luôn hiển thị -->
+                                                <a th:href="@{'/maintenances/' + ${maintenance.id}}" 
+                                                   class="link-with-icon text-blue-600 hover:text-blue-800 transition-colors">
+                                                    <i class="fas fa-eye"></i>
+                                                    <span class="hidden sm:inline">Xem chi tiết</span>
+                                                </a>
+
+                                                <!-- Nút Sửa - Chỉ hiện khi chưa bảo trì -->
+                                                <a th:if="${maintenance.maintenanceStatus != 'Đã bảo trì'}"
+                                                   th:href="@{'/maintenance-form/' + ${maintenance.id}}" 
+                                                   class="link-with-icon text-yellow-600 hover:text-yellow-800 transition-colors">
+                                                    <i class="fas fa-edit"></i>
+                                                    <span class="hidden sm:inline">Sửa</span>
+                                                </a>
+
+                                                <!-- Nút Xóa - Chỉ hiện khi chưa bảo trì -->
+                                                <button th:if="${maintenance.maintenanceStatus != 'Đã bảo trì' && maintenance.maintenanceStatus != 'Quá hạn bảo trì'}"
+                                                        type="button" 
+                                                        th:onclick="'deleteConfirm(\'' + @{/maintenances/} + '\',' + ${maintenance.id} + ')'"
+                                                        class="link-with-icon text-red-600 hover:text-red-800 transition-colors">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                    <span class="hidden sm:inline">Xóa</span>
+                                                </button>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:if="${#lists.isEmpty(maintenances)}" class="text-center text-gray-500 py-6">
+                            Chưa có lịch bảo trì nào được tạo
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+<th:block th:replace="base :: scripts"></th:block>
+</body>
+</html>

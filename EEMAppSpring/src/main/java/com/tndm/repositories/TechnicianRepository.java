@@ -4,17 +4,15 @@
  */
 package com.tndm.repositories;
 
-import com.tndm.pojo.RepairHistory;
+import com.tndm.pojo.Technician;
 import java.util.List;
 
 /**
  *
  * @author ADMIN
  */
-public interface RepairHistoryRepository {
-
-    List<RepairHistory> getRepairHistoriesByProblemId(int problemId);
-
-    List<RepairHistory> getAllRepairHistorires();
-
+public interface TechnicianRepository {
+    List<Technician> getAllTechnician();
+    
+    Technician getTechnicianById(int id);
 }

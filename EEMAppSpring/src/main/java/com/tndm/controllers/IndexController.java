@@ -14,6 +14,8 @@ import com.tndm.services.DeviceStatusService;
 import com.tndm.services.DeviceTypeService;
 import com.tndm.services.FacilityService;
 import com.tndm.services.FatalLevelService;
+import com.tndm.services.MaintenanceScheduleService;
+import com.tndm.services.MaintenanceTypeService;
 import com.tndm.services.ProblemService;
 import com.tndm.services.ProblemStatusService;
 import com.tndm.services.UserService;
@@ -61,6 +63,12 @@ public class IndexController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MaintenanceTypeService mainTypeService;
+
+    @Autowired
+    private MaintenanceScheduleService mainScheduleService;
+
     @ModelAttribute
     public void commonResponse(Model model, @AuthenticationPrincipal UserDetails userDetails, @RequestParam Map<String, String> params) {
         model.addAttribute("facilities", this.facService.getFacilities(null, false));
@@ -68,6 +76,7 @@ public class IndexController {
         model.addAttribute("deviceStatus", this.devStatusService.getDeviceStatus());
         model.addAttribute("problemStatus", this.proStatusService.getProblemStatus());
         model.addAttribute("FatalLevels", this.fatLevelService.getFatalLevel());
+        model.addAttribute("maintenanceTypes", this.mainTypeService.getMaintenanceTypes());
 
         if (userDetails != null) {
             User user = userService.getUserByUsername(userDetails.getUsername());
@@ -119,7 +128,7 @@ public class IndexController {
     public String indexFacilities(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("facilities", this.facService.getFacilities(params, true));
         model.addAttribute("countFacilities", this.facService.countFacilities(params));
-        
+
         long totalFacilities = this.facService.countFacilities(params);
         int totalPages = (int) Math.ceil((double) totalFacilities / FacilityRepositoryImpl.PAGE_SIZE);
         totalPages = Math.max(1, totalPages);
@@ -147,7 +156,7 @@ public class IndexController {
             model.addAttribute("searchType", searchType);
             model.addAttribute("searchValue", searchValue);
         }
-        
+
         return "index-facilities";
     }
 
@@ -155,7 +164,7 @@ public class IndexController {
     public String indexUser(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("users", this.userService.getAllUser());
         model.addAttribute("countActiveUsers", this.userService.countActiveUsers());
-        
+
         List<User> users = this.userService.getUsers(params);
         model.addAttribute("users", users);
         model.addAttribute("countUsers", this.userService.countUsers(params));
@@ -201,5 +210,12 @@ public class IndexController {
         model.addAttribute("problems", this.proService.getProblem());
 
         return "index-problems";
+    }
+
+    @RequestMapping("/index-maintenances")
+    public String indexMaintenance(Model model) {
+        model.addAttribute("maintenances", this.mainScheduleService.getMaintenanceSchedule());
+
+        return "index-maintenances";
     }
 }

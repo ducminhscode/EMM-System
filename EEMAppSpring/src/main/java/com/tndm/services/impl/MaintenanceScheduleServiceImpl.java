@@ -1,0 +1,66 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.tndm.services.impl;
+
+import com.tndm.pojo.MaintenanceAssignment;
+import com.tndm.pojo.MaintenanceSchedule;
+import com.tndm.repositories.MaintenanceAssignmentRepository;
+import com.tndm.repositories.MaintenanceScheduleRepository;
+import com.tndm.services.MailService;
+import com.tndm.services.MaintenanceScheduleService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+/**
+ *
+ * @author ADMIN
+ */
+@Service
+public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleService {
+    
+    @Autowired
+    private MaintenanceScheduleRepository mainScheduleRepo;
+    
+    @Autowired
+    private MaintenanceAssignmentRepository mainAssignRepo;
+    
+    @Autowired
+    private MailService mailSer;
+    
+    @Override
+    public List<MaintenanceSchedule> getMaintenanceSchedule() {
+        return this.mainScheduleRepo.getMaintenanceSchedule();
+    }
+
+    @Override
+    public MaintenanceSchedule addOrUpdateMaintenanceSchedule(MaintenanceSchedule m) {
+        return this.mainScheduleRepo.addOrUpdateMaintenanceSchedule(m);
+    }
+
+    @Override
+    public void deleteMaintenanceSchedule(int id) {
+        this.mainScheduleRepo.deleteMaintenanceSchedule(id);
+    }
+
+    @Override
+    public MaintenanceSchedule getMaintenanceScheduleById(int id) {
+        return this.mainScheduleRepo.getMaintenanceScheduleById(id);
+    }
+
+    @Override
+//    @Scheduled(cron = "0 */3 * * * *")
+    public void notifySchedule() {
+        List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.getMaintenanceSchedule();
+        for(MaintenanceSchedule maintenance : listMaintenances){
+            List<MaintenanceAssignment> listAssigns = this.mainAssignRepo.getAssignmentByMaintenanceId(maintenance.getId());
+            for(MaintenanceAssignment mainAssign : listAssigns){
+                mailSer.sendMail(mainAssign.getTechnicianId().getUser().getEmail(), "Tới hạn bảo trì", maintenance.getTitle());
+            }
+        }
+    }
+  
+}

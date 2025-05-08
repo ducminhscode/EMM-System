@@ -4,9 +4,8 @@
  */
 package com.tndm.repositories.impl;
 
-import com.tndm.pojo.RepairHistory;
-import com.tndm.repositories.RepairHistoryRepository;
-import jakarta.persistence.NoResultException;
+import com.tndm.pojo.MaintenanceType;
+import com.tndm.repositories.MaintenanceTypeRepository;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -21,25 +20,17 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class RepairHistoryRepositoryImpl implements RepairHistoryRepository {
-
+public class MaintenanceTypeRepositoryImpl implements MaintenanceTypeRepository{
     @Autowired
     private LocalSessionFactoryBean factory;
-
+    
     @Override
-    public List<RepairHistory> getRepairHistoriesByProblemId(int problemID) {
+    public List<MaintenanceType> getMaintenanceTypes() {
+                
         Session s = this.factory.getObject().getCurrentSession();
-        String hql = "FROM RepairHistory rh WHERE rh.problemId.id = :problemId";
-        return s.createQuery(hql, RepairHistory.class)
-                .setParameter("problemId", problemID)
-                .list();
-    }
-
-    @Override
-    public List<RepairHistory> getAllRepairHistorires() {
-        Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("FROM RepairHistory", RepairHistory.class);
+        Query q = s.createQuery("FROM MaintenanceType", MaintenanceType.class);
 
         return q.getResultList();
     }
+    
 }

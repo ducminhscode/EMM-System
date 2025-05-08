@@ -4,6 +4,7 @@
  */
 package com.tndm.configs;
 
+import com.tndm.formatters.DeviceFormatter;
 import com.tndm.formatters.DeviceStatusFormatter;
 import com.tndm.formatters.DeviceTypeFormatter;
 import com.tndm.formatters.FacilityFormatter;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
@@ -30,6 +32,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
     "com.tndm.services",
     "com.tndm.formatters"
 })
+@EnableScheduling
 @EnableTransactionManagement
 public class WebAppContextConfigs implements WebMvcConfigurer {
 
@@ -44,6 +47,7 @@ public class WebAppContextConfigs implements WebMvcConfigurer {
         registry.addFormatter(new FacilityFormatter());
         registry.addFormatter(new DeviceStatusFormatter());
         registry.addFormatter(new DeviceTypeFormatter());
+        registry.addFormatter(new DeviceFormatter());
     }
 
     @Override
