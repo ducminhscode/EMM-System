@@ -70,6 +70,8 @@ public class Facility implements Serializable {
     @UpdateTimestamp
     private Date updatedDate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "facilityId")
+    private Set<Technician> technicianSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "facilityId")
     private Set<Device> deviceSet;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
@@ -126,6 +128,15 @@ public class Facility implements Serializable {
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    @XmlTransient
+    public Set<Technician> getTechnicianSet() {
+        return technicianSet;
+    }
+
+    public void setTechnicianSet(Set<Technician> technicianSet) {
+        this.technicianSet = technicianSet;
     }
 
     @XmlTransient

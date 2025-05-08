@@ -30,13 +30,14 @@ public class ApiUserController {
     @Autowired
     private UserService userDetailsService;
 
-//    @PostMapping("/users")
-//    public ResponseEntity<User> create(@RequestParam Map<String, String> params,
-//            @RequestParam("avatar") MultipartFile avatar) {
-//        User u = this.userDetailsService.addUser(params, avatar);
-//
-//        return new ResponseEntity<>(u, HttpStatus.CREATED);
-//    }
+    //API tạo User
+    @PostMapping("/users")
+    public ResponseEntity<User> create(@RequestParam Map<String, String> params,
+            @RequestParam("avatar") MultipartFile avatar) {
+        User u = this.userDetailsService.addUser(params, avatar);
+
+        return new ResponseEntity<>(u, HttpStatus.CREATED);
+    }
     
 
 }

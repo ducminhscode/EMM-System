@@ -24,6 +24,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -61,32 +62,35 @@ public class UserServiceImpl implements UserService {
                 u.getUsername(), u.getPassword(), authorities);
     }
 
-//    @Override
-//    public User addUser(Map<String, String> params, MultipartFile avatar) {
-//        User u = new User();
-//        u.setFirstName(params.get("firstName"));
-//        u.setLastName(params.get("lastName"));
-//        u.setEmail(params.get("email"));
-//        u.setPhone(params.get("phone"));
-//        u.setUsername(params.get("username"));
-//        u.setPassword(this.passwordEncoder.encode(params.get("password")));
-//        u.setUserRole(params.get("userRole"));
-//        u.setActive(Boolean.TRUE);
-//
-//        if (!avatar.isEmpty()) {
-//            try {
-//                Map res = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.asMap(
-//                        "resource_type", "auto",
-//                        "folder", "BaoTriThietBi"
-//                ));
-//                u.setAvatar(res.get("secure_url").toString());
-//            } catch (IOException ex) {
-//                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//
-//        return this.usrRepo.addUser(u);
-//    }
+    //API tạo User
+    @Override
+    public User addUser(Map<String, String> params, MultipartFile avatar) {
+        User u = new User();
+        u.setFirstName(params.get("firstName"));
+        u.setLastName(params.get("lastName"));
+        u.setEmail(params.get("email"));
+        u.setPhone(params.get("phone"));
+        u.setUsername(params.get("username"));
+        u.setPassword(this.passwordEncoder.encode(params.get("password")));
+        u.setUserRole("ROLE_ADMIN");
+        u.setActive(Boolean.TRUE);
+
+        if (!avatar.isEmpty()) {
+            try {
+                Map res = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.asMap(
+                        "resource_type", "auto",
+                        "folder", "BaoTriThietBi"
+                ));
+                u.setAvatar(res.get("secure_url").toString());
+            } catch (IOException ex) {
+                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return this.usrRepo.addUser(u);
+    }
+    
+    
     @Override
     public boolean authenticate(String username, String password) {
         return this.usrRepo.authenticate(username, password);

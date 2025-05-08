@@ -77,8 +77,8 @@ public class Device implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     private Date updatedDate;
-    @OneToMany(mappedBy = "deviceId")
-    private Set<MaintenanceDetail> maintenanceDetailSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceId")
+    private Set<MaintenanceSchedule> maintenanceScheduleSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceId")
     private Set<Problem> problemSet;
     @JoinColumn(name = "status_id", referencedColumnName = "id")
@@ -157,12 +157,12 @@ public class Device implements Serializable {
     }
 
     @XmlTransient
-    public Set<MaintenanceDetail> getMaintenanceDetailSet() {
-        return maintenanceDetailSet;
+    public Set<MaintenanceSchedule> getMaintenanceScheduleSet() {
+        return maintenanceScheduleSet;
     }
 
-    public void setMaintenanceDetailSet(Set<MaintenanceDetail> maintenanceDetailSet) {
-        this.maintenanceDetailSet = maintenanceDetailSet;
+    public void setMaintenanceScheduleSet(Set<MaintenanceSchedule> maintenanceScheduleSet) {
+        this.maintenanceScheduleSet = maintenanceScheduleSet;
     }
 
     @XmlTransient

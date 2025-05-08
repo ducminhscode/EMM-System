@@ -23,6 +23,7 @@ import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
@@ -44,8 +45,10 @@ import org.springframework.format.annotation.DateTimeFormat;
     @NamedQuery(name = "MaintenanceSchedule.findByTitle", query = "SELECT m FROM MaintenanceSchedule m WHERE m.title = :title"),
     @NamedQuery(name = "MaintenanceSchedule.findByDescription", query = "SELECT m FROM MaintenanceSchedule m WHERE m.description = :description"),
     @NamedQuery(name = "MaintenanceSchedule.findByFrequency", query = "SELECT m FROM MaintenanceSchedule m WHERE m.frequency = :frequency"),
-    @NamedQuery(name = "MaintenanceSchedule.findByCreatedDate", query = "SELECT m FROM MaintenanceSchedule m WHERE m.createdDate = :createdDate"),
-    @NamedQuery(name = "MaintenanceSchedule.findByUpdatedDate", query = "SELECT m FROM MaintenanceSchedule m WHERE m.updatedDate = :updatedDate")})
+    @NamedQuery(name = "MaintenanceSchedule.findByExpenseFirst", query = "SELECT m FROM MaintenanceSchedule m WHERE m.expenseFirst = :expenseFirst"),
+    @NamedQuery(name = "MaintenanceSchedule.findByExpenseLast", query = "SELECT m FROM MaintenanceSchedule m WHERE m.expenseLast = :expenseLast"),
+    @NamedQuery(name = "MaintenanceSchedule.findByMaintenanceStatus", query = "SELECT m FROM MaintenanceSchedule m WHERE m.maintenanceStatus = :maintenanceStatus"),
+    @NamedQuery(name = "MaintenanceSchedule.findByMaintenanceDate", query = "SELECT m FROM MaintenanceSchedule m WHERE m.maintenanceDate = :maintenanceDate")})
 public class MaintenanceSchedule implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -79,16 +82,23 @@ public class MaintenanceSchedule implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "frequency")
     private String frequency;
-    @Column(name = "created_date")
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "expense_first")
+    private BigDecimal expenseFirst;
+    @Column(name = "expense_last")
+    private BigDecimal expenseLast;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 15)
+    @Column(name = "maintenance_status")
+    private String maintenanceStatus;
+    @Column(name = "maintenance_date")
     @Temporal(TemporalType.TIMESTAMP)
-    @CreationTimestamp
-    private Date createdDate;
-    @Column(name = "updated_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
-    private Date updatedDate;
-    @OneToMany(mappedBy = "maintenanceScheduleId")
-    private Set<MaintenanceDetail> maintenanceDetailSet;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date maintenanceDate;
+    @JoinColumn(name = "device_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Device deviceId;
     @JoinColumn(name = "type_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private MaintenanceType typeId;
@@ -105,12 +115,13 @@ public class MaintenanceSchedule implements Serializable {
         this.id = id;
     }
 
-    public MaintenanceSchedule(Integer id, Date startDate, Date endDate, String title, String frequency) {
+    public MaintenanceSchedule(Integer id, Date startDate, Date endDate, String title, String frequency, String maintenanceStatus) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.title = title;
         this.frequency = frequency;
+        this.maintenanceStatus = maintenanceStatus;
     }
 
     public Integer getId() {
@@ -161,29 +172,44 @@ public class MaintenanceSchedule implements Serializable {
         this.frequency = frequency;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
+    public BigDecimal getExpenseFirst() {
+        return expenseFirst;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setExpenseFirst(BigDecimal expenseFirst) {
+        this.expenseFirst = expenseFirst;
     }
 
-    public Date getUpdatedDate() {
-        return updatedDate;
+    public BigDecimal getExpenseLast() {
+        return expenseLast;
     }
 
-    public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
+    public void setExpenseLast(BigDecimal expenseLast) {
+        this.expenseLast = expenseLast;
     }
 
-    @XmlTransient
-    public Set<MaintenanceDetail> getMaintenanceDetailSet() {
-        return maintenanceDetailSet;
+    public String getMaintenanceStatus() {
+        return maintenanceStatus;
     }
 
-    public void setMaintenanceDetailSet(Set<MaintenanceDetail> maintenanceDetailSet) {
-        this.maintenanceDetailSet = maintenanceDetailSet;
+    public void setMaintenanceStatus(String maintenanceStatus) {
+        this.maintenanceStatus = maintenanceStatus;
+    }
+
+    public Date getMaintenanceDate() {
+        return maintenanceDate;
+    }
+
+    public void setMaintenanceDate(Date maintenanceDate) {
+        this.maintenanceDate = maintenanceDate;
+    }
+
+    public Device getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(Device deviceId) {
+        this.deviceId = deviceId;
     }
 
     public MaintenanceType getTypeId() {

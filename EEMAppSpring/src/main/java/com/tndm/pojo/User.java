@@ -5,7 +5,6 @@
 package com.tndm.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.mail.Multipart;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -302,13 +301,13 @@ public class User implements Serializable {
     public String toString() {
         return "com.tndm.pojo.User[ id=" + id + " ]";
     }
-
+    
     /**
      * @return the file
      */
     public MultipartFile getFile() {
         return file;
-    }
+}
 
     /**
      * @param file the file to set

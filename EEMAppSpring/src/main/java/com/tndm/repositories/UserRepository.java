@@ -30,4 +30,7 @@ public interface UserRepository {
     long countUsers(Map<String, String> params);
     
     long countActiveUsers();
+    
+    //API tạo User
+    User addUser(User u);
 }
