@@ -57,8 +57,7 @@ public class UserRepositoryImpl implements UserRepository {
 
         return u;
     }
-    
-    
+
     @Override
     public User addOrUpdateUser(User u) {
         Session s = this.factory.getObject().getCurrentSession();
@@ -85,19 +84,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> getAllUser() {
-        Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("FROM User", User.class);
-
-        return q.getResultList();
-    }
-
-    @Override
     public void deleteUser(int id) {
         Session s = this.factory.getObject().getCurrentSession();
         User u = this.getUserById(id);
         s.remove(u);
-
     }
 
     @Override

@@ -95,12 +95,7 @@ public class UserServiceImpl implements UserService {
     public boolean authenticate(String username, String password) {
         return this.usrRepo.authenticate(username, password);
     }
-
-    @Override
-    public List<User> getAllUser() {
-        return this.usrRepo.getAllUser();
-    }
-
+    
     @Override
     public User addOrUpdateUser(User u) {
         if (u.getId() != null) {

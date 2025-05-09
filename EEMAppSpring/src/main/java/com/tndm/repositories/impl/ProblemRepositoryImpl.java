@@ -7,7 +7,13 @@ package com.tndm.repositories.impl;
 import com.tndm.pojo.Problem;
 import com.tndm.repositories.ProblemRepository;
 import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -22,15 +28,27 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ProblemRepositoryImpl implements ProblemRepository {
 
+    public static final int PAGE_SIZE = 5;
+
     @Autowired
     private LocalSessionFactoryBean factory;
 
     @Override
-    public List<Problem> getProblem() {
+    public List<Problem> getProblem(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("FROM Problem", Problem.class);
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Problem> q = b.createQuery(Problem.class);
+        Root<Problem> root = q.from(Problem.class);
+        q.select(root);
 
-        return q.getResultList();
+        Query query = s.createQuery(q);
+
+        int page = Integer.parseInt(params.getOrDefault("page", "1"));
+        int start = (page - 1) * PAGE_SIZE;
+        query.setMaxResults(PAGE_SIZE);
+        query.setFirstResult(start);
+
+        return query.getResultList();
     }
 
     @Override
@@ -39,4 +57,21 @@ public class ProblemRepositoryImpl implements ProblemRepository {
         return s.get(Problem.class, id);
     }
 
+    @Override
+    public long countProblems(Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Long> q = b.createQuery(Long.class);
+        Root<Problem> root = q.from(Problem.class);
+        q.select(b.count(root));
+
+        return s.createQuery(q).getSingleResult();
+    }
+
+    @Override
+    public void deleteProblem(int id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Problem p = this.getProblemById(id);
+        s.remove(p);
+    }
 }

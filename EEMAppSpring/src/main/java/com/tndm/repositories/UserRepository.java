@@ -13,7 +13,6 @@ import java.util.Map;
  * @author Tran Nguyen Duc Minh
  */
 public interface UserRepository {
-    List<User> getAllUser();
     
     List<User> getUsers(Map<String, String> params);
     

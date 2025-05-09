@@ -8,6 +8,7 @@ import com.tndm.pojo.Device;
 import com.tndm.pojo.User;
 import com.tndm.repositories.impl.DeviceRepositoryImpl;
 import com.tndm.repositories.impl.FacilityRepositoryImpl;
+import com.tndm.repositories.impl.ProblemRepositoryImpl;
 import com.tndm.repositories.impl.UserRepositoryImpl;
 import com.tndm.services.DeviceService;
 import com.tndm.services.DeviceStatusService;
@@ -74,8 +75,6 @@ public class IndexController {
         model.addAttribute("facilities", this.facService.getFacilities(null, false));
         model.addAttribute("deviceTypes", this.deviceTypeService.getDeviceTypes());
         model.addAttribute("deviceStatus", this.devStatusService.getDeviceStatus());
-        model.addAttribute("problemStatus", this.proStatusService.getProblemStatus());
-        model.addAttribute("FatalLevels", this.fatLevelService.getFatalLevel());
         model.addAttribute("maintenanceTypes", this.mainTypeService.getMaintenanceTypes());
 
         if (userDetails != null) {
@@ -162,7 +161,6 @@ public class IndexController {
 
     @RequestMapping("/index-users")
     public String indexUser(Model model, @RequestParam Map<String, String> params) {
-        model.addAttribute("users", this.userService.getAllUser());
         model.addAttribute("countActiveUsers", this.userService.countActiveUsers());
 
         List<User> users = this.userService.getUsers(params);
@@ -206,8 +204,30 @@ public class IndexController {
     }
 
     @RequestMapping("/index-problems")
-    public String indexProblem(Model model) {
-        model.addAttribute("problems", this.proService.getProblem());
+    public String indexProblem(Model model, @RequestParam Map<String, String> params) {
+        model.addAttribute("problems", this.proService.getProblem(params));
+        
+        model.addAttribute("countProblems", this.proService.countProblems(params));
+
+        long totalProblems = this.proService.countProblems(params);
+        int totalPages = (int) Math.ceil((double) totalProblems / ProblemRepositoryImpl.PAGE_SIZE);
+        totalPages = Math.max(1, totalPages);
+        model.addAttribute("totalPages", totalPages);
+
+        int currentPage;
+        try {
+            currentPage = Integer.parseInt(params.getOrDefault("page", "1"));
+            if (currentPage < 1) {
+                currentPage = 1;
+            }
+            if (currentPage > totalPages && totalPages > 0) {
+                currentPage = totalPages;
+            }
+        } catch (NumberFormatException e) {
+            currentPage = 1;
+        }
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("params", params);
 
         return "index-problems";
     }

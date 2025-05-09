@@ -6,13 +6,18 @@ package com.tndm.repositories;
 
 import com.tndm.pojo.Problem;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author ADMIN
  */
 public interface ProblemRepository {
-    List<Problem> getProblem();
+    List<Problem> getProblem(Map<String, String> params);
     
     Problem getProblemById(int id);
+    
+    long countProblems(Map<String, String> params);
+    
+    void deleteProblem(int id);
 }

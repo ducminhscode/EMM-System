@@ -1,7 +1,8 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Trang chủ</title>
+        <title th:if="${device.id == null}">Thêm thiết bị</title>
+        <title th:unless="${device.id == null}">Cập nhật thiết bị</title>
     <th:block th:replace="base :: styles"></th:block>
 </head>
 <body class="bg-gray-50">

@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Tran Nguyen Duc Minh
  */
 public interface UserService extends UserDetailsService {
-    List<User> getAllUser();
     
     List<User> getUsers(Map<String, String> params);
     

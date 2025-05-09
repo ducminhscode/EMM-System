@@ -27,12 +27,6 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Lịch bảo trì">
-                        <i class="fas fa-calendar-check"></i>
-                        <span>Lịch bảo trì</span>
-                    </a>
-                </li>
-                <li>
                     <a href="index-facilities" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Quản lý cơ sở">
                         <i class="fas fa-building"></i>
                         <span>Quản lý cơ sở</span>
@@ -46,9 +40,9 @@
                 </li>
                 <li>
                 <li>
-                    <a href="index-problems" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Sự cố thiết bị">
+                    <a href="index-problems" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Quản lý sự cố">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <span>Sự cố thiết bị</span>
+                        <span>Quản lý sự cố</span>
                     </a>
                 </li>
                 <li>
@@ -94,7 +88,7 @@
 
 <!-- Header Fragment -->
 <th:block th:fragment="header">
-    <header class="bg-white shadow-md p-4 flex justify-between items-center ml-64">
+    <header class="bg-white shadow-md p-4 flex justify-between items-center ml-64 rounded-xl">
         <h2 class="text-xl font-semibold text-gray-800" th:text="${pageTitle}"></h2>
         <div class="flex items-center space-x-6">
             <div class="flex items-center space-x-3">
