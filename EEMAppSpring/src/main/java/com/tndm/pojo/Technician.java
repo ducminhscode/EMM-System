@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -51,6 +52,7 @@ public class Technician implements Serializable {
     private Facility facilityId;
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
+    @MapsId
     private User user;
     @OneToMany(mappedBy = "technicianId")
     private Set<MaintenanceAssignment> maintenanceAssignmentSet;

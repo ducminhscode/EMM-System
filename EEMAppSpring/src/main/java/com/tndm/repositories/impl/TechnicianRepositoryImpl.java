@@ -39,4 +39,14 @@ public class TechnicianRepositoryImpl implements TechnicianRepository {
         return s.get(Technician.class, id);
     }
 
+    @Override
+    public List<Technician> getTechnicianByFacilityId(int id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        String hql = "FROM Technician t WHERE t.facilityId.id = :facilityId";
+        return s.createQuery(hql, Technician.class)
+                .setParameter("facilityId", id)
+                .list();
+
+    }
+
 }

@@ -10,6 +10,8 @@ import com.tndm.repositories.MaintenanceAssignmentRepository;
 import com.tndm.repositories.MaintenanceScheduleRepository;
 import com.tndm.services.MailService;
 import com.tndm.services.MaintenanceScheduleService;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,16 +23,16 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleService {
-    
+
     @Autowired
     private MaintenanceScheduleRepository mainScheduleRepo;
-    
+
     @Autowired
     private MaintenanceAssignmentRepository mainAssignRepo;
-    
+
     @Autowired
     private MailService mailSer;
-    
+
     @Override
     public List<MaintenanceSchedule> getMaintenanceSchedule() {
         return this.mainScheduleRepo.getMaintenanceSchedule();
@@ -54,13 +56,75 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     @Override
 //    @Scheduled(cron = "0 */3 * * * *")
     public void notifySchedule() {
-        List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.getMaintenanceSchedule();
-        for(MaintenanceSchedule maintenance : listMaintenances){
+        List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.findSchedulesToNotify();
+        for (MaintenanceSchedule maintenance : listMaintenances) {
             List<MaintenanceAssignment> listAssigns = this.mainAssignRepo.getAssignmentByMaintenanceId(maintenance.getId());
-            for(MaintenanceAssignment mainAssign : listAssigns){
+            for (MaintenanceAssignment mainAssign : listAssigns) {
                 mailSer.sendMail(mainAssign.getTechnicianId().getUser().getEmail(), "Tới hạn bảo trì", maintenance.getTitle());
             }
         }
     }
-  
+
+    @Override
+//    @Scheduled(cron = "0 */3 * * * *") 
+    public void createNewSchedule() {
+        List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.findScheduleOverTheTime();
+        for (MaintenanceSchedule maintenance : listMaintenances) {
+            if (maintenance.getFrequency() == null || maintenance.getEndDate() == null) {
+                continue;
+            }
+
+            Calendar calStart = Calendar.getInstance();
+            Calendar calEnd = Calendar.getInstance();
+            calStart.setTime(maintenance.getStartDate());
+            calEnd.setTime(maintenance.getEndDate());
+
+            switch (maintenance.getFrequency()) {
+                case "Hàng ngày":
+                    calStart.add(Calendar.DAY_OF_MONTH, 1);
+                    calEnd.add(Calendar.DAY_OF_MONTH, 1);
+                    break;
+                case "Hàng tuần":
+                    calStart.add(Calendar.WEEK_OF_YEAR, 1);
+                    calEnd.add(Calendar.WEEK_OF_YEAR, 1);
+                    break;
+                case "Hàng tháng":
+                    calStart.add(Calendar.MONTH, 1);
+                    calEnd.add(Calendar.MONTH, 1);
+                    break;
+                case "Hàng quý":
+                    calStart.add(Calendar.MONTH, 3);
+                    calEnd.add(Calendar.MONTH, 3);
+                    break;
+                case "Hàng năm":
+                    calStart.add(Calendar.YEAR, 1);
+                    calEnd.add(Calendar.YEAR, 1);
+                    break;
+                default:
+                    continue;
+            }
+
+            MaintenanceSchedule newSchedule = new MaintenanceSchedule();
+            newSchedule.setTypeId(maintenance.getTypeId());
+            newSchedule.setUserId(maintenance.getUserId());
+            newSchedule.setDeviceId(maintenance.getDeviceId());
+            newSchedule.setStartDate(calStart.getTime());
+            newSchedule.setEndDate(calEnd.getTime());
+            newSchedule.setTitle(maintenance.getTitle());
+            newSchedule.setDescription(maintenance.getDescription());
+            newSchedule.setExpenseFirst(maintenance.getExpenseFirst());
+            newSchedule.setFrequency(maintenance.getFrequency());
+            newSchedule.setMaintenanceStatus("Chưa bảo trì");
+
+            this.mainScheduleRepo.addOrUpdateMaintenanceSchedule(newSchedule);
+
+            MaintenanceAssignment latestAssign = this.mainAssignRepo.getLastestMainAssignByMaintenanceId(maintenance.getId());
+            if (latestAssign != null) {
+                MaintenanceAssignment newAssign = new MaintenanceAssignment();
+                newAssign.setTechnicianId(latestAssign.getTechnicianId());
+                newAssign.setMaintenanceScheduleId(newSchedule);
+                this.mainAssignRepo.addMaintenanceAssignment(newAssign);
+            }
+        }
+    }
 }

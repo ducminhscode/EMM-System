@@ -35,5 +35,10 @@ public class MaintenanceAssignmentServiceImpl implements MaintenanceAssignmentSe
     public MaintenanceAssignment addMaintenanceAssignment(MaintenanceAssignment m) {
         return this.mainAssignmentRepo.addMaintenanceAssignment(m);
     }
+
+    @Override
+    public MaintenanceAssignment getLastestMainAssignByMaintenanceId(int maintenanceId) {
+        return this.mainAssignmentRepo.getLastestMainAssignByMaintenanceId(maintenanceId);
+    }
     
 }

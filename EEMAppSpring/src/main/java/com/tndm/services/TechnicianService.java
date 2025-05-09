@@ -14,6 +14,7 @@ import java.util.List;
 public interface TechnicianService {
     List<Technician> getAllTechnician();
     
-    
+    List<Technician> getTechnicianByFacilityId(int id);
+            
     Technician getTechnicianById(int id);
 }

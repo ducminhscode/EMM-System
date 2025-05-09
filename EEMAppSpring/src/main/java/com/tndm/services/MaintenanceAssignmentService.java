@@ -19,4 +19,6 @@ public interface MaintenanceAssignmentService {
 
     MaintenanceAssignment addMaintenanceAssignment(MaintenanceAssignment m);
 
+    MaintenanceAssignment getLastestMainAssignByMaintenanceId(int maintenanceId);
+
 }

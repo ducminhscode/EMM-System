@@ -18,4 +18,6 @@ public interface MaintenanceAssignmentRepository {
     List<MaintenanceAssignment> getAssignmentByTechnicianId(int technicianId);
     
     MaintenanceAssignment addMaintenanceAssignment(MaintenanceAssignment m);
+    
+    MaintenanceAssignment getLastestMainAssignByMaintenanceId(int maintenanceId);
 }

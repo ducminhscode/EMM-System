@@ -5,6 +5,7 @@
 package com.tndm.controllers;
 
 import com.tndm.pojo.Device;
+import com.tndm.pojo.Facility;
 import com.tndm.pojo.MaintenanceAssignment;
 import com.tndm.pojo.MaintenanceSchedule;
 import com.tndm.pojo.Technician;
@@ -50,6 +51,8 @@ public class DeviceController {
 
     @Autowired
     private MaintenanceAssignmentService mainAssignmentService;
+    
+    
 
     @GetMapping("/devices")
     public String viewDevice(Model model) {
@@ -84,7 +87,8 @@ public class DeviceController {
     @GetMapping("/devices/maintenance-form/{deviceId}")
     public String maintenanceScheduleDevice(@PathVariable("deviceId") int id, Model model) {
         model.addAttribute("maintenance", new MaintenanceSchedule());
-        model.addAttribute("technicians", this.techSer.getAllTechnician());
+        Device dv = this.devSer.getDeviceById(id);
+        model.addAttribute("technicians", this.techSer.getTechnicianByFacilityId(dv.getFacilityId().getId()));
         model.addAttribute("deviceId", id); // Truyền deviceId vào view
         return "maintenance-form";
     }
@@ -100,7 +104,11 @@ public class DeviceController {
         m.setUserId(currentUser);
         Device deviceSaved = devSer.getDeviceById(id);
         m.setDeviceId(deviceSaved);
+        
+        if(m.getId()==null)
+            m.setMaintenanceStatus("Chưa bảo trì");
 
+        
         MaintenanceSchedule ms = this.mainScheduleService.addOrUpdateMaintenanceSchedule(m);
 
         if (technicianIds != null && !technicianIds.isEmpty()) {

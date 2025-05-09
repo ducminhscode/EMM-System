@@ -53,7 +53,7 @@
 
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
                                             th:text="${maintenance.userId.firstName} + ' ' + ${maintenance.userId.lastName}"></td>
-                                        
+
                                         <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                                             <div class="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-3">
                                                 <!-- Nút Xem - Luôn hiển thị -->
@@ -64,18 +64,16 @@
                                                 </a>
 
                                                 <!-- Nút Sửa - Chỉ hiện khi chưa bảo trì -->
-                                                <a th:if="${maintenance.maintenanceStatus != 'Đã bảo trì'}"
-                                                   th:href="@{'/maintenance-form/' + ${maintenance.id}}" 
+                                                <a th:href="@{'/maintenance-form/' + ${maintenance.id}}" 
                                                    class="link-with-icon text-yellow-600 hover:text-yellow-800 transition-colors">
                                                     <i class="fas fa-edit"></i>
                                                     <span class="hidden sm:inline">Sửa</span>
                                                 </a>
 
                                                 <!-- Nút Xóa - Chỉ hiện khi chưa bảo trì -->
-                                                <button th:if="${maintenance.maintenanceStatus != 'Đã bảo trì' && maintenance.maintenanceStatus != 'Quá hạn bảo trì'}"
-                                                        type="button" 
-                                                        th:onclick="'deleteConfirm(\'' + @{/maintenances/} + '\',' + ${maintenance.id} + ')'"
-                                                        class="link-with-icon text-red-600 hover:text-red-800 transition-colors">
+                                                <button  type="button" 
+                                                         th:onclick="'deleteConfirm(\'' + @{/maintenances/} + '\',' + ${maintenance.id} + ')'"
+                                                         class="link-with-icon text-red-600 hover:text-red-800 transition-colors">
                                                     <i class="fas fa-trash-alt"></i>
                                                     <span class="hidden sm:inline">Xóa</span>
                                                 </button>

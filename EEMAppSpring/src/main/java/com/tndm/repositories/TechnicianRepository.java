@@ -15,4 +15,6 @@ public interface TechnicianRepository {
     List<Technician> getAllTechnician();
     
     Technician getTechnicianById(int id);
+    
+    List<Technician> getTechnicianByFacilityId(int id);
 }

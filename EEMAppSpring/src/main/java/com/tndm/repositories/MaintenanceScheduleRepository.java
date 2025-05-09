@@ -21,4 +21,6 @@ public interface MaintenanceScheduleRepository {
     MaintenanceSchedule getMaintenanceScheduleById(int id);
     
     List<MaintenanceSchedule> findSchedulesToNotify();
+    
+    List<MaintenanceSchedule> findScheduleOverTheTime();
 }

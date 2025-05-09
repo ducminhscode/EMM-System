@@ -16,6 +16,7 @@ import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -109,6 +110,7 @@ public class User implements Serializable {
     @UpdateTimestamp
     private Date updatedDate;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    @PrimaryKeyJoinColumn
     private Technician technician;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private Set<MaintenanceSchedule> maintenanceScheduleSet;

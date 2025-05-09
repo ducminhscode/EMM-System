@@ -22,5 +22,7 @@ public interface MaintenanceScheduleService {
     MaintenanceSchedule getMaintenanceScheduleById(int id);
 
     void notifySchedule();
+    
+    void createNewSchedule();
 }
 

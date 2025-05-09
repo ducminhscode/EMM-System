@@ -29,5 +29,10 @@ public class TechnicianServiceImpl implements TechnicianService{
     public Technician getTechnicianById(int id) {
         return this.techRepo.getTechnicianById(id);
     }
+
+    @Override
+    public List<Technician> getTechnicianByFacilityId(int id) {
+        return this.techRepo.getTechnicianByFacilityId(id);
+    }
     
 }
