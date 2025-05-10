@@ -13,11 +13,14 @@ import java.util.Map;
  * @author ADMIN
  */
 public interface ProblemRepository {
+
     List<Problem> getProblem(Map<String, String> params);
-    
+
+    List<Problem> getProblemsByDeviceIds(List<Integer> deviceIds);
+
     Problem getProblemById(int id);
-    
+
     long countProblems(Map<String, String> params);
-    
+
     void deleteProblem(int id);
 }

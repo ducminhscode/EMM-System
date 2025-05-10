@@ -13,14 +13,18 @@ import java.util.Map;
  * @author Tran Nguyen Duc Minh
  */
 public interface DeviceService {
-    
+
     List<Device> getDevices(Map<String, String> params);
-    
+
+    List<Device> getAllDevices();
+
+    List<Device> getDevicesByTypeId(int typeId);
+
     Device getDeviceById(int id);
 
     Device addOrUpdateDevice(Device d);
 
     void deleteDevice(int id);
-    
+
     long countDevices(Map<String, String> params);
 }

@@ -101,31 +101,6 @@
                             </div>
                         </div>
 
-                        <!-- Password Fields -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mật khẩu <span class="text-red-500">*</span></label>
-                                <input type="password" 
-                                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                       id="password" 
-                                       th:field="*{password}" 
-                                       placeholder="Nhập mật khẩu" 
-                                       required>
-                                <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-                            </div>
-
-                            <div>
-                                <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Xác nhận mật khẩu <span class="text-red-500">*</span></label>
-                                <input type="password" 
-                                       class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                       id="confirmPassword" 
-                                       placeholder="Nhập lại mật khẩu" 
-                                       required>
-                                <div class="text-red-500 text-xs mt-1" id="confirmPasswordError"></div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Row 3: Email & Phone -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -148,7 +123,7 @@
                         <div>
                             <label for="userRole" class="block text-sm font-medium text-gray-700 mb-1">Vai trò</label>
                             <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    id="userRole" th:field="*{userRole}">
+                                    id="userRole" th:field="*{userRole}" onchange="toggleTechnicianFields()">
                                 <option value="ROLE_EMPLOYEE">Nhân viên</option>
                                 <option value="ROLE_TECHNICIAN">Kỹ thuật viên</option>
                                 <option value="ROLE_ADMIN">Quản trị viên</option>
@@ -161,6 +136,27 @@
                             <label for="active" class="text-sm text-gray-700">Kích hoạt tài khoản</label>
                         </div>
                     </div>
+
+                    <div id="technicianFields" style="display: none;">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="facility" class="block text-sm font-medium text-gray-700 mb-1">Cơ sở</label>
+                                <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        id="facility" name="facilityId">
+                                    <option th:each="facility : ${facilities}"
+                                            th:value="${facility.id}"
+                                            th:text="${facility.name}"></option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="specialty" class="block text-sm font-medium text-gray-700 mb-1">Chuyên môn</label>
+                                <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                       id="specialty" name="specialty" placeholder="Nhập chuyên môn" required>
+                            </div>
+                        </div>
+                    </div>
+
 
                     <!-- Hidden Fields & Submit Button -->
                     <div class="pt-6">
@@ -180,6 +176,18 @@
 
 <th:block th:replace="base :: scripts"></th:block>
 <script>
+    function toggleTechnicianFields() {
+        const roleSelect = document.getElementById('userRole');
+        const techFields = document.getElementById('technicianFields');
+        const form = document.getElementById('userForm');
+
+        if (roleSelect.value === 'ROLE_TECHNICIAN') {
+            techFields.style.display = 'block';
+        } else {
+            techFields.style.display = 'none';
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         // Xử lý hiển thị preview avatar
         const avatarUpload = document.getElementById('avatarUpload');
@@ -194,32 +202,7 @@
                 }
             });
         }
-
-        // Kiểm tra mật khẩu trùng khớp
-        const passwordInput = document.getElementById('password');
-        const confirmInput = document.getElementById('confirmPassword');
-        const confirmError = document.getElementById('confirmPasswordError');
-
-        if (passwordInput && confirmInput && confirmError) {
-            const checkPasswordMatch = () => {
-                const isMatch = passwordInput.value === confirmInput.value;
-                confirmError.textContent = isMatch ? '' : 'Mật khẩu không khớp';
-                return isMatch;
-            };
-
-            passwordInput.addEventListener('input', checkPasswordMatch);
-            confirmInput.addEventListener('input', checkPasswordMatch);
-
-            const form = document.getElementById('userForm');
-            if (form) {
-                form.addEventListener('submit', (e) => {
-                    if (passwordInput && !checkPasswordMatch()) {
-                        e.preventDefault();
-                        confirmInput.focus();
-                    }
-                });
-            }
-        }
+        toggleTechnicianFields()
     });
 </script>
 </body>

@@ -17,11 +17,11 @@ import org.springframework.stereotype.Service;
  * @author Tran Nguyen Duc Minh
  */
 @Service
-public class DeviceServiceImpl implements DeviceService{
+public class DeviceServiceImpl implements DeviceService {
 
     @Autowired
     private DeviceRepository devRepo;
-    
+
     @Override
     public List<Device> getDevices(Map<String, String> params) {
         return this.devRepo.getDevices(params);
@@ -47,6 +47,14 @@ public class DeviceServiceImpl implements DeviceService{
         return this.devRepo.countDevices(params);
     }
 
-    
-    
+    @Override
+    public List<Device> getAllDevices() {
+        return this.devRepo.getAllDevices();
+
+    }
+
+    @Override
+    public List<Device> getDevicesByTypeId(int typeId) {
+        return this.devRepo.getDevicesByTypeId(typeId);
+    }
 }

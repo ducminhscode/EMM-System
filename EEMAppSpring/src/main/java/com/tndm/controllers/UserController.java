@@ -6,8 +6,11 @@ package com.tndm.controllers;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.tndm.pojo.Technician;
 import com.tndm.pojo.User;
+import com.tndm.services.FacilityService;
 import com.tndm.services.MailService;
+import com.tndm.services.TechnicianService;
 import com.tndm.services.UserService;
 import com.tndm.services.impl.UserServiceImpl;
 import java.io.IOException;
@@ -44,6 +47,12 @@ public class UserController {
     @Autowired
     private Cloudinary cloudinary;
 
+    @Autowired
+    private TechnicianService techService;
+
+    @Autowired
+    private FacilityService facService;
+
     @GetMapping("/login")
     public String loginView() {
         return "login";
@@ -62,10 +71,20 @@ public class UserController {
     }
 
     @PostMapping("/users/add")
-    public String addOrUpdateUser(@ModelAttribute(value = "user") User u) {
+    public String addOrUpdateUser(@ModelAttribute(value = "user") User u,
+            @RequestParam("facilityId") int facilityId,
+            @RequestParam("specialty") String specialty) {
 
         if (u.getId() == null) {
             u.setPassword("123");
+        }
+
+        if (u.getUserRole().equals("ROLE_TECHNICIAN")) {
+            Technician t = new Technician();
+            t.setUser(u);
+            t.setFacilityId(facService.getFacilityById(facilityId));
+            t.setSpecialization(specialty);
+            this.techService.addOrUpdateTechnician(t);
         }
 
         this.userService.addOrUpdateUser(u);

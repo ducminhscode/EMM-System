@@ -16,10 +16,11 @@ import org.springframework.stereotype.Service;
  * @author ADMIN
  */
 @Service
-public class TechnicianServiceImpl implements TechnicianService{
+public class TechnicianServiceImpl implements TechnicianService {
+
     @Autowired
     private TechnicianRepository techRepo;
-    
+
     @Override
     public List<Technician> getAllTechnician() {
         return this.techRepo.getAllTechnician();
@@ -34,5 +35,9 @@ public class TechnicianServiceImpl implements TechnicianService{
     public List<Technician> getTechnicianByFacilityId(int id) {
         return this.techRepo.getTechnicianByFacilityId(id);
     }
-    
+
+    @Override
+    public Technician addOrUpdateTechnician(Technician t) {
+        return this.techRepo.addOrUpdateTechnician(t);
+    }
 }

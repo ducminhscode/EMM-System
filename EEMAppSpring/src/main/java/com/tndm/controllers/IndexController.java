@@ -5,6 +5,8 @@
 package com.tndm.controllers;
 
 import com.tndm.pojo.Device;
+import com.tndm.pojo.Problem;
+import com.tndm.pojo.RepairHistory;
 import com.tndm.pojo.User;
 import com.tndm.repositories.impl.DeviceRepositoryImpl;
 import com.tndm.repositories.impl.FacilityRepositoryImpl;
@@ -19,9 +21,13 @@ import com.tndm.services.MaintenanceScheduleService;
 import com.tndm.services.MaintenanceTypeService;
 import com.tndm.services.ProblemService;
 import com.tndm.services.ProblemStatusService;
+import com.tndm.services.RepairHistoryService;
 import com.tndm.services.UserService;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -53,12 +59,6 @@ public class IndexController {
     private DeviceStatusService devStatusService;
 
     @Autowired
-    private ProblemStatusService proStatusService;
-
-    @Autowired
-    private FatalLevelService fatLevelService;
-
-    @Autowired
     private ProblemService proService;
 
     @Autowired
@@ -69,6 +69,9 @@ public class IndexController {
 
     @Autowired
     private MaintenanceScheduleService mainScheduleService;
+
+    @Autowired
+    private RepairHistoryService repHistoryService;
 
     @ModelAttribute
     public void commonResponse(Model model, @AuthenticationPrincipal UserDetails userDetails, @RequestParam Map<String, String> params) {
@@ -237,5 +240,53 @@ public class IndexController {
         model.addAttribute("maintenances", this.mainScheduleService.getMaintenanceSchedule());
 
         return "index-maintenances";
+    }
+
+    @RequestMapping("/index-reports")
+    public String getReports(Model model,
+            @RequestParam(name = "deviceId", required = false) Integer deviceId,
+            @RequestParam(name = "typeId", required = false) Integer typeId) {
+
+        List<Problem> problemsToDisplay = new ArrayList<>();
+        List<Device> allDevices = devService.getAllDevices();
+        List<Integer> deviceIds = new ArrayList<>();
+
+        if (deviceId != null) {
+            deviceIds.add(deviceId);
+            problemsToDisplay = proService.getProblemsByDeviceIds(deviceIds);
+        } else if (typeId != null) {
+            List<Device> devicesByType = this.devService.getDevicesByTypeId(typeId);
+            deviceIds = devicesByType.stream().map(Device::getId).collect(Collectors.toList());
+            problemsToDisplay = proService.getProblemsByDeviceIds(deviceIds);
+        } else {
+            deviceIds = allDevices.stream().map(Device::getId).collect(Collectors.toList());
+            problemsToDisplay = proService.getProblemsByDeviceIds(deviceIds);
+        }
+
+        Map<Integer, List<RepairHistory>> repairMap = problemsToDisplay.stream()
+                .collect(Collectors.toMap(Problem::getId, problem -> repHistoryService.getRepairHistoriesByProblemId(problem.getId())));
+
+        Map<Integer, BigDecimal> repairTotal = problemsToDisplay.stream()
+                .collect(Collectors.toMap(
+                        Problem::getId,
+                        problem -> {
+                            List<RepairHistory> repairs = repHistoryService.getRepairHistoriesByProblemId(problem.getId());
+                            return repairs.stream()
+                                    .filter(r -> r.getExpense() != null)
+                                    .map(RepairHistory::getExpense)
+                                    .reduce(BigDecimal.ZERO, BigDecimal::add); // Tính tổng với BigDecimal
+                        }
+                ));
+
+        model.addAttribute("repairTotal", repairTotal);
+        model.addAttribute("repairDetail", repairMap);
+        model.addAttribute("devices", allDevices);
+        model.addAttribute("problems", problemsToDisplay);
+        model.addAttribute("selectedDeviceId", deviceId);
+        model.addAttribute("selectedTypeId", typeId);
+        model.addAttribute("deviceId", deviceId);
+        model.addAttribute("typeId", typeId);
+
+        return "index-reports";
     }
 }

@@ -74,4 +74,13 @@ public class ProblemRepositoryImpl implements ProblemRepository {
         Problem p = this.getProblemById(id);
         s.remove(p);
     }
+
+    @Override
+    public List<Problem> getProblemsByDeviceIds(List<Integer> deviceIds) {
+        Session s = this.factory.getObject().getCurrentSession();
+        String hql = "FROM Problem p WHERE p.deviceId.id IN (:deviceIds)";
+        return s.createQuery(hql, Problem.class)
+                .setParameter("deviceIds", deviceIds)
+                .list();
+    }
 }

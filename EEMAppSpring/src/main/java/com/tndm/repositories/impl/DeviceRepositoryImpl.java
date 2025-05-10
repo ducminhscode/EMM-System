@@ -112,4 +112,21 @@ public class DeviceRepositoryImpl implements DeviceRepository {
         return s.createQuery(q).getSingleResult();
     }
 
+    @Override
+    public List<Device> getAllDevices() {
+        Session s = this.factory.getObject().getCurrentSession();
+        Query q = s.createQuery("FROM Device", Device.class);
+
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Device> getDevicesByTypeId(int typeId) {
+        Session s = this.factory.getObject().getCurrentSession();
+        String hql = "FROM Device d WHERE d.typeId.id = :typeId";
+        return s.createQuery(hql, Device.class)
+                .setParameter("typeId", typeId)
+                .list();
+    }
+
 }

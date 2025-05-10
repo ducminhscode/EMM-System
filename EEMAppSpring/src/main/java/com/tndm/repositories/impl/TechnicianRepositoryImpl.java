@@ -49,4 +49,14 @@ public class TechnicianRepositoryImpl implements TechnicianRepository {
 
     }
 
+    @Override
+    public Technician addOrUpdateTechnician(Technician t) {
+        Session s = this.factory.getObject().getCurrentSession();
+        if (t.getId() == null) {
+            s.persist(t);
+        } else {
+            s.merge(t);
+        }
+        return t;
+    }
 }

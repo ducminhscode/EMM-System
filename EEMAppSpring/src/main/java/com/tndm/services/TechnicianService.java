@@ -12,9 +12,12 @@ import java.util.List;
  * @author ADMIN
  */
 public interface TechnicianService {
+
     List<Technician> getAllTechnician();
-    
+
     List<Technician> getTechnicianByFacilityId(int id);
-            
+
     Technician getTechnicianById(int id);
+
+    Technician addOrUpdateTechnician(Technician t);
 }

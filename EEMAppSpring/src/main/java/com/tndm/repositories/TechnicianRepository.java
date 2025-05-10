@@ -17,4 +17,6 @@ public interface TechnicianRepository {
     Technician getTechnicianById(int id);
     
     List<Technician> getTechnicianByFacilityId(int id);
+    
+    Technician addOrUpdateTechnician(Technician t);
 }
