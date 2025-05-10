@@ -206,7 +206,7 @@ public class IndexController {
     @RequestMapping("/index-problems")
     public String indexProblem(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("problems", this.proService.getProblem(params));
-        
+
         model.addAttribute("countProblems", this.proService.countProblems(params));
 
         long totalProblems = this.proService.countProblems(params);

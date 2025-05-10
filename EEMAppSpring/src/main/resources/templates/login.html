@@ -10,7 +10,7 @@
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold text-gray-800">Đăng nhập</h1>
+            <h1 class="text-2xl font-bold text-gray-800" th:text="#{login}"></h1>
         </div>
         
         <form th:action="@{/login}" method="post">

@@ -16,68 +16,61 @@
     <div class="w-64 bg-blue-900 text-white h-screen p-6 fixed">
         <div class="flex items-center space-x-3 mb-10">
             <i class="fas fa-tools text-3xl"></i>
-            <h1 class="text-2xl font-bold">Trang chủ</h1>
+            <h1 class="text-2xl font-bold" th:text="#{base.homePage}"></h1>
         </div>
         <nav>
             <ul class="space-y-3">
                 <li>
-                    <a th:href="@{/}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Quản lý thiết bị">
-                        <i class="fas fa-laptop"></i>
-                        <span>Quản lý thiết bị</span>
+                    <a th:href="@{/}" class="flex items-center p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" th:attr="data-title=#{base.deviceManagement}">
+                        <i class="fas fa-laptop w-6 text-center"></i>
+                        <span class="ml-3" th:text="#{base.device}"></span>
                     </a>
                 </li>
                 <li>
-                    <a href="index-facilities" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Quản lý cơ sở">
-                        <i class="fas fa-building"></i>
-                        <span>Quản lý cơ sở</span>
+                    <a href="index-facilities" class="flex items-center p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" th:attr="data-title=#{base.facilityManagement}">
+                        <i class="fas fa-building w-6 text-center"></i>
+                        <span class="ml-3" th:text="#{base.facility}"></span>
                     </a>
                 </li>
                 <li>
-                    <a href="index-users" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Quản lý tài khoản">
-                        <i class="fas fa-users-cog"></i>
-                        <span>Quản lý tài khoản</span>
+                    <a href="index-users" class="flex items-center p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" th:attr="data-title=#{base.userManagement}">
+                        <i class="fas fa-users-cog w-6 text-center"></i>
+                        <span class="ml-3" th:text="#{base.user}"></span>
                     </a>
                 </li>
                 <li>
-                <li>
-                    <a href="index-problems" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Quản lý sự cố">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>Quản lý sự cố</span>
+                    <a href="index-problems" class="flex items-center p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" th:attr="data-title=#{base.problemManagement}">
+                        <i class="fas fa-exclamation-triangle w-6 text-center"></i>
+                        <span class="ml-3" th:text="#{base.problem}"></span>
                     </a>
                 </li>
                 <li>
-                    <a href="index-maintenances" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Quản lý lịch bảo trì">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Quản lý lịch bảo trì</span>
+                    <a href="index-maintenances" class="flex items-center p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" th:attr="data-title=#{base.maintenanceManagement}">
+                        <i class="fas fa-calendar-alt w-6 text-center"></i>
+                        <span class="ml-3" th:text="#{base.maintenances}"></span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Báo cáo">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Báo cáo</span>
+                    <a href="#" class="flex items-center p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" th:attr="data-title=#{base.reportManagement}">
+                        <i class="fas fa-chart-bar w-6 text-center"></i>
+                        <span class="ml-3" th:text="#{base.report}"></span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 menu-item" data-title="Cài đặt">
-                        <i class="fas fa-cog"></i>
-                        <span>Cài đặt</span>
-                    </a>
-                </li>
-                <li>
-                    <button onclick="showLogoutDialog()" class="flex items-center space-x-3 p-3 rounded-lg bg-red-600 hover:bg-red-700 transition-colors duration-200 w-full text-left menu-item" data-title="Đăng xuất">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Đăng xuất</span>
+                    <button onclick="showLogoutDialog()" class="flex items-center p-3 rounded-lg bg-red-600 hover:bg-red-700 transition-colors duration-200 w-full text-left menu-item" data-title="Đăng xuất">
+                        <i class="fas fa-sign-out-alt w-6 text-center"></i>
+                        <span class="ml-3" th:text="#{base.logout}"></span>
                     </button>
                 </li>
 
                 <!-- Logout Confirmation Modal -->
                 <div id="logoutModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
                     <div class="bg-white rounded-lg p-6 w-96">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Xác nhận đăng xuất</h3>
-                        <p class="text-gray-600 mb-6">Bạn có chắc chắn muốn đăng xuất không?</p>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4" th:text="#{base.confirmDialog}"></h3>
+                        <p class="text-gray-600 mb-6" th:text="#{base.questionConfirm}"></p>
                         <div class="flex justify-end space-x-4">
-                            <button onclick="hideLogoutDialog()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Hủy</button>
-                            <a th:href="@{/logout}" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Xác nhận</a>
+                            <button onclick="hideLogoutDialog()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400" th:text="#{base.cancel}"></button>
+                            <a th:href="@{/logout}" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700" th:text="#{base.confirm}"></a>
                         </div>
                     </div>
                 </div>
@@ -91,13 +84,25 @@
     <header class="bg-white shadow-md p-4 flex justify-between items-center ml-64 rounded-xl">
         <h2 class="text-xl font-semibold text-gray-800" th:text="${pageTitle}"></h2>
         <div class="flex items-center space-x-6">
-            <div class="flex items-center space-x-3">
-                <a th:href="@{/profile}" class="flex items-center space-x-3 cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-colors">
-                    <img th:src="${currentUser.avatar}" alt="avatar" class="rounded-full w-10 h-10">
-                    <span class="text-gray-700 font-medium" th:text="${currentUser.firstName} + ' ' + ${currentUser.lastName}"></span>
-                </a>
+            <!-- Language Selector -->
+            <div class=" flex items-center">
+                <select 
+                    onchange="window.location.href = '?lang=' + this.value"
+                    class="bg-gray-100 border border-gray-300 rounded-lg py-2 px-8 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                    >
+                    <option value="en" th:selected="${#locale.language == 'en'}">English</option>
+                    <option value="vi" th:selected="${#locale.language == 'vi'}">Tiếng Việt</option>
+                    <option value="fr" th:selected="${#locale.language == 'fr'}">French</option>
+                </select>
             </div>
-        </div>
+            <div class="flex items-center space-x-6">
+                <div class="flex items-center space-x-3">
+                    <a th:href="@{/profile}" class="flex items-center space-x-3 cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-colors">
+                        <img th:src="${currentUser.avatar}" alt="avatar" class="rounded-full w-10 h-10">
+                        <span class="text-gray-700 font-medium" th:text="${currentUser.firstName} + ' ' + ${currentUser.lastName}"></span>
+                    </a>
+                </div>
+            </div>
     </header>
 </th:block>
 
@@ -105,14 +110,13 @@
 <th:block th:fragment="footer">
     <footer class="bg-gray-100 py-4 mt-8">
         <div class="container mx-auto px-4 text-center text-gray-600 text-sm">
-            &copy; 2025 Hệ thống Quản lý Thiết bị
+            &copy; <span th:text="#{footer}"></span>
         </div>
     </footer>
 </th:block>
 
 <!-- Scripts Fragment -->
 <th:block th:fragment="scripts">
-    <script th:src="@{/js/main.js}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const menuItems = document.querySelectorAll('.menu-item');
@@ -128,7 +132,6 @@
                 localStorage.setItem('pageTitle', title);
             }
 
-            // Highlight menu item based on current URL or localStorage
             menuItems.forEach(item => {
                 const href = item.getAttribute('href');
                 if (href && (href === currentPath || href === localStorage.getItem('activeMenu'))) {
@@ -144,7 +147,6 @@
                 });
             });
 
-            // Update header title if pageTitle is stored
             const storedTitle = localStorage.getItem('pageTitle');
             if (storedTitle) {
                 const headerTitle = document.querySelector('header h2');
