@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 public class ExcelExportController {
-    // Các hằng số chỉ số cột
 
     private static final int TOTAL_COST_COLUMN = 9;
     private static final int REPAIR_TYPE_COLUMN = 6;
@@ -71,14 +70,12 @@ public class ExcelExportController {
             try (Workbook workbook = new XSSFWorkbook()) {
                 Sheet sheet = workbook.createSheet("Báo cáo sự cố");
 
-                // Tạo các style
                 CellStyle headerStyle = createHeaderStyle(workbook);
                 CellStyle currencyStyle = createCurrencyStyle(workbook);
                 CellStyle dateStyle = createDateStyle(workbook);
                 CellStyle mergedCenterStyle = createMergedCenterStyle(workbook);
                 CellStyle totalStyle = createTotalStyle(workbook);
 
-                // Tạo header
                 createHeaderRow(sheet, headerStyle);
 
                 int rowNum = 1;
@@ -100,7 +97,6 @@ public class ExcelExportController {
                     );
                 }
 
-                // Tự động điều chỉnh độ rộng cột
                 for (int i = 0; i < 10; i++) {
                     sheet.autoSizeColumn(i);
                 }
@@ -112,7 +108,6 @@ public class ExcelExportController {
         }
     }
 
-    // region Style Creation
     private CellStyle createHeaderStyle(Workbook workbook) {
         CellStyle style = workbook.createCellStyle();
         Font font = workbook.createFont();
@@ -159,9 +154,7 @@ public class ExcelExportController {
         style.setDataFormat(workbook.createDataFormat().getFormat("#,##0.00\" VND\""));
         return style;
     }
-    // endregion
-
-    // region Row Processing
+    
     private int processProblemRow(Workbook workbook,
             Sheet sheet,
             Problem problem,
@@ -175,11 +168,9 @@ public class ExcelExportController {
 
         int startRow = rowNum;
 
-        // Thêm các dòng sửa chữa
         for (RepairHistory repair : repairs) {
             Row row = sheet.createRow(rowNum++);
 
-            // Thêm thông tin chung ở dòng đầu
             if (rowNum == startRow + 1) {
                 addCommonProblemInfo(row, problem, dateStyle, mergedCenterStyle);
             }
@@ -187,12 +178,10 @@ public class ExcelExportController {
             addRepairDetails(row, repair, currencyStyle, mergedCenterStyle);
         }
 
-        // Merge tổng chi phí (chỉ merge nếu có repairs)
         if (!repairs.isEmpty()) {
             addTotalRow(sheet, startRow, rowNum - 1, total, totalStyle);
         }
 
-        // Merge các ô thông tin chung
         mergeCommonCells(sheet, startRow, rowNum - 1, mergedCenterStyle);
 
         return rowNum;
@@ -204,7 +193,6 @@ public class ExcelExportController {
             BigDecimal total,
             CellStyle totalStyle) {
 
-        // Chỉ merge nếu có nhiều hơn 1 dòng
         if (startRow >= endRow) {
             Row firstRow = sheet.getRow(startRow);
 
@@ -213,15 +201,12 @@ public class ExcelExportController {
             totalCell.setCellStyle(totalStyle);
         } else {
 
-            // Lấy dòng đầu tiên
             Row firstRow = sheet.getRow(startRow);
 
-            // Tạo cell tổng ở cột TOTAL_COST_COLUMN
             Cell totalCell = firstRow.createCell(TOTAL_COST_COLUMN);
             totalCell.setCellValue(total != null ? total.doubleValue() : 0);
             totalCell.setCellStyle(totalStyle);
 
-            // Merge các dòng trong cột tổng chi phí
             sheet.addMergedRegion(new CellRangeAddress(
                     startRow,
                     endRow,
@@ -236,27 +221,22 @@ public class ExcelExportController {
             CellStyle dateStyle,
             CellStyle mergedCenterStyle) {
 
-        // Thiết bị
         safeCreateCell(row, 0,
                 problem.getDeviceId() != null ? problem.getDeviceId().getName() : "N/A",
                 mergedCenterStyle);
 
-        // Cơ sở
         safeCreateCell(row, 1,
                 (problem.getDeviceId() != null && problem.getDeviceId().getFacilityId() != null)
                 ? problem.getDeviceId().getFacilityId().getName()
                 : "N/A",
                 mergedCenterStyle);
 
-        // Mô tả
         safeCreateCell(row, 2, problem.getDescription(), mergedCenterStyle);
 
-        // Trạng thái
         safeCreateCell(row, 3,
                 (problem.getStatusId() != null) ? problem.getStatusId().getName() : "N/A",
                 mergedCenterStyle);
 
-        // Ngày xảy ra
         Cell dateCell = row.createCell(4);
         dateCell.setCellStyle(dateStyle);
         if (problem.getHappenedDate() != null) {
@@ -271,7 +251,6 @@ public class ExcelExportController {
             CellStyle currencyStyle,
             CellStyle mergedCenterStyle) {
 
-        // Kỹ thuật viên
         String techName = "N/A";
         if (repair.getTechnicianId() != null
                 && repair.getTechnicianId().getUser() != null) {
@@ -280,14 +259,12 @@ public class ExcelExportController {
         }
         safeCreateCell(row, 5, techName, mergedCenterStyle);
 
-        // Loại sửa chữa
         String repairType = "N/A";
         if (repair.getTypeId() != null && repair.getTypeId().getName() != null) {
             repairType = repair.getTypeId().getName();
         }
         safeCreateCell(row, REPAIR_TYPE_COLUMN, repairType, mergedCenterStyle);
 
-        // Chi phí
         Cell expenseCell = row.createCell(COST_COLUMN);
         if (repair.getExpense() != null) {
             expenseCell.setCellValue(repair.getExpense().doubleValue());
@@ -296,11 +273,9 @@ public class ExcelExportController {
         }
         expenseCell.setCellStyle(currencyStyle);
 
-        // Thời gian sửa
         String repairDate = formatRepairDate(repair);
         safeCreateCell(row, REPAIR_DATE_COLUMN, repairDate, mergedCenterStyle);
     }
-// endregion
 
     private void mergeAndAddTotalCost(Sheet sheet,
             int startRow,
@@ -312,7 +287,6 @@ public class ExcelExportController {
             return;
         }
 
-        // Merge cột tổng chi phí
         sheet.addMergedRegion(new CellRangeAddress(
                 startRow,
                 endRow,
@@ -320,7 +294,6 @@ public class ExcelExportController {
                 TOTAL_COST_COLUMN
         ));
 
-        // Thêm giá trị tổng
         Row firstRow = sheet.getRow(startRow);
         Cell totalCell = firstRow.createCell(TOTAL_COST_COLUMN);
         totalCell.setCellValue(total.doubleValue());
@@ -354,9 +327,7 @@ public class ExcelExportController {
             cell.setCellStyle(headerStyle);
         }
     }
-    // endregion
-
-    // region Utility Methods
+    
     private void mergeCommonCells(Sheet sheet,
             int startRow,
             int endRow,
@@ -366,7 +337,6 @@ public class ExcelExportController {
             return;
         }
 
-        // Chỉ merge 5 cột đầu (Thiết bị -> Ngày xảy ra)
         for (int i = 0; i < 5; i++) {
             CellRangeAddress region = new CellRangeAddress(startRow, endRow, i, i);
             if (!isRegionOverlap(sheet, region)) {
@@ -397,7 +367,7 @@ public class ExcelExportController {
     }
 
     private void safeCreateCell(Row row, int column, String value, CellStyle style) {
-        // Chỉ ghi "N/A" nếu giá trị thực sự null hoặc rỗng
+        
         String displayValue = (value == null || value.isEmpty()) ? "N/A" : value;
 
         Cell cell = row.createCell(column);
@@ -424,9 +394,7 @@ public class ExcelExportController {
             ex.printStackTrace();
         }
     }
-    // endregion
-
-    // region Data Fetching
+    
     private Map<String, Object> getReportData(Integer deviceId, Integer typeId) {
         Map<String, Object> model = new HashMap<>();
 
@@ -476,5 +444,5 @@ public class ExcelExportController {
                                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 ));
     }
-    // endregion
+
 }

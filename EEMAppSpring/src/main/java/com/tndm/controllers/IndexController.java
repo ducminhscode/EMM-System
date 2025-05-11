@@ -114,7 +114,6 @@ public class IndexController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("params", params);
 
-        // Lấy các tham số tìm kiếm và phân trang
         String searchType = params.get("searchType");
         String searchValue = params.get("value");
 
@@ -274,7 +273,7 @@ public class IndexController {
                             return repairs.stream()
                                     .filter(r -> r.getExpense() != null)
                                     .map(RepairHistory::getExpense)
-                                    .reduce(BigDecimal.ZERO, BigDecimal::add); // Tính tổng với BigDecimal
+                                    .reduce(BigDecimal.ZERO, BigDecimal::add);
                         }
                 ));
 

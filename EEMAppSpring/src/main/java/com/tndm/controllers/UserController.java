@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,6 +47,9 @@ public class UserController {
 
     @Autowired
     private Cloudinary cloudinary;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     private TechnicianService techService;
@@ -76,7 +80,15 @@ public class UserController {
             @RequestParam("specialty") String specialty) {
 
         if (u.getId() == null) {
-            u.setPassword("123");
+            u.setPassword(this.passwordEncoder.encode("123"));
+            mailService.sendMail(u.getEmail(),
+                    "Thông báo tài khoản của bạn",
+                    "Chào " + u.getFirstName() + u.getLastName() + ",\n\n"
+                    + "Tài khoản của bạn đã được tạo.\n"
+                    + "Tên tài khoản: " + u.getUsername() + "\n"
+                    + "Mật khẩu: 123" + "\n\n"
+                    + "Trân trọng,\n"
+                    + "Đội ngũ Admin.");
         }
 
         if (u.getUserRole().equals("ROLE_TECHNICIAN")) {
@@ -88,14 +100,7 @@ public class UserController {
         }
 
         this.userService.addOrUpdateUser(u);
-        mailService.sendMail(u.getEmail(),
-                "Thông báo tài khoản của bạn",
-                "Chào " + u.getFirstName() + u.getLastName() + ",\n\n"
-                + "Tài khoản của bạn đã được tạo.\n"
-                + "Tên tài khoản: " + u.getUsername() + "\n"
-                + "Mật khẩu: 123" + "\n\n"
-                + "Trân trọng,\n"
-                + "Đội ngũ Admin.");
+
         return "redirect:/index-users";
     }
 
@@ -120,7 +125,6 @@ public class UserController {
         String username = principal.getName();
         User currentUser = userService.getUserByUsername(username);
 
-        // Cập nhật thông tin từ form vào currentUser
         currentUser.setFirstName(updatedUser.getFirstName());
         currentUser.setLastName(updatedUser.getLastName());
         currentUser.setEmail(updatedUser.getEmail());

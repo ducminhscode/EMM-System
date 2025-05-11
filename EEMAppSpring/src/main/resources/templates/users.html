@@ -100,6 +100,7 @@
                                 <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
                             </div>
                         </div>
+                    </div>
 
                     <!-- Row 3: Email & Phone -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -167,7 +168,6 @@
                         </button>
                     </div>
                 </form>
-            </div>
         </main>
 
         <!-- Footer -->
@@ -202,7 +202,7 @@
                 }
             });
         }
-        toggleTechnicianFields()
+        toggleTechnicianFields();
     });
 </script>
 </body>

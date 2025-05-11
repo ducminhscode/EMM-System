@@ -89,13 +89,12 @@ public class UserServiceImpl implements UserService {
 
         return this.usrRepo.addUser(u);
     }
-    
-    
+
     @Override
     public boolean authenticate(String username, String password) {
         return this.usrRepo.authenticate(username, password);
     }
-    
+
     @Override
     public User addOrUpdateUser(User u) {
         if (u.getId() != null) {
@@ -111,7 +110,7 @@ public class UserServiceImpl implements UserService {
                 u.setAvatar(existingUser.getAvatar());
             }
         } else {
-            u.setPassword(this.passwordEncoder.encode(u.getPassword()));
+            u.setPassword(this.passwordEncoder.encode("123"));
         }
 
         if (u.getFile() != null && !u.getFile().isEmpty()) {
@@ -124,28 +123,34 @@ public class UserServiceImpl implements UserService {
             } catch (IOException ex) {
                 Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else {
+            u.setAvatar("https://res.cloudinary.com/dp9b0dkkt/image/upload/v1745512749/de995be2-6311-4125-9ac2-19e11fcaf801_jo8gcs.png");
         }
 
         return this.usrRepo.addOrUpdateUser(u);
     }
 
     @Override
-    public void deleteUser(int id) {
+    public void deleteUser(int id
+    ) {
         this.usrRepo.deleteUser(id);
     }
 
     @Override
-    public User getUserById(int id) {
+    public User getUserById(int id
+    ) {
         return this.usrRepo.getUserById(id);
     }
 
     @Override
-    public List<User> getUsers(Map<String, String> params) {
+    public List<User> getUsers(Map<String, String> params
+    ) {
         return this.usrRepo.getUsers(params);
     }
 
     @Override
-    public long countUsers(Map<String, String> params) {
+    public long countUsers(Map<String, String> params
+    ) {
         return this.usrRepo.countUsers(params);
     }
 
