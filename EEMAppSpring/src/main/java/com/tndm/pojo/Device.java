@@ -4,6 +4,7 @@
  */
 package com.tndm.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -78,20 +79,26 @@ public class Device implements Serializable {
     @UpdateTimestamp
     private Date updatedDate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceId")
+    @JsonIgnore
     private Set<MaintenanceSchedule> maintenanceScheduleSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceId")
+    @JsonIgnore
     private Set<Problem> problemSet;
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
+    @JsonIgnore
     private DeviceStatus statusId;
     @JoinColumn(name = "type_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
+    @JsonIgnore
     private DeviceType typeId;
     @JoinColumn(name = "facility_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
+    @JsonIgnore
     private Facility facilityId;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
+    @JsonIgnore
     private User userId;
 
     public Device() {
@@ -230,5 +237,5 @@ public class Device implements Serializable {
     public String toString() {
         return "com.tndm.pojo.Device[ id=" + id + " ]";
     }
-    
+
 }

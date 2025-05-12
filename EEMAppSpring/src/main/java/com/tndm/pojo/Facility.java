@@ -74,9 +74,11 @@ public class Facility implements Serializable {
     @JsonIgnore
     private Set<Technician> technicianSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "facilityId")
+    @JsonIgnore
     private Set<Device> deviceSet;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
+    @JsonIgnore
     private User userId;
 
     public Facility() {
@@ -182,5 +184,5 @@ public class Facility implements Serializable {
     public String toString() {
         return "com.tndm.pojo.Facility[ id=" + id + " ]";
     }
-    
+
 }

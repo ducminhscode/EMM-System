@@ -57,4 +57,9 @@ public class DeviceServiceImpl implements DeviceService {
     public List<Device> getDevicesByTypeId(int typeId) {
         return this.devRepo.getDevicesByTypeId(typeId);
     }
+
+    @Override
+    public List<Device> getDevicesByFacilityId(int facilityId) {
+        return this.devRepo.getDevicesByFacilityId(facilityId);
+    }
 }

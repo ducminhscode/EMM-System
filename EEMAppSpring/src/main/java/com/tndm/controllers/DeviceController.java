@@ -51,8 +51,6 @@ public class DeviceController {
 
     @Autowired
     private MaintenanceAssignmentService mainAssignmentService;
-    
-    
 
     @GetMapping("/devices")
     public String viewDevice(Model model) {
@@ -89,7 +87,8 @@ public class DeviceController {
         model.addAttribute("maintenance", new MaintenanceSchedule());
         Device dv = this.devSer.getDeviceById(id);
         model.addAttribute("technicians", this.techSer.getTechnicianByFacilityId(dv.getFacilityId().getId()));
-        model.addAttribute("deviceId", id); // Truyền deviceId vào view
+        model.addAttribute("startDate", dv.getCreatedDate());
+        model.addAttribute("deviceId", id);
         return "maintenance-form";
     }
 
@@ -102,13 +101,12 @@ public class DeviceController {
         String username = principal.getName();
         User currentUser = usrSer.getUserByUsername(username);
         m.setUserId(currentUser);
+        
         Device deviceSaved = devSer.getDeviceById(id);
         m.setDeviceId(deviceSaved);
-        
-        if(m.getId()==null)
-            m.setMaintenanceStatus("Chưa bảo trì");
 
-        
+        m.setMaintenanceStatus("Chưa bảo trì");
+
         MaintenanceSchedule ms = this.mainScheduleService.addOrUpdateMaintenanceSchedule(m);
 
         if (technicianIds != null && !technicianIds.isEmpty()) {

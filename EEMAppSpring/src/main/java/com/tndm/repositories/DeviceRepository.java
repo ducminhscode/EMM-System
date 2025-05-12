@@ -20,6 +20,8 @@ public interface DeviceRepository {
 
     List<Device> getDevicesByTypeId(int typeId);
 
+    List<Device> getDevicesByFacilityId(int facilityId);
+
     Device getDeviceById(int id);
 
     Device addOrUpdateDevice(Device d);

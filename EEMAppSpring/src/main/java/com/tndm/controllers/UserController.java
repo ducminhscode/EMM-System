@@ -65,14 +65,19 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     public String userDetailView(Model model, @PathVariable(value = "userId") int id) {
-        model.addAttribute("user", this.userService.getUserById(id));
+        User uSave = this.userService.getUserById(id);
+        model.addAttribute("user", uSave);
+        if (uSave.getUserRole().equals("ROLE_TECHNICIAN")) {
+            model.addAttribute("facilityId", uSave.getTechnician().getFacilityId().getId());
+            model.addAttribute("specialization", uSave.getTechnician().getSpecialization());
+        }
         return "users";
     }
 
     @PostMapping("/users/add")
     public String addOrUpdateUser(@ModelAttribute(value = "user") User u,
             @RequestParam("facilityId") int facilityId,
-            @RequestParam("specialty") String specialty) {
+            @RequestParam("specialization") String specialization) {
 
         if (u.getId() == null) {
             u.setPassword(this.passwordEncoder.encode("123"));
@@ -86,15 +91,21 @@ public class UserController {
                     + "Đội ngũ Admin.");
         }
 
-        if (u.getUserRole().equals("ROLE_TECHNICIAN")) {
-            Technician t = new Technician();
-            t.setUser(u);
-            t.setFacilityId(facService.getFacilityById(facilityId));
-            t.setSpecialization(specialty);
-            this.techService.addOrUpdateTechnician(t);
-        }
-
         this.userService.addOrUpdateUser(u);
+        if (u.getUserRole().equals("ROLE_TECHNICIAN")) {
+            Technician tSave = this.techService.getTechnicianById(u.getId());
+            if (tSave == null) {
+                Technician t = new Technician();
+                t.setUser(u);
+                t.setFacilityId(facService.getFacilityById(facilityId));
+                t.setSpecialization(specialization);
+                this.techService.addOrUpdateTechnician(t);
+            } else {
+                u.getTechnician().setFacilityId(facService.getFacilityById(facilityId));
+                u.getTechnician().setSpecialization(specialization);
+                this.techService.addOrUpdateTechnician(u.getTechnician());
+            }
+        }
 
         return "redirect:/index-users";
     }

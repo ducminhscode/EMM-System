@@ -5,6 +5,7 @@
 package com.tndm.repositories.impl;
 
 import com.tndm.pojo.Technician;
+import com.tndm.pojo.User;
 import com.tndm.repositories.TechnicianRepository;
 import java.util.List;
 import org.hibernate.Session;
@@ -53,8 +54,14 @@ public class TechnicianRepositoryImpl implements TechnicianRepository {
     public Technician addOrUpdateTechnician(Technician t) {
         Session s = this.factory.getObject().getCurrentSession();
         if (t.getId() == null) {
+            if (t.getUser() != null && t.getUser().getId() != null) {
+                t.setUser((User) s.merge(t.getUser()));
+            }
             s.persist(t);
         } else {
+            if (t.getUser() != null && t.getUser().getId() != null) {
+                t.setUser((User) s.merge(t.getUser()));
+            }
             s.merge(t);
         }
         return t;

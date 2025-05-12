@@ -53,6 +53,7 @@ public class Technician implements Serializable {
     private Facility facilityId;
     @JoinColumn(name = "id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
+    @JsonIgnore
     @MapsId
     private User user;
     @OneToMany(mappedBy = "technicianId")
@@ -148,5 +149,8 @@ public class Technician implements Serializable {
     public String toString() {
         return "com.tndm.pojo.Technician[ id=" + id + " ]";
     }
-    
+
+    public String getNameTech(){
+        return this.getUser().getFirstName() + " " + this.getUser().getLastName();
+    }
 }

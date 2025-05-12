@@ -129,4 +129,12 @@ public class DeviceRepositoryImpl implements DeviceRepository {
                 .list();
     }
 
+    @Override
+    public List<Device> getDevicesByFacilityId(int facilityId) {
+        Session s = this.factory.getObject().getCurrentSession();
+        String hql = "FROM Device d WHERE d.facilityId.id = :facilityId";
+        return s.createQuery(hql, Device.class)
+                .setParameter("facilityId", facilityId)
+                .list();
+    }
 }

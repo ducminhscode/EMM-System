@@ -5,10 +5,11 @@
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen flex flex-col">
+
         <!-- Header -->
         <header class="bg-blue-600 text-white shadow-md">
             <div class="container mx-auto px-4 py-6">
-                <h1 class="text-2xl font-bold text-center">Thêm lịch bảo trì</h1>
+                <h1 class="text-2xl font-bold text-center">Thêm lịch bảo trì định kì</h1>
             </div>
         </header>
 
@@ -29,7 +30,6 @@
 
                     <!-- Thông tin chính -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Tiêu đề -->
                         <div>
                             <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
                                 Tiêu đề <span class="text-red-500">*</span>
@@ -44,20 +44,41 @@
                             <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
                         </div>
 
-                        <!-- Trạng thái -->
-                        <div th:unless="${maintenance.id == null}">
-                            <label for="maintenanceStatus" class="block text-sm font-medium text-gray-700 mb-1">
-                                Trạng thái <span class="text-red-500">*</span>
+                        <div>
+                            <label for="expenseFirst" class="block text-sm font-medium text-gray-700 mb-1">
+                                Chi phí dự kiến
                             </label>
-                            <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    th:field="*{maintenanceStatus}" 
-                                    required>
-                                <option value="">Chọn trạng thái</option>
-                                <option value="Chưa bảo trì">Chưa bảo trì</option>
-                                <option value="Đã bảo trì">Đã bảo trì</option>
-                                <option value="Quá hạn bảo trì">Quá hạn bảo trì</option>
-                            </select>
-                            <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('maintenanceStatus')}" th:errors="*{maintenanceStatus}"></div>
+                            <input type="number" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   id="expenseFirst" 
+                                   th:field="*{expenseFirst}" 
+                                   step="0.01">
+                        </div>
+
+
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 gap-6">
+                            <div class="hidden">
+                                <select th:field="*{typeId.id}" required>
+                                    <option th:each="type : ${maintenanceTypes}" 
+                                            th:value="${type.id}" 
+                                            th:selected="${type.id == 1}"></option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Loại bảo trì <span class="text-red-500">*</span>
+                                </label>
+                                <div class="px-4 py-2 bg-gray-100 rounded-md">
+                                    <span th:text="${#lists.contains(maintenanceTypes.![id], 1)} 
+                                          ? ${maintenanceTypes.?[id == 1].get(0).name} 
+                                          : 'Không xác định'"></span>
+                                    <input type="hidden" name="typeId.id" value="1"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -85,62 +106,14 @@
                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                    id="endDate" 
                                    th:field="*{endDate}" 
-                                   required>
+                                   readonly="">
                             <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></div>
                         </div>
                     </div>
 
-                    <!-- Chi phí và Tần suất -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Chi phí dự kiến -->
-                        <div>
-                            <label for="expenseFirst" class="block text-sm font-medium text-gray-700 mb-1">
-                                Chi phí dự kiến
-                            </label>
-                            <input type="number" 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                   id="expenseFirst" 
-                                   th:field="*{expenseFirst}" 
-                                   step="0.01">
-                        </div>
-
-                        <!-- Tần suất -->
-                        <div>
-                            <label for="frequency" class="block text-sm font-medium text-gray-700 mb-1">
-                                Tần suất <span class="text-red-500">*</span>
-                            </label>
-                            <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    th:field="*{frequency}" 
-                                    required>
-                                <option value="Hàng ngày">Hàng ngày</option>
-                                <option value="Hàng tuần">Hàng tuần</option>
-                                <option value="Hàng tháng">Hàng tháng</option>
-                                <option value="Hàng quý">Hàng quý</option>
-                                <option value="Hàng năm">Hàng năm</option>
-                            </select>
-                            <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('frequency')}" th:errors="*{frequency}"></div>
-                        </div>
-                    </div>
-
-                    <!-- Thông tin bổ sung -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Loại bảo trì -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Loại bảo trì <span class="text-red-500">*</span>
-                            </label>
-                            <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    th:field="*{typeId.id}" 
-                                    required>
-                                <option value="">Chọn loại bảo trì</option>
-                                <option th:each="type : ${maintenanceTypes}" 
-                                        th:value="${type.id}" 
-                                        th:text="${type.name}"></option>
-                            </select>
-                        </div>
-
-                        <!-- Kỹ thuật viên -->
-                        <div>
+                        <!-- Kỹ thuật viên (bên trái) -->
+                        <div class="technician-column">
                             <label class="block text-sm font-medium text-gray-700 mb-1">
                                 Kỹ thuật viên <span class="text-red-500">*</span>
                             </label>
@@ -153,6 +126,23 @@
                                         th:text="${tech.user.firstName} + ' ' + ${tech.user.lastName}"></option>
                             </select>
                             <small class="text-gray-500 text-xs">Giữ Ctrl để chọn nhiều</small>
+                        </div>
+                        <!-- Tần suất -->
+                        <div>
+                            <label for="frequency" class="block text-sm font-medium text-gray-700 mb-1">
+                                Tần suất <span class="text-red-500">*</span>
+                            </label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    th:field="*{frequency}" 
+                                    id="frequency"
+                                    required>
+                                <option value="Hàng ngày">Hàng ngày</option>
+                                <option value="Hàng tuần">Hàng tuần</option>
+                                <option value="Hàng tháng">Hàng tháng</option>
+                                <option value="Hàng quý">Hàng quý</option>
+                                <option value="Hàng năm">Hàng năm</option>
+                            </select>
+                            <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('frequency')}" th:errors="*{frequency}"></div>
                         </div>
                     </div>
 
@@ -189,4 +179,67 @@
     </div>
 <th:block th:replace="base :: scripts"></th:block>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const frequencySelect = document.getElementById('frequency'); // Thêm id vào select
+
+        // Kiểm tra tồn tại các phần tử
+        if (!startDateInput || !endDateInput || !frequencySelect) {
+            console.error('Không tìm thấy các phần tử cần thiết');
+            return;
+        }
+
+        // Khởi tạo ngày bắt đầu từ controller
+        const initialStartDate = '[[${startDate}]]';
+        if (initialStartDate) {
+            const datePart = initialStartDate.split(' ')[0];
+            startDateInput.value = datePart;
+            startDateInput.min = datePart;
+        }
+
+        // Xử lý thay đổi ngày bắt đầu
+        startDateInput.addEventListener('change', function () {
+            startDateInput.min = this.value;
+            calculateEndDate();
+        });
+
+        frequencySelect.addEventListener('change', function () {
+            calculateEndDate();
+        });
+
+        function calculateEndDate() {
+            if (!startDateInput.value || frequencySelect.value === 'Khác')
+                return;
+
+            const startDate = new Date(startDateInput.value);
+            const frequency = frequencySelect.value;
+
+            let endDate = new Date(startDate);
+
+            switch (frequency) {
+                case 'Hàng ngày':
+                    endDate.setDate(endDate.getDate() + 1);
+                    break;
+                case 'Hàng tuần':
+                    endDate.setDate(endDate.getDate() + 7);
+                    break;
+                case 'Hàng tháng':
+                    endDate.setMonth(endDate.getMonth() + 1);
+                    break;
+                case 'Hàng quý':
+                    endDate.setMonth(endDate.getMonth() + 3);
+                    break;
+                case 'Hàng năm':
+                    endDate.setFullYear(endDate.getFullYear() + 1);
+                    break;
+            }
+
+            endDateInput.value = endDate.toISOString().split('T')[0];
+        }
+
+        calculateEndDate();
+    });
+</script>
 </html>

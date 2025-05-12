@@ -6,8 +6,10 @@ package com.tndm.controllers;
 
 import com.tndm.pojo.MaintenanceSchedule;
 import com.tndm.pojo.User;
+import com.tndm.services.DeviceService;
 import com.tndm.services.MaintenanceAssignmentService;
 import com.tndm.services.MaintenanceScheduleService;
+import com.tndm.services.TechnicianService;
 import com.tndm.services.UserService;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
@@ -33,21 +36,28 @@ public class MaintenanceController {
 
     @Autowired
     private MaintenanceAssignmentService mainAssignmentService;
-    
+
     @Autowired
     private UserService usrSer;
 
-    @GetMapping("/maintenances/{maintenanceId}")
+    @Autowired
+    private DeviceService devService;
+
+    @Autowired
+    private TechnicianService techService;
+
+    @GetMapping("/maintenance-result/{maintenanceId}")
     public String getProblemDetails(@PathVariable("maintenanceId") int id, Model model) {
         model.addAttribute("schedules", mainScheduleService.getMaintenanceScheduleById(id));
         model.addAttribute("assignments", mainAssignmentService.getAssignmentByMaintenanceId(id));
-        return "maintenances";
+        return "maintenance-result";
     }
 
-    @GetMapping("/maintenance-form/{maintenanceId}")
-    public String viewMaintenanceDetail(Model model, @PathVariable(value = "maintenanceId") int id) {
-        model.addAttribute("maintenance", this.mainScheduleService.getMaintenanceScheduleById(id));
-        return "maintenance-form";
+    @GetMapping("/maintenances")
+    public String showMaintenanceForm(Model model, @RequestParam(value = "facilityId", required = false) Integer facilityId) {
+        model.addAttribute("maintenance", new MaintenanceSchedule());
+
+        return "maintenances";
     }
 
     @PostMapping("/maintenances/add")
