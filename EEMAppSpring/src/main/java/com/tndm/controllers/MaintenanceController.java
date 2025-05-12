@@ -4,7 +4,10 @@
  */
 package com.tndm.controllers;
 
+import com.tndm.pojo.Device;
+import com.tndm.pojo.MaintenanceAssignment;
 import com.tndm.pojo.MaintenanceSchedule;
+import com.tndm.pojo.Technician;
 import com.tndm.pojo.User;
 import com.tndm.services.DeviceService;
 import com.tndm.services.MaintenanceAssignmentService;
@@ -12,6 +15,7 @@ import com.tndm.services.MaintenanceScheduleService;
 import com.tndm.services.TechnicianService;
 import com.tndm.services.UserService;
 import java.security.Principal;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -54,19 +58,53 @@ public class MaintenanceController {
     }
 
     @GetMapping("/maintenances")
-    public String showMaintenanceForm(Model model, @RequestParam(value = "facilityId", required = false) Integer facilityId) {
+    public String showMaintenanceForm(Model model) {
         model.addAttribute("maintenance", new MaintenanceSchedule());
+        return "maintenances";
+    }
 
+    @GetMapping("/maintenances/{maintenanceId}")
+    public String showMaintenanceForm(Model model, @PathVariable(value = "maintenanceId") int id) {
+        MaintenanceSchedule mainSchedule = this.mainScheduleService.getMaintenanceScheduleById(id);
+        model.addAttribute("maintenance", mainSchedule);
         return "maintenances";
     }
 
     @PostMapping("/maintenances/add")
-    public String createMaintenanceSchedule(@ModelAttribute(value = "maintenance") MaintenanceSchedule m, Principal principal) {
+    public String createMaintenanceSchedule(@ModelAttribute(value = "maintenance") MaintenanceSchedule m,
+            @RequestParam("technicianIds") List<Integer> technicianIds,
+            @RequestParam("deviceIds") List<Integer> deviceIds,
+            Principal principal) {
+
         String username = principal.getName();
         User currentUser = usrSer.getUserByUsername(username);
-        m.setUserId(currentUser);
 
-        this.mainScheduleService.addOrUpdateMaintenanceSchedule(m);
+        if (deviceIds != null && !deviceIds.isEmpty()) {
+            for (Integer devId : deviceIds) {
+                Device deviceSaved = devService.getDeviceById(devId);
+
+                MaintenanceSchedule mainSaved = new MaintenanceSchedule();
+                mainSaved = new MaintenanceSchedule(m.getId(), m.getStartDate(), m.getEndDate(), m.getTitle(), m.getFrequency(), "Chưa bảo trì");
+                mainSaved.setExpenseFirst(m.getExpenseFirst());
+                mainSaved.setDeviceId(deviceSaved);
+                mainSaved.setUserId(currentUser);
+                mainSaved.setTypeId(m.getTypeId());
+
+                MaintenanceSchedule ms = this.mainScheduleService.addOrUpdateMaintenanceSchedule(mainSaved);
+
+                if (technicianIds != null && !technicianIds.isEmpty()) {
+                    for (Integer techId : technicianIds) {
+                        MaintenanceAssignment assignment = new MaintenanceAssignment();
+                        assignment.setMaintenanceScheduleId(ms);
+
+                        Technician technician = techService.getTechnicianById(techId);
+                        assignment.setTechnicianId(technician);
+
+                        mainAssignmentService.addMaintenanceAssignment(assignment);
+                    }
+                }
+            }
+        }
         return "redirect:/index-maintenances";
     }
 
