@@ -158,4 +158,5 @@ public class UserServiceImpl implements UserService {
     public long countActiveUsers() {
         return this.usrRepo.countActiveUsers();
     }
+    
 }

@@ -110,6 +110,7 @@ public class User implements Serializable {
     private Date updatedDate;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     @PrimaryKeyJoinColumn
+    @JsonIgnore
     private Technician technician;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     @JsonIgnore

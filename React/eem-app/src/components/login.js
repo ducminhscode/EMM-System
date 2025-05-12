@@ -1,7 +1,7 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Alert, Button, Card, Col, Container, FloatingLabel, Form, Row } from 'react-bootstrap';
 import MySpinner from './layout/MySpinner';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import cookie from 'react-cookies';
 import { MyDispatchContext } from '../configs/Contexts';
 import Apis, { authApis, endpoints } from '../configs/Apis';
@@ -27,6 +27,7 @@ const Login = () => {
 
   const dispatch = useContext(MyDispatchContext);
   const nav = useNavigate();
+  const location = useLocation();
 
   const setState = (value, field) => {
     setUser({ ...user, [field]: value });
@@ -77,6 +78,31 @@ const Login = () => {
       }
     }
   };
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = cookie.load('token');
+      if (token) {
+        try {
+          setLoading(true);
+          let userData = await authApis().get(endpoints['profile']);
+          dispatch({
+            type: 'login',
+            payload: userData.data,
+          });
+          const from = location.state?.from?.pathname || '/';
+          nav(from, { replace: true });
+        } catch (ex) {
+          console.error('Token validation error:', ex);
+          cookie.remove('token', { path: '/' });
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    checkToken();
+  }, [dispatch, nav, location]);
 
   return (
     <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>

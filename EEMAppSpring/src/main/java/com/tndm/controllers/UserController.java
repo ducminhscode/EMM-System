@@ -4,22 +4,19 @@
  */
 package com.tndm.controllers;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.tndm.pojo.Technician;
 import com.tndm.pojo.User;
 import com.tndm.services.FacilityService;
 import com.tndm.services.MailService;
 import com.tndm.services.TechnicianService;
 import com.tndm.services.UserService;
-import com.tndm.services.impl.UserServiceImpl;
-import java.io.IOException;
+import jakarta.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +26,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -44,9 +42,6 @@ public class UserController {
 
     @Autowired
     private MailService mailService;
-
-    @Autowired
-    private Cloudinary cloudinary;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;

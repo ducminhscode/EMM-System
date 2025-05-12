@@ -4,6 +4,7 @@
  */
 package com.tndm.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,8 +56,10 @@ public class Technician implements Serializable {
     @MapsId
     private User user;
     @OneToMany(mappedBy = "technicianId")
+    @JsonIgnore
     private Set<MaintenanceAssignment> maintenanceAssignmentSet;
     @OneToMany(mappedBy = "technicianId")
+    @JsonIgnore
     private Set<RepairHistory> repairHistorySet;
 
     public Technician() {

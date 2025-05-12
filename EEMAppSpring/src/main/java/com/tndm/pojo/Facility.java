@@ -4,6 +4,7 @@
  */
 package com.tndm.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -70,6 +71,7 @@ public class Facility implements Serializable {
     @UpdateTimestamp
     private Date updatedDate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "facilityId")
+    @JsonIgnore
     private Set<Technician> technicianSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "facilityId")
     private Set<Device> deviceSet;

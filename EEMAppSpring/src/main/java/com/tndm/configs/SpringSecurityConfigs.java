@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -84,12 +83,14 @@ public class SpringSecurityConfigs {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(cors->cors.configurationSource(corsConfigurationSource()))
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(c -> c.disable()).authorizeHttpRequests(requests
-                -> requests.requestMatchers("/").hasRole("ADMIN")
+                -> requests.requestMatchers("/", "/devices", "/devices/**", "/export-excel", 
+                        "/facilities", "/facilities/**", "/index-facilities", "/index-users", 
+                        "/index-maintenances", "/index-reports", "/maintenances", "/maintenances/**",
+                        "/problems", "/problems/**", "/users", "/users/**", "/profile", "/profile/**").hasRole("ADMIN")
+                        .requestMatchers("/login").permitAll()
                         .requestMatchers("/api/**").permitAll()
-                        .requestMatchers("/devices").hasRole("ADMIN")
-                        .requestMatchers("/devices/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form.loginPage("/login")
                 .loginProcessingUrl("/login")
@@ -103,7 +104,7 @@ public class SpringSecurityConfigs {
 
         return http.build();
     }
-    
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
@@ -120,7 +121,7 @@ public class SpringSecurityConfigs {
 
         return source;
     }
-    
+
     @Bean
     @Order(0)
     public StandardServletMultipartResolver multipartResolver() {

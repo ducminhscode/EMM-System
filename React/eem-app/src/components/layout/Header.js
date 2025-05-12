@@ -1,6 +1,22 @@
+import { useContext } from "react";
 import { Button, Container, Form, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { MyDispatchContext } from "../../configs/Contexts";
+import { useNavigate } from "react-router-dom";
+import cookie from 'react-cookies';
+
+
 
 const Header = () => {
+
+    const dispatch = useContext(MyDispatchContext);
+    const nav = useNavigate();
+
+    const handleLogout = () => {
+        cookie.remove("token", { path: "/" });
+        dispatch({ type: "logout" });
+        nav("/login");
+    };
+
     return (
         <>
             <Navbar expand="lg" className="bg-body-tertiary">
@@ -29,15 +45,15 @@ const Header = () => {
                                 Link
                             </Nav.Link>
                         </Nav>
-                        <Form className="d-flex">
-                            <Form.Control
-                                type="search"
-                                placeholder="Search"
-                                className="me-2"
-                                aria-label="Search"
-                            />
-                            <Button variant="outline-success">Search</Button>
-                        </Form>
+                        <Nav className="ms-auto">
+                            <Button
+                                variant="outline-danger"
+                                onClick={handleLogout}
+                                className="my-2 my-lg-0"
+                            >
+                                Đăng xuất
+                            </Button>
+                        </Nav>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
