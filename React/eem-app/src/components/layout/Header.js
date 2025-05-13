@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { Button, Container, Form, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { MyDispatchContext } from "../../configs/Contexts";
+import { Button, Container, Image, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { MyDispatchContext, MyUserContext } from "../../configs/Contexts";
 import { useNavigate } from "react-router-dom";
 import cookie from 'react-cookies';
 
@@ -10,6 +10,7 @@ const Header = () => {
 
     const dispatch = useContext(MyDispatchContext);
     const nav = useNavigate();
+    const user = useContext(MyUserContext);
 
     const handleLogout = () => {
         cookie.remove("token", { path: "/" });
@@ -17,6 +18,10 @@ const Header = () => {
         nav("/login");
     };
 
+    const navigateToProfile = () => {
+        nav("/profile");
+    };
+    
     return (
         <>
             <Navbar expand="lg" className="bg-body-tertiary">
@@ -45,11 +50,44 @@ const Header = () => {
                                 Link
                             </Nav.Link>
                         </Nav>
-                        <Nav className="ms-auto">
+                        <Nav className="ms-auto align-items-center">
+                            {user && (
+                                <div
+                                    className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1"
+                                    style={{
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s ease-in-out'
+                                    }}
+                                    onClick={navigateToProfile}
+                                >
+                                    <div className="position-relative me-2">
+                                        <Image
+                                            src={user.avatar || '/default-avatar.png'}
+                                            roundedCircle
+                                            width="40"
+                                            height="40"
+                                            className="object-fit-cover border border-2 border-primary"
+                                            alt="Avatar"
+                                            style={{
+                                                minWidth: '40px',
+                                                minHeight: '40px',
+                                                transition: 'transform 0.2s'
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="d-flex flex-column me-3">
+                                        <span className="fw-semibold text-dark">{user.firstName} {user.lastName}</span>
+                                    </div>
+                                </div>
+                            )}
                             <Button
                                 variant="outline-danger"
                                 onClick={handleLogout}
-                                className="my-2 my-lg-0"
+                                className="ms-2"
+                                size="sm"
+                                style={{
+                                    transition: 'all 0.2s'
+                                }}
                             >
                                 Đăng xuất
                             </Button>

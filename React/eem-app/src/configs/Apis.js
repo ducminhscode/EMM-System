@@ -5,7 +5,10 @@ const BASE_URL = 'http://localhost:8080/EEMAppSpring/api/';
 
 export const endpoints = {
     'login': '/login',
-    'profile': '/secure/profile'
+    'profile': '/secure/profile',
+    'updateProfile': '/secure/profile/update',
+    'changePassword': '/secure/profile/change-password',
+
 }
 
 export const authApis = () => {
@@ -17,6 +20,8 @@ export const authApis = () => {
         }
     })
 }
+
+
 
 export default axios.create({
     baseURL: BASE_URL
