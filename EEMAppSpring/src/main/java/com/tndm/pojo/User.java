@@ -93,7 +93,6 @@ public class User implements Serializable {
     @NotNull
     @Size(min = 1, max = 15)
     @Column(name = "user_role")
-    @JsonIgnore
     private String userRole;
     @Size(max = 255)
     @Column(name = "avatar")

@@ -54,7 +54,7 @@ const App = () => {
                 element={
                   <>
                     {user && <Header />}
-                    <div style={{ paddingTop: "70px" }}>
+                    <div>
                       <Container>
                         <Routes>
                           <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />

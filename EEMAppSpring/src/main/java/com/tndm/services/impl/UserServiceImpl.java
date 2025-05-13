@@ -99,32 +99,47 @@ public class UserServiceImpl implements UserService {
     public User addOrUpdateUser(User u) {
         if (u.getId() != null) {
             User existingUser = usrRepo.getUserById(u.getId());
-
             if (u.getPassword() == null || u.getPassword().isEmpty()) {
                 u.setPassword(existingUser.getPassword());
             } else if (!u.getPassword().equals(existingUser.getPassword())) {
                 u.setPassword(this.passwordEncoder.encode(u.getPassword()));
             }
 
-            if (u.getAvatar() == null) {
+            if (u.getFile() != null && !u.getFile().isEmpty()) {
+                try {
+                    Map res = cloudinary.uploader().upload(u.getFile().getBytes(), ObjectUtils.asMap(
+                            "resource_type", "auto",
+                            "folder", "BaoTriThietBi"
+                    ));
+                    u.setAvatar(res.get("secure_url").toString());
+                } catch (IOException ex) {
+                    Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
                 u.setAvatar(existingUser.getAvatar());
             }
+
+            if (u.getActive() != null) {
+                u.setActive(u.getActive());
+            } else {
+                u.setActive(existingUser.getActive());
+            }
+
         } else {
             u.setPassword(this.passwordEncoder.encode("123"));
-        }
-
-        if (u.getFile() != null && !u.getFile().isEmpty()) {
-            try {
-                Map res = cloudinary.uploader().upload(u.getFile().getBytes(), ObjectUtils.asMap(
-                        "resource_type", "auto",
-                        "folder", "BaoTriThietBi"
-                ));
-                u.setAvatar(res.get("secure_url").toString());
-            } catch (IOException ex) {
-                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            if (u.getFile() != null && !u.getFile().isEmpty()) {
+                try {
+                    Map res = cloudinary.uploader().upload(u.getFile().getBytes(), ObjectUtils.asMap(
+                            "resource_type", "auto",
+                            "folder", "BaoTriThietBi"
+                    ));
+                    u.setAvatar(res.get("secure_url").toString());
+                } catch (IOException ex) {
+                    Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                u.setAvatar("https://res.cloudinary.com/dp9b0dkkt/image/upload/v1745512749/de995be2-6311-4125-9ac2-19e11fcaf801_jo8gcs.png");
             }
-        } else {
-            u.setAvatar("https://res.cloudinary.com/dp9b0dkkt/image/upload/v1745512749/de995be2-6311-4125-9ac2-19e11fcaf801_jo8gcs.png");
         }
 
         return this.usrRepo.addOrUpdateUser(u);
@@ -158,5 +173,5 @@ public class UserServiceImpl implements UserService {
     public long countActiveUsers() {
         return this.usrRepo.countActiveUsers();
     }
-    
+
 }
