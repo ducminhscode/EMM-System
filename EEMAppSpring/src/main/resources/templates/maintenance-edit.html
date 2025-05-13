@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+    <head>
+    <th:block th:replace="base :: styles"></th:block>
+    <title>Cập nhật lịch bảo trì</title>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex flex-col">
+
+        <!-- Header -->
+        <header class="bg-blue-600 text-white shadow-md">
+            <div class="container mx-auto px-4 py-6">
+                <h1 class="text-2xl font-bold text-center">Cập nhật lịch bảo trì</h1>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <!-- Form Header -->
+                <div class="bg-blue-600 px-6 py-4">
+                    <h2 class="text-xl font-semibold text-white"></h2>
+                </div>
+
+                <!-- Form Content -->
+                <form method="post" 
+                      th:action="@{/maintenance-edit/add}" 
+                      th:object="${maintenance}" 
+                      class="p-6 space-y-6">
+
+                    <div class="space-y-6">
+                        <div>
+                            <label for="maintenanceType" class="block text-sm font-medium text-gray-700 mb-1">
+                                Thiết bị <span class="text-red-500">*</span>
+                            </label>
+                            <input type="hidden" th:field="*{deviceId.id}"/> 
+                            <input type="text" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   id="title" 
+                                   th:field="*{deviceId.name}" 
+                                   placeholder="Nhập tiêu đề"
+                                   readonly
+                                   maxlength="50">
+                        </div>
+                    </div>
+
+                    <!-- Thông tin chính -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
+                                Tiêu đề <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   id="title" 
+                                   th:field="*{title}" 
+                                   placeholder="Nhập tiêu đề"
+                                   required
+                                   maxlength="50">
+                            <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                        </div>
+
+                        <div>
+                            <label for="expenseFirst" class="block text-sm font-medium text-gray-700 mb-1">
+                                Chi phí dự kiến
+                            </label>
+                            <input type="number" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   id="expenseFirst" 
+                                   th:field="*{expenseFirst}" >
+                            <span>VND</span>
+                        </div>
+
+
+                    </div>
+
+                    <div class="space-y-6">
+                        <div>
+                            <label for="maintenanceType" class="block text-sm font-medium text-gray-700 mb-1">
+                                Loại bảo trì <span class="text-red-500">*</span>
+                            </label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    id="maintenanceType"
+                                    th:field="*{typeId.id}" 
+                                    required>
+                                <option th:each="type : ${maintenanceTypes}" 
+                                        th:value="${type.id}" 
+                                        th:text="${type.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div>
+                            <label for="maintenanceType" class="block text-sm font-medium text-gray-700 mb-1">
+                                Trạng thái <span class="text-red-500">*</span>
+                            </label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    id="maintenanceStatus"
+                                    th:field="*{maintenanceStatus}" 
+                                    required>
+                                <option value="Quá hạn bảo trì">Quá hạn bảo trì</option>
+                                <option value="Chưa bảo trì">Chưa bảo trì</option>
+                                <option value="Đã bảo trì">Đã bảo trì</option>
+                         </select>
+                        </div>
+                    </div>
+
+
+                    <!-- Thời gian và Chi phí -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Ngày bắt đầu -->
+                        <div>
+                            <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">
+                                Ngày bắt đầu <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   id="startDate" 
+                                   th:field="*{startDate}" 
+                                   required>
+                            <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
+                        </div>
+
+                        <!-- Ngày kết thúc -->
+                        <div>
+                            <label for="endDate" class="block text-sm font-medium text-gray-700 mb-1">
+                                Ngày kết thúc <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   id="endDate" 
+                                   th:field="*{endDate}" 
+                                   readonly="">
+                            <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Kỹ thuật viên (bên trái) -->
+                        <div class="technician-column">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Kỹ thuật viên <span class="text-red-500">*</span>
+                            </label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    multiple
+                                    name="technicianIds"
+                                    required>
+                                <option th:each="tech : ${technicians}" 
+                                        th:value="${tech.id}" 
+                                        th:text="${tech.user.firstName} + ' ' + ${tech.user.lastName}"
+                                        th:selected="${#lists.contains(selectedTechIds, tech.id)}">
+                                </option>
+                            </select>
+                            <small class="text-gray-500 text-xs">Giữ Ctrl để chọn nhiều</small>
+                        </div>
+                        <!-- Tần suất -->
+                        <div class="dynamic-field hidden" id="frequencySection">
+
+                            <div>
+                                <label for="frequency" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Tần suất <span class="text-red-500">*</span>
+                                </label>
+                                <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        id="frequency"
+                                        th:field="*{frequency}">
+                                    <option value="Hàng ngày">Hàng ngày</option>
+                                    <option value="Hàng tuần">Hàng tuần</option>
+                                    <option value="Hàng tháng">Hàng tháng</option>
+                                    <option value="Hàng quý">Hàng quý</option>
+                                    <option value="Hàng năm">Hàng năm</option>
+                                    <option value ="" hidden=""></option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Mô tả -->
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                            Mô tả
+                        </label>
+                        <textarea class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  id="description" 
+                                  th:field="*{description}" 
+                                  rows="3"
+                                  maxlength="255"
+                                  placeholder="Nhập mô tả chi tiết..."></textarea>
+                    </div>
+
+                    <!-- Nút Submit -->
+                    <div class="pt-6">
+                        <input type="hidden" th:field="*{id}"/>
+                        <button type="submit" class="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                            <span th:text="'Cập nhật lịch bảo trì'"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-100 py-4 mt-8">
+            <div class="container mx-auto px-4 text-center text-gray-600 text-sm">
+                &copy; 2025 Hệ thống Quản lý Thiết bị
+            </div>
+        </footer>
+    </div>
+<th:block th:replace="base :: scripts"></th:block>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const frequencySelect = document.getElementById('frequency'); // Thêm id vào select
+        const maintenanceType = document.getElementById('maintenanceType');
+        const frequencySection = document.getElementById('frequencySection');
+        // Kiểm tra tồn tại các phần tử
+        if (!startDateInput || !endDateInput || !frequencySelect) {
+            console.error('Không tìm thấy các phần tử cần thiết');
+            return;
+        }
+        // Xử lý thay đổi ngày bắt đầu
+        startDateInput.addEventListener('change', function () {
+            startDateInput.min = this.value;
+            calculateEndDate();
+        });
+
+        frequencySelect.addEventListener('change', function () {
+            calculateEndDate();
+        });
+
+        function calculateEndDate() {
+            if (!startDateInput.value || frequencySelect.value === 'Khác')
+                return;
+
+            const startDate = new Date(startDateInput.value);
+            const frequency = frequencySelect.value;
+
+            let endDate = new Date(startDate);
+
+            switch (frequency) {
+                case 'Hàng ngày':
+                    endDate.setDate(endDate.getDate() + 1);
+                    break;
+                case 'Hàng tuần':
+                    endDate.setDate(endDate.getDate() + 7);
+                    break;
+                case 'Hàng tháng':
+                    endDate.setMonth(endDate.getMonth() + 1);
+                    break;
+                case 'Hàng quý':
+                    endDate.setMonth(endDate.getMonth() + 3);
+                    break;
+                case 'Hàng năm':
+                    endDate.setFullYear(endDate.getFullYear() + 1);
+                    break;
+            }
+
+            endDateInput.value = endDate.toISOString().split('T')[0];
+        }
+
+
+        function toggleFrequencySection() {
+            if (maintenanceType.value === '1') {
+                frequencySection.style.display = 'block';
+                endDateInput.readOnly = true;
+                calculateEndDate();
+            } else
+            {
+                frequencySection.style.display = 'none';
+                frequencySelect.value = "";
+                endDateInput.readOnly = false;
+            }
+        }
+
+        toggleFrequencySection();
+        maintenanceType.addEventListener('change', toggleFrequencySection);
+    });
+</script>
+</html>

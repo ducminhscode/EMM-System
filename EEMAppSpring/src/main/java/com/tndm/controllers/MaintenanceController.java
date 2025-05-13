@@ -16,6 +16,7 @@ import com.tndm.services.TechnicianService;
 import com.tndm.services.UserService;
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -63,11 +64,46 @@ public class MaintenanceController {
         return "maintenances";
     }
 
-    @GetMapping("/maintenances/{maintenanceId}")
-    public String showMaintenanceForm(Model model, @PathVariable(value = "maintenanceId") int id) {
-        MaintenanceSchedule mainSchedule = this.mainScheduleService.getMaintenanceScheduleById(id);
-        model.addAttribute("maintenance", mainSchedule);
-        return "maintenances";
+    @GetMapping("/maintenance-edit/{maintenanaceId}")
+    public String maintenanceScheduleDevice(@PathVariable("maintenanaceId") int id, Model model) {
+        MaintenanceSchedule mainSave = this.mainScheduleService.getMaintenanceScheduleById(id);
+        List<MaintenanceAssignment> mainAssignSave = this.mainAssignmentService.getAssignmentByMaintenanceId(id);
+        model.addAttribute("maintenance", mainSave);
+        model.addAttribute("technicians", this.techService.getTechnicianByFacilityId(mainSave.getDeviceId().getFacilityId().getId()));
+        List<Integer> selectedTechIds = mainAssignSave.stream().map(assign -> assign.getTechnicianId().getId()).collect(Collectors.toList());
+        model.addAttribute("selectedTechIds", selectedTechIds);
+
+        return "maintenance-edit";
+    }
+
+    @PostMapping("/maintenance-edit/add")
+    public String updateMaintenanceSchedule(@ModelAttribute(value = "maintenance") MaintenanceSchedule m,
+            @RequestParam("technicianIds") List<Integer> technicianIds,
+            Principal principal) {
+        String username = principal.getName();
+        User currentUser = usrSer.getUserByUsername(username);
+        m.setUserId(currentUser);
+
+        MaintenanceSchedule ms = this.mainScheduleService.addOrUpdateMaintenanceSchedule(m);
+        List<MaintenanceAssignment> mainAssignSaved = this.mainAssignmentService.getAssignmentByMaintenanceId(ms.getId());
+
+        for (MaintenanceAssignment mainAssign : mainAssignSaved) {
+            this.mainAssignmentService.deleteMaintenanceAssignment(mainAssign.getId());
+        }
+
+        if (technicianIds != null && !technicianIds.isEmpty()) {
+            for (Integer techId : technicianIds) {
+                MaintenanceAssignment assignment = new MaintenanceAssignment();
+                assignment.setMaintenanceScheduleId(ms);
+
+                Technician technician = techService.getTechnicianById(techId);
+                assignment.setTechnicianId(technician);
+
+                mainAssignmentService.addMaintenanceAssignment(assignment);
+            }
+        }
+
+        return "redirect:/index-maintenances";
     }
 
     @PostMapping("/maintenances/add")

@@ -16,11 +16,11 @@ import org.springframework.stereotype.Service;
  * @author ADMIN
  */
 @Service
-public class MaintenanceAssignmentServiceImpl implements MaintenanceAssignmentService{
+public class MaintenanceAssignmentServiceImpl implements MaintenanceAssignmentService {
 
     @Autowired
     private MaintenanceAssignmentRepository mainAssignmentRepo;
-    
+
     @Override
     public List<MaintenanceAssignment> getAssignmentByMaintenanceId(int maintenanceId) {
         return this.mainAssignmentRepo.getAssignmentByMaintenanceId(maintenanceId);
@@ -40,5 +40,14 @@ public class MaintenanceAssignmentServiceImpl implements MaintenanceAssignmentSe
     public MaintenanceAssignment getLastestMainAssignByMaintenanceId(int maintenanceId) {
         return this.mainAssignmentRepo.getLastestMainAssignByMaintenanceId(maintenanceId);
     }
-    
+
+    @Override
+    public MaintenanceAssignment getMaintenanceAssignmentById(int id) {
+        return this.mainAssignmentRepo.getMaintenanceAssignmentById(id);
+    }
+
+    @Override
+    public void deleteMaintenanceAssignment(int id) {
+        this.mainAssignmentRepo.deleteMaintenanceAssignment(id);
+    }
 }

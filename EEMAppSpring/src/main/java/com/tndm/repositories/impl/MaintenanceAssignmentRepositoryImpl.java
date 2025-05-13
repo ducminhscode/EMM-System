@@ -64,4 +64,17 @@ public class MaintenanceAssignmentRepositoryImpl implements MaintenanceAssignmen
                 .uniqueResult();
     }
 
+    @Override
+    public void deleteMaintenanceAssignment(int id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        MaintenanceAssignment m = this.getMaintenanceAssignmentById(id);
+        s.remove(m);
+    }
+
+    @Override
+    public MaintenanceAssignment getMaintenanceAssignmentById(int id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        return s.get(MaintenanceAssignment.class, id);
+    }
+
 }
