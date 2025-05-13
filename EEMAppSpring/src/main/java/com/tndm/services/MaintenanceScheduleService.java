@@ -6,6 +6,7 @@ package com.tndm.services;
 
 import com.tndm.pojo.MaintenanceSchedule;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -24,5 +25,7 @@ public interface MaintenanceScheduleService {
     void notifySchedule();
     
     void createNewSchedule();
+    
+    long countMaintenances(Map<String, String> params); 
 }
 

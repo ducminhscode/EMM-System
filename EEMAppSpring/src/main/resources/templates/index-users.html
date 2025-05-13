@@ -85,7 +85,7 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${user.email}"></td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${user.phone}"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${#dates.format(user.createdDate, 'dd - MM - yyyy')}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${#dates.format(user.createdDate, 'HH:mm dd/MM/yyyy')}"></td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             <span th:if="${user.active}" class="text-green-600">Đang hoạt động</span>
                                             <span th:unless="${user.active}" class="text-red-600">Vô hiệu hóa</span>

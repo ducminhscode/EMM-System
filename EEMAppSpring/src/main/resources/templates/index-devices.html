@@ -32,19 +32,19 @@
                     <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-gray-500 text-sm">Bảo trì sắp tới</p>
-                                <h3 class="text-2xl font-bold text-gray-800">15</h3>
+                                <p class="text-gray-500 text-sm">Lịch bảo trì</p>
+                                <h3 class="text-2xl font-bold text-gray-800" th:text="${countMaintenances}"></h3>
                             </div>
                             <div class="flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-full">
-                                <i class="fas fa-calendar-check text-yellow-600 text-xl"></i>
+                                <i class="fas fas fa-calendar-alt text-yellow-600 text-xl"></i>
                             </div>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-gray-500 text-sm">Sự cố chưa xử lý</p>
-                                <h3 class="text-2xl font-bold text-gray-800">7</h3>
+                                <p class="text-gray-500 text-sm">Sự cố</p>
+                                <h3 class="text-2xl font-bold text-gray-800" th:text="${countProblems}"></h3>
                             </div>
                             <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full">
                                 <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
@@ -94,7 +94,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${d.name}"></td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${d.typeId.name}"></td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${d.manufacturer}"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${#dates.format(d.purchaseDate, 'dd - MM - yyyy')}"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${#dates.format(d.purchaseDate, 'dd/MM/yyyy')}"></td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800" th:text="${d.statusId.name}"></span>
                                         </td>
@@ -243,7 +243,6 @@
                                 </div>
                                 <p class="text-sm text-gray-600">Vệ sinh bộ lọc</p>
                             </div>
-                            <button class="mt-4 text-blue-600 hover:text-blue-800 text-sm font-medium">Xem tất cả</button>
                         </div>
                     </div>
 
@@ -283,7 +282,6 @@
                                 </div>
                                 <p class="text-sm text-gray-600">Đã sửa - Thay mực in</p>
                             </div>
-                            <button class="mt-4 text-blue-600 hover:text-blue-800 text-sm font-medium">Xem tất cả</button>
                         </div>
                     </div>
                 </div>

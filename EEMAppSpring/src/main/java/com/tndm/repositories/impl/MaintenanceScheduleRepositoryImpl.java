@@ -6,7 +6,11 @@ package com.tndm.repositories.impl;
 
 import com.tndm.pojo.MaintenanceSchedule;
 import com.tndm.repositories.MaintenanceScheduleRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.util.List;
+import java.util.Map;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +80,17 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
         Query<MaintenanceSchedule> q = s.createQuery(hql, MaintenanceSchedule.class);
 
         return q.getResultList();
+    }
+
+    @Override
+    public long countMaintenances(Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Long> q = b.createQuery(Long.class);
+        Root<MaintenanceSchedule> root = q.from(MaintenanceSchedule.class);
+        q.select(b.count(root));
+
+        return s.createQuery(q).getSingleResult();
     }
 
 }

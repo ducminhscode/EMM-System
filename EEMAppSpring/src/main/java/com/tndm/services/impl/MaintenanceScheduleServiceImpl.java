@@ -13,6 +13,7 @@ import com.tndm.services.MaintenanceScheduleService;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -126,5 +127,10 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
                 this.mainAssignRepo.addMaintenanceAssignment(newAssign);
             }
         }
+    }
+
+    @Override
+    public long countMaintenances(Map<String, String> params) {
+        return this.mainScheduleRepo.countMaintenances(params);
     }
 }

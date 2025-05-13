@@ -6,6 +6,7 @@ package com.tndm.repositories;
 
 import com.tndm.pojo.MaintenanceSchedule;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -23,4 +24,6 @@ public interface MaintenanceScheduleRepository {
     List<MaintenanceSchedule> findSchedulesToNotify();
     
     List<MaintenanceSchedule> findScheduleOverTheTime();
+    
+    long countMaintenances(Map<String, String> params); 
 }

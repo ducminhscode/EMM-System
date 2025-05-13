@@ -24,8 +24,8 @@
                                 <p class="text-gray-500 text-sm">Tổng sự cố</p>
                                 <h3 class="text-2xl font-bold text-gray-800" th:text="${countProblems}"></h3>
                             </div>
-                            <div class="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
-                                <i class="fas fa-exclamation-triangle text-blue-600 text-xl"></i>
+                            <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full">
+                                <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
                             </div>
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                                             th:text="${problem.userId.firstName + ' ' + problem.userId.lastName}"></td>
 
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
-                                            th:text="${#dates.format(problem.createdDate, 'HH:mm dd - MM - yyyy ')}"></td>
+                                            th:text="${#dates.format(problem.createdDate, 'HH:mm dd/MM/yyyy')}"></td>
 
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             <a th:href="@{'/problems/' + ${problem.id}}" 

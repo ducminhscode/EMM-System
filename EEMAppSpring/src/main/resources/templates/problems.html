@@ -1,143 +1,123 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Chi tiết Sửa chữa</title>
+<head>
+    <title>Chi tiết Sửa chữa</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <th:block th:replace="base :: styles"></th:block>
-    
 </head>
-<body class="bg-gray-100 font-sans">
-    <div class="min-h-screen">
-        <!-- Main Content -->
-        <div class="overflow-auto">
-            <!-- Header -->
-            <header class="bg-white shadow-sm">
-                <div class="max-w-7xl mx-auto px-4 py-4">
-                    <div class="flex justify-between items-center">
-                        <h1 class="text-2xl font-bold text-gray-900">
-                            Chi tiết Sự cố #<span th:text="${problem.id}"></span>
-                            <span class="text-sm font-normal ml-2 text-yellow-600">
-                                Trạng thái: <span th:text="${problem.statusId.name}"></span>
-                            </span>
-                        </h1>
-                        <a th:href="@{/index-problems}" class="text-blue-600 hover:text-blue-800 text-sm">
-                            ← Quay lại danh sách
-                        </a>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Content -->
-            <main class="max-w-7xl mx-auto px-4 py-6">
-                <!-- Problem Card -->
-                <div class="bg-white rounded-xl shadow-md mb-6">
-                    <div class="p-6 border-b border-gray-200">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="flex items-center gap-4">
-                                <div class="inline-flex items-baseline gap-1">
-                                    <span class="text-sm text-gray-500">Thiết bị:</span>
-                                    <span class="font-medium" th:text="${problem.deviceId.name}"></span>
-                                </div>
-                                <div class="inline-flex items-baseline gap-1">
-                                    <span class="text-sm text-gray-500">- Cơ sở:</span>
-                                    <span class="font-medium" th:text="${problem.deviceId.facilityId.name}"></span>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm text-gray-500 mb-1">Ngày xảy ra</label>
-                                <p class="font-medium" 
-                                   th:text="${#dates.format(problem.happenedDate, 'dd/MM/yyyy HH:mm')}"></p>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm text-gray-500 mb-1">Mức độ</label>
-                                <p class="font-medium" th:text="${problem.fatalLevelId.name}"></p>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm text-gray-500 mb-1">Người báo cáo</label>
-                                <p class="font-medium">
-                                    <span th:text="${problem.userId.firstName + ' ' + problem.userId.lastName}"></span>
-                                    <span class="block text-sm text-gray-500" 
-                                          th:text="${problem.userId.phone}"></span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-6">
-                        <label class="block text-sm text-gray-500 mb-1">Mô tả sự cố</label>
-                        <p class="text-gray-700 whitespace-pre-wrap" 
-                           th:text="${problem.description} ?: 'Không có mô tả'"></p>
-                    </div>
-                </div>
-
-                <!-- Repair History Section -->
-                <div class="bg-white rounded-xl shadow-md">
-                    <div class="p-6 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold flex items-center">
-                            <i class="fas fa-tools mr-2 text-blue-600"></i>
-                            Lịch sử Sửa chữa
-                        </h3>
-                    </div>
-
-                    <div class="p-6">
-                        <!-- Empty State -->
-                        <div th:if="${#lists.isEmpty(repairs)}" class="text-center py-8 text-gray-400">
-                            <i class="fas fa-history text-4xl mb-4"></i>
-                            <p class="text-sm">Chưa có hoạt động sửa chữa nào</p>
-                        </div>
-
-                        <!-- Repair List -->
-                        <div th:unless="${#lists.isEmpty(repairs)}" class="space-y-4">
-                            <div th:each="repair : ${repairs}" 
-                                 class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                                <div class="flex flex-col md:flex-row justify-between gap-4">
-                                    <!-- Repair Info -->
-                                    <div class="flex-1">
-                                        <div class="flex flex-wrap items-baseline gap-2 mb-2">
-                                            <h4 class="font-medium text-blue-600">
-                                                Loại sửa chữa: <span th:text="${repair.typeId.name}"></span>
-                                            </h4>
-                                            <span class="text-sm text-gray-500">
-                                                <i class="fas fa-user-cog"></i>
-                                                KTV: <span th:text="${repair.technicianId.user.firstName + ' ' + repair.technicianId.user.lastName}"></span>
-                                            </span>
-                                        </div>
-
-                                        <div class="text-sm text-gray-600 mb-2">
-                                            <i class="fas fa-calendar-alt mr-1"></i>
-                                            <span th:text="${#dates.format(repair.startDate, 'dd/MM/yyyy HH:mm')}"></span>
-                                            - 
-                                            <span th:text="${#dates.format(repair.endDate, 'dd/MM/yyyy HH:mm')}"></span>
-                                        </div>
-
-                                        <div class="text-sm text-gray-700">
-                                            <span th:if="${repair.description}" 
-                                                  th:text="'Mô tả: ' + ${repair.description}"></span>
-                                            <span th:unless="${repair.description}" 
-                                                  class="text-gray-400">Không có mô tả chi tiết</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Repair Cost -->
-                                    <div class="md:text-right mt-2 md:mt-0">
-                                        <div class="text-lg font-semibold text-green-600">
-                                            <span th:if="${repair.expense != null}">
-                                                <span th:text="${#numbers.formatDecimal(repair.expense, 0, 'COMMA', 0, 'POINT')}"></span> VND
-                                            </span>
-                                            <span th:if="${repair.expense == null}" class="text-gray-400">N/A</span>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
+<body class="bg-gray-50 font-sans min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg fixed top-0 left-0 right-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-tools text-xl"></i>
+                <h1 class="text-xl font-bold">Sự cố số<span th:text="${' ' + problem.id}"></span></h1>
+            </div>
+            <a th:href="@{/index-problems}" class="flex items-center gap-2 text-sm hover:text-gray-200 transition-colors">
+                <i class="fas fa-arrow-left"></i>
+                Quay lại danh sách
+            </a>
         </div>
-    </div>
-<th:block th:replace="base :: scripts"></th:block>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 pt-24 pb-12 sm:px-6 lg:px-8">
+        <!-- Problem Overview Card -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 transition-transform transform hover:scale-[1.02]">
+            <div class="flex flex-col md:flex-row justify-between items-start gap-6">
+                <!-- Left Section -->
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <h2 class="text-xl font-semibold text-gray-900" th:text="${problem.deviceId.name}"></h2>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+                              th:classappend="${problem.statusId.name == 'Hoàn thành' ? 'bg-green-100 text-green-800' : 
+                                              problem.statusId.name == 'Đang xử lý' ? 'bg-yellow-100 text-yellow-800' : 
+                                              'bg-red-100 text-red-800'}">
+                            <span th:text="${problem.statusId.name}"></span>
+                        </span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4" th:text="${problem.description} ?: 'Không có mô tả'"></p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-500">Cơ sở</label>
+                            <p class="font-medium text-gray-900" th:text="${problem.deviceId.facilityId.name}"></p>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-500">Mức độ</label>
+                            <p class="font-medium text-gray-900" th:text="${problem.fatalLevelId.name}"></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Section -->
+                <div class="text-right">
+                    <label class="block text-sm text-gray-500 mb-1">Người báo cáo</label>
+                    <p class="font-semibold text-gray-900" 
+                       th:text="${problem.userId.firstName + ' ' + problem.userId.lastName}"></p>
+                    <p class="text-sm text-gray-500" th:text="${problem.userId.phone}"></p>
+                    <label class="block text-sm text-gray-500 mt-2">Ngày xảy ra</label>
+                    <p class="font-medium text-gray-900" 
+                       th:text="${#dates.format(problem.happenedDate, 'HH:mm dd/MM/yyyy')}"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Repair History Section -->
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-tools text-blue-600 mr-2"></i>
+                Lịch sử sửa chữa
+            </h3>
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(repairs)}" class="text-center py-12 text-gray-400">
+                <i class="fas fa-history text-5xl mb-4"></i>
+                <p class="text-base">Chưa có hoạt động sửa chữa nào</p>
+            </div>
+            <!-- Repair List -->
+            <div th:unless="${#lists.isEmpty(repairs)}" class="space-y-6">
+                <div th:each="repair : ${repairs}" 
+                     class="border rounded-xl p-4 hover:bg-gray-50 transition-colors">
+                    <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                        <!-- Repair Info -->
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h4 class="font-semibold text-blue-600" th:text="${repair.typeId.name}"></h4>
+                                <span class="text-sm text-gray-500">
+                                    <i class="fas fa-user-cog mr-1"></i>
+                                    <span th:text="${repair.technicianId.user.firstName + ' ' + repair.technicianId.user.lastName}"></span>
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">
+                                <i class="fas fa-calendar-alt mr-1"></i>
+                                <span th:text="${#dates.format(repair.startDate, 'HH:mm dd/MM/yyyy')}"></span>
+                                - 
+                                <span th:text="${#dates.format(repair.endDate, 'HH:mm dd/MM/yyyy')}"></span>
+                            </p>
+                            <p class="text-sm text-gray-700">
+                                <span th:if="${repair.description}" th:text="${repair.description}"></span>
+                                <span th:unless="${repair.description}" class="text-gray-400">Không có mô tả chi tiết</span>
+                            </p>
+                        </div>
+                        <!-- Repair Cost -->
+                        <div class="sm:text-right mt-2 sm:mt-0">
+                            <p class="text-lg font-semibold text-green-600">
+                                <span th:if="${repair.expense != null}">
+                                    <span th:text="${#numbers.formatDecimal(repair.expense, 0, 'COMMA', 0, 'POINT')}"></span> VNĐ
+                                </span>
+                                <span th:if="${repair.expense == null}" class="text-gray-400">N/A</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <th:block th:replace="base :: footer"></th:block>
+
+    <th:block th:replace="base :: scripts"></th:block>
 </body>
 </html>

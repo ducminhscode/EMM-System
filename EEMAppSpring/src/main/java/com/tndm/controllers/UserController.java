@@ -96,14 +96,17 @@ public class UserController {
             Technician tSave = this.techService.getTechnicianById(u.getId());
             if (tSave == null) {
                 Technician t = new Technician();
+                t.setId(u.getId());
                 t.setUser(u);
                 t.setFacilityId(facService.getFacilityById(facilityId));
                 t.setSpecialization(specialization);
                 this.techService.addOrUpdateTechnician(t);
+                u.setTechnician(t);
             } else {
-                u.getTechnician().setFacilityId(facService.getFacilityById(facilityId));
-                u.getTechnician().setSpecialization(specialization);
-                this.techService.addOrUpdateTechnician(u.getTechnician());
+                tSave.setFacilityId(facService.getFacilityById(facilityId));
+                tSave.setSpecialization(specialization);
+                this.techService.addOrUpdateTechnician(tSave);
+                u.setTechnician(tSave);
             }
         }
 

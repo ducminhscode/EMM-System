@@ -79,6 +79,8 @@ public class IndexController {
         model.addAttribute("deviceTypes", this.deviceTypeService.getDeviceTypes());
         model.addAttribute("deviceStatus", this.devStatusService.getDeviceStatus());
         model.addAttribute("maintenanceTypes", this.mainTypeService.getMaintenanceTypes());
+        model.addAttribute("countMaintenances", this.mainScheduleService.countMaintenances(params));
+        model.addAttribute("countProblems", this.proService.countProblems(params));
 
         if (userDetails != null) {
             User user = userService.getUserByUsername(userDetails.getUsername());
@@ -209,8 +211,6 @@ public class IndexController {
     public String indexProblem(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("problems", this.proService.getProblem(params));
 
-        model.addAttribute("countProblems", this.proService.countProblems(params));
-
         long totalProblems = this.proService.countProblems(params);
         int totalPages = (int) Math.ceil((double) totalProblems / ProblemRepositoryImpl.PAGE_SIZE);
         totalPages = Math.max(1, totalPages);
@@ -237,7 +237,6 @@ public class IndexController {
     @RequestMapping("/index-maintenances")
     public String indexMaintenance(Model model) {
         model.addAttribute("maintenances", this.mainScheduleService.getMaintenanceSchedule());
-
         return "index-maintenances";
     }
 
