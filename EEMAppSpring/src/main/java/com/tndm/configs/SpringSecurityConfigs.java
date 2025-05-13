@@ -85,10 +85,12 @@ public class SpringSecurityConfigs {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(c -> c.disable()).authorizeHttpRequests(requests
-                -> requests.requestMatchers("/", "/devices", "/devices/**", "/export-excel", 
-                        "/facilities", "/facilities/**", "/index-facilities", "/index-users", 
+                -> requests.requestMatchers("/", "/devices", "/devices/**", "/export-excel",
+                        "/facilities", "/facilities/**", "/index-facilities", "/index-users",
                         "/index-maintenances", "/index-reports", "/maintenances", "/maintenances/**",
-                        "/problems", "/problems/**", "/users", "/users/**", "/profile", "/profile/**").hasRole("ADMIN")
+                        "/problems", "/problems/**", "/users", "/users/**", "/profile", "/profile/**", 
+                        "/maintenance-edit","/maintenance-edit/**",
+                        "/maintenance-result","/maintenance-result/**").hasRole("ADMIN")
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated())
