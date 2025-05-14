@@ -1,13 +1,12 @@
-import { Container, Row, Col, Nav, Alert, Button } from "react-bootstrap";
+import { Container, Row, Col, Nav, Alert } from "react-bootstrap";
 import { FaFacebook, FaTwitter, FaInstagram, FaEnvelope } from "react-icons/fa";
 
 const Footer = () => {
   return (
     <footer style={{ backgroundColor: '#ffffff', color: '#ffffff', padding: '2rem 0', fontFamily: 'Arial, sans-serif' }}>
-      <Container>
+      <Container className="bg-body-tertiary rounded-3 shadow-sm">
         <Row>
-          {/* Cột 1: Thông tin công ty */}
-          <Col md={4} sm={12} style={{ marginBottom: '1rem' }}>
+          <Col md={4} sm={12} style={{ marginBottom: '1rem', marginTop: '1rem' }}>
             <h5 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem', color: '#1a1a1a' }}>
               Equipment Maintenance Management
             </h5>
@@ -16,8 +15,7 @@ const Footer = () => {
             </p>
           </Col>
 
-          {/* Cột 2: Liên kết nhanh */}
-          <Col md={4} sm={12} style={{ marginBottom: '1rem' }}>
+          <Col md={4} sm={12} style={{ marginBottom: '1rem', marginTop: '1rem'  }}>
             <h5 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem', color: '#1a1a1a' }}>
               Liên kết nhanh
             </h5>
@@ -57,8 +55,7 @@ const Footer = () => {
             </Nav>
           </Col>
 
-          {/* Cột 3: Liên hệ và mạng xã hội */}
-          <Col md={4} sm={12} style={{ marginBottom: '1rem' }}>
+          <Col md={4} sm={12} style={{ marginBottom: '1rem',marginTop: '1rem'  }}>
             <h5 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem', color: '#1a1a1a' }}>
               Liên hệ
             </h5>
@@ -99,25 +96,23 @@ const Footer = () => {
             </div>
           </Col>
         </Row>
-
-        {/* Dòng bản quyền */}
-        <Row style={{ marginTop: '1.5rem' }}>
-          <Col style={{ textAlign: 'center' }}>
-            <Alert
-              variant="dark"
-              style={{
-                backgroundColor: '#ffffff',
-                color: '#1a1a1a',
-                border: 'none',
-                fontSize: '0.9rem',
-                marginBottom: 0,
-              }}
-            >
-              Equipment Maintenance Management © {new Date().getFullYear()}. All Rights Reserved.
-            </Alert>
-          </Col>
-        </Row>
       </Container>
+      <Row style={{ marginTop: '1.5rem' }}>
+        <Col style={{ textAlign: 'center' }}>
+          <Alert
+            variant="dark"
+            style={{
+              backgroundColor: '#ffffff',
+              color: '#1a1a1a',
+              border: 'none',
+              fontSize: '0.9rem',
+              marginBottom: 0,
+            }}
+          >
+            Equipment Maintenance Management © {new Date().getFullYear()}. All Rights Reserved.
+          </Alert>
+        </Col>
+      </Row>
     </footer>
   );
 };
