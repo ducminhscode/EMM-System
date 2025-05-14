@@ -12,6 +12,7 @@ import Footer from "./components/layout/Footer";
 import cookie from 'react-cookies';
 import { authApis, endpoints } from "./configs/Apis";
 import Profile from "./components/Profile";
+import ChatBox from "./components/ChatBox";
 
 const App = () => {
   const [user, dispatch] = useReducer(MyUserReducer, null);
@@ -59,6 +60,7 @@ const App = () => {
                         <Routes>
                           <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
                           <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
+                          <Route path="/chat" element={user ? <ChatBox /> : <Navigate to="/login" />} />
                         </Routes>
                       </Container>
                     </div>

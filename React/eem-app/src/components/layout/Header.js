@@ -36,7 +36,7 @@ const Header = () => {
                             navbarScroll
                         >
                             <Nav.Link href="#action2" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1 me-4">Thiết bị</Nav.Link>
-                            <Nav.Link href="#action3" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1">Trò chuyện</Nav.Link>
+                            <Nav.Link href="/chat" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1">Trò chuyện</Nav.Link>
                         </Nav>
                         <Nav className="ms-auto align-items-center">
                             {user && (

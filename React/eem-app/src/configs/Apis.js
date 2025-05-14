@@ -8,7 +8,7 @@ export const endpoints = {
     'profile': '/secure/profile',
     'updateProfile': '/secure/profile/update',
     'changePassword': '/secure/profile/change-password',
-
+    'users': '/users'
 }
 
 export const authApis = () => {
