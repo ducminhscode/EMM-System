@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.tndm.utils.JwtUtils;
+import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 /**
@@ -133,7 +135,7 @@ public class ApiUserController {
             if (!this.userDetailsService.authenticate(username, currentPassword)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Mật khẩu cũ không đúng");
             }
-            
+
             User existingUser = this.userDetailsService.getUserByUsername(username);
             if (existingUser == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
@@ -160,6 +162,19 @@ public class ApiUserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Lỗi khi đổi mật khẩu: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/users")
+    @CrossOrigin
+    @ResponseBody
+    public ResponseEntity<?> getUsers(@RequestParam Map<String, String> params) {
+        try {
+            List<User> users = this.userDetailsService.getUsers(params);
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi khi cập nhật thông tin: " + e.getMessage());
         }
     }
 

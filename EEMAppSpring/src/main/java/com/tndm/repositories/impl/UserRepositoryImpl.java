@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserRepositoryImpl implements UserRepository {
 
-    public static final int PAGE_SIZE = 5;
+    public static final int PAGE_SIZE = 8;
 
     @Autowired
     private LocalSessionFactoryBean factory;

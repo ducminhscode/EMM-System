@@ -81,4 +81,16 @@ public class ProblemRepositoryImpl implements ProblemRepository {
                 .setParameter("deviceIds", deviceIds)
                 .list();
     }
+
+    @Override
+    public Problem updateProblem(Problem p) {
+        Session s = this.factory.getObject().getCurrentSession();
+        if (p.getId() == null) {
+            s.persist(p);
+        } else {
+            s.merge(p);
+        }
+        s.refresh(p);
+        return p;
+    }
 }

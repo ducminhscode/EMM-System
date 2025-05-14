@@ -18,6 +18,8 @@ public interface ProblemService {
 
     Problem getProblemById(int id);
 
+    Problem updateProblem(Problem p);
+
     long countProblems(Map<String, String> params);
 
     void deleteProblem(int id);

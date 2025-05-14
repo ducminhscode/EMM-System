@@ -20,6 +20,8 @@ public interface ProblemRepository {
 
     Problem getProblemById(int id);
 
+    Problem updateProblem(Problem p);
+    
     long countProblems(Map<String, String> params);
 
     void deleteProblem(int id);

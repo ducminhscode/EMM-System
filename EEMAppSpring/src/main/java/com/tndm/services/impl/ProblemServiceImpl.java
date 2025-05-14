@@ -46,4 +46,9 @@ public class ProblemServiceImpl implements ProblemService {
     public List<Problem> getProblemsByDeviceIds(List<Integer> deviceIds) {
         return problemService.getProblemsByDeviceIds(deviceIds);
     }
+
+    @Override
+    public Problem updateProblem(Problem p) {
+        return problemService.updateProblem(p);
+    }
 }

@@ -68,6 +68,19 @@ public class DeviceController {
 
         return "redirect:/devices/maintenance-form/{deviceId}";
     }
+    
+    
+    @PostMapping("/devices/edit")
+    public String updateDevice(@ModelAttribute(value = "device") Device d, Principal principal, RedirectAttributes redirectAttributes) {
+        String username = principal.getName();
+        User currentUser = usrSer.getUserByUsername(username);
+        d.setUserId(currentUser);
+
+        Device savedDevice = this.devSer.addOrUpdateDevice(d);
+        redirectAttributes.addAttribute("deviceId", savedDevice.getId());
+
+        return "redirect:/";
+    }
 
     @GetMapping("/devices/{deviceId}")
     public String viewDeviceDetail(Model model, @PathVariable(value = "deviceId") int id) {
