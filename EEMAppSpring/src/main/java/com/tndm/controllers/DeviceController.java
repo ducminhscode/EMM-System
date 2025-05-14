@@ -5,7 +5,6 @@
 package com.tndm.controllers;
 
 import com.tndm.pojo.Device;
-import com.tndm.pojo.Facility;
 import com.tndm.pojo.MaintenanceAssignment;
 import com.tndm.pojo.MaintenanceSchedule;
 import com.tndm.pojo.Technician;

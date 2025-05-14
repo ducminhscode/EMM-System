@@ -10,12 +10,10 @@ import com.tndm.repositories.MaintenanceAssignmentRepository;
 import com.tndm.repositories.MaintenanceScheduleRepository;
 import com.tndm.services.MailService;
 import com.tndm.services.MaintenanceScheduleService;
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**

@@ -51,6 +51,6 @@ public class DispatcherServletInit extends AbstractAnnotationConfigDispatcherSer
 
     @Override
     protected Filter[] getServletFilters() {
-        return new Filter[]{new JwtFilter()}; // Filter sẽ áp dụng cho mọi request
+        return new Filter[]{new JwtFilter()};
     }
 }

@@ -6,7 +6,6 @@ package com.tndm.repositories.impl;
 
 import com.tndm.pojo.RepairHistory;
 import com.tndm.repositories.RepairHistoryRepository;
-import jakarta.persistence.NoResultException;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
