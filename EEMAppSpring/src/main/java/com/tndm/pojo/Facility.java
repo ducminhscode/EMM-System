@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -65,10 +66,12 @@ public class Facility implements Serializable {
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createdDate;
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updatedDate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "facilityId")
     @JsonIgnore
@@ -77,7 +80,7 @@ public class Facility implements Serializable {
     @JsonIgnore
     private Set<Device> deviceSet;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonIgnore
     private User userId;
 
@@ -184,5 +187,5 @@ public class Facility implements Serializable {
     public String toString() {
         return "com.tndm.pojo.Facility[ id=" + id + " ]";
     }
-
+    
 }

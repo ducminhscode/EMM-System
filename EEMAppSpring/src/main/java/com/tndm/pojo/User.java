@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -102,26 +103,28 @@ public class User implements Serializable {
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createdDate;
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updatedDate;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     @PrimaryKeyJoinColumn
     @JsonIgnore
     private Technician technician;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @OneToMany(mappedBy = "userId")
     @JsonIgnore
     private Set<MaintenanceSchedule> maintenanceScheduleSet;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @OneToMany(mappedBy = "userId")
     @JsonIgnore
     private Set<Problem> problemSet;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @OneToMany(mappedBy = "userId")
     @JsonIgnore
     private Set<Device> deviceSet;
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @OneToMany(mappedBy = "userId")
     private Set<Facility> facilitySet;
     @Transient
     @JsonIgnore
@@ -315,9 +318,6 @@ public class User implements Serializable {
         return file;
 }
 
-    /**
-     * @param file the file to set
-     */
     public void setFile(MultipartFile file) {
         this.file = file;
     }

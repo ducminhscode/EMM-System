@@ -5,6 +5,7 @@
 package com.tndm.pojo;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -63,10 +64,12 @@ public class Problem implements Serializable {
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createdDate;
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updatedDate;
     @JoinColumn(name = "device_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
@@ -78,9 +81,9 @@ public class Problem implements Serializable {
     @ManyToOne(optional = false)
     private ProblemStatus statusId;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private User userId;
-    @OneToMany(mappedBy = "problemId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "problemId")
     private Set<RepairHistory> repairHistorySet;
 
     public Problem() {

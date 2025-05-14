@@ -43,9 +43,7 @@ public class Technician implements Serializable {
     @NotNull
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
+    @Size(max = 50)
     @Column(name = "specialization")
     private String specialization;
     @JoinColumn(name = "facility_id", referencedColumnName = "id")
@@ -150,7 +148,7 @@ public class Technician implements Serializable {
         return "com.tndm.pojo.Technician[ id=" + id + " ]";
     }
 
-    public String getNameTech(){
+    public String getNameTech() {
         return this.getUser().getFirstName() + " " + this.getUser().getLastName();
     }
 }

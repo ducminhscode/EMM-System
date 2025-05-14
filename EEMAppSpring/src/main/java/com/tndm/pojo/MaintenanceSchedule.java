@@ -5,6 +5,7 @@
 package com.tndm.pojo;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,8 +27,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -103,9 +102,9 @@ public class MaintenanceSchedule implements Serializable {
     @ManyToOne(optional = false)
     private MaintenanceType typeId;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private User userId;
-    @OneToMany(mappedBy = "maintenanceScheduleId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "maintenanceScheduleId")
     private Set<MaintenanceAssignment> maintenanceAssignmentSet;
 
     public MaintenanceSchedule() {

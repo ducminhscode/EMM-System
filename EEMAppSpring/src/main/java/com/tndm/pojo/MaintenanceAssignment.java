@@ -37,7 +37,7 @@ public class MaintenanceAssignment implements Serializable {
     @Column(name = "id")
     private Integer id;
     @JoinColumn(name = "maintenance_schedule_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private MaintenanceSchedule maintenanceScheduleId;
     @JoinColumn(name = "technician_id", referencedColumnName = "id")
     @ManyToOne

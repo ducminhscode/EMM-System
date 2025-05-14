@@ -18,7 +18,6 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -49,31 +48,25 @@ public class RepairHistory implements Serializable {
     @Column(name = "id")
     private Integer id;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "expense")
     private BigDecimal expense;
     @Size(max = 255)
     @Column(name = "description")
     private String description;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "start_date")
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "end_date")
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
     @JoinColumn(name = "problem_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JsonIgnore
     private Problem problemId;
     @JoinColumn(name = "type_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private RepairType typeId;
     @JoinColumn(name = "technician_id", referencedColumnName = "id")
     @ManyToOne

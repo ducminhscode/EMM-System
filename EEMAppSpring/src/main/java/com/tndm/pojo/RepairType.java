@@ -5,7 +5,6 @@
 package com.tndm.pojo;
 
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -46,7 +45,7 @@ public class RepairType implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "name")
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "typeId")
+    @OneToMany(mappedBy = "typeId")
     private Set<RepairHistory> repairHistorySet;
 
     public RepairType() {

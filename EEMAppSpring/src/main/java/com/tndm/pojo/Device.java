@@ -73,10 +73,12 @@ public class Device implements Serializable {
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createdDate;
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updatedDate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceId")
     @JsonIgnore
@@ -97,7 +99,7 @@ public class Device implements Serializable {
     @JsonIgnore
     private Facility facilityId;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonIgnore
     private User userId;
 
@@ -237,5 +239,5 @@ public class Device implements Serializable {
     public String toString() {
         return "com.tndm.pojo.Device[ id=" + id + " ]";
     }
-
+    
 }
