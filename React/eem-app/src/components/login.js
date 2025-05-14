@@ -24,6 +24,7 @@ const Login = () => {
   const [msg, setMsg] = useState();
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
+  const [rememberMe, setRememberMe] = useState(true);
 
   const dispatch = useContext(MyDispatchContext);
   const nav = useNavigate();
@@ -53,7 +54,12 @@ const Login = () => {
         let res = await Apis.post(endpoints['login'], {
           ...user,
         });
-        cookie.save('token', res.data.token);
+
+        const cookieOptions = {
+          path: '/',
+          expires: rememberMe ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) : undefined,
+        };
+        cookie.save('token', res.data.token, cookieOptions);
 
         let u = await authApis().get(endpoints['profile']);
 
@@ -126,6 +132,8 @@ const Login = () => {
                         id="remember-me"
                         label="Ghi nhớ đăng nhập"
                         className="text-sm text-gray-900"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
                       />
                       <a
                         href="#forgot-password"
