@@ -30,4 +30,14 @@ public class RepairHistoryServiceImpl implements RepairHistoryService {
     public List<RepairHistory> getAllRepairHistorires() {
         return this.repairHistoryRepo.getAllRepairHistorires();
     }
+
+    @Override
+    public RepairHistory addOrUpdateRepairHistory(RepairHistory r) {
+        return this.repairHistoryRepo.addOrUpdateRepairHistory(r);
+    }
+
+    @Override
+    public RepairHistory getRepairHistoryByProblemIdAndTechnicianId(int problemId, int technicianId) {
+        return this.repairHistoryRepo.getRepairHistoryByProblemIdAndTechnicianId(problemId, technicianId);
+    }
 }

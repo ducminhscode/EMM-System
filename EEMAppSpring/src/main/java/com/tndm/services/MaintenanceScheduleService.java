@@ -26,6 +26,8 @@ public interface MaintenanceScheduleService {
     
     void createNewSchedule();
     
+    void changeMaintenanceStatus();
+    
     long countMaintenances(Map<String, String> params); 
 }
 

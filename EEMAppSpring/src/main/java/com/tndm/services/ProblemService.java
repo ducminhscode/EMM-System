@@ -18,7 +18,9 @@ public interface ProblemService {
 
     Problem getProblemById(int id);
 
-    Problem updateProblem(Problem p);
+    Problem addOrUpdateProblem(Problem p);
+
+    List<Problem> getProblemsByTechnicianId(int technicianId);
 
     long countProblems(Map<String, String> params);
 

@@ -70,8 +70,15 @@
                                             th:text="${#dates.format(problem.createdDate, 'HH:mm dd/MM/yyyy')}"></td>
 
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            <a th:href="@{'/problems/' + ${problem.id}}" 
-                                               class="text-blue-600 hover:text-blue-800 mr-3">
+                                            <button th:unless="${problem.statusId.name != 'Chưa xác nhận'}" 
+                                                    th:onclick="'showConfirmDialog(' + ${problem.deviceId.facilityId.id} + ',' + ${problem.id} + ')'" 
+                                                    class="text-green-600 hover:text-green-800">
+                                                <i class="fas fa-check"></i>
+                                                <span class="hidden sm:inline">Xác nhận</span>
+                                            </button>
+                                            <a  th:if="${problem.statusId.name != 'Chưa xác nhận'}" 
+                                                th:href="@{'/problems/' + ${problem.id}}" 
+                                                class="text-blue-600 hover:text-blue-800 mr-3">
                                                 <i class="fas fa-eye"></i>
                                                 <span class="hidden sm:inline">Chi tiết</span>
                                             </a>
@@ -160,14 +167,108 @@
                         </div>
                     </div>
                 </div>
+                <div id="confirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+                    <div class="bg-white rounded-lg p-6 w-96">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Phân công kĩ sư</h3>
+                        <div id="technicianSection" class="hidden">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Kỹ thuật viên <span class="text-red-500">*</span>
+                                </label>
+                                <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        multiple
+                                        name="technicianIds"
+                                        id="technicians"
+                                        required>
+                                    <option value="">-- Đang tải kỹ thuật viên... --</option>
+                                </select>
+                                <small class="text-gray-500 text-xs">Giữ Ctrl để chọn nhiều</small>
+                            </div>
+                        </div>
+                        <div class="flex justify-end space-x-4">
+                            <button th:onclick="hideConfirmDialog()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Hủy</button>
+                            <button id="confirmConfirmBtn" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Xác nhận</button>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
 <th:block th:replace="base :: scripts"></th:block>
 <script>
     let currentProblemId = null;
-
+    let currentFacilityId = null;
+    let technicianSection = document.getElementById('technicianSection');
+    let technicianSelect = document.getElementById('technicians');
+    let contextPath = '[[@{/}]]';
     // Functions to show/hide delete dialog
+    function showConfirmDialog(facilityId, problemId) {
+        currentFacilityId = facilityId;
+        currentProblemId = problemId;
+        document.getElementById('confirmModal').classList.remove('hidden');
+
+        fetch(`${contextPath}api/technicians-by-facilityId?facilityId=${currentFacilityId}`, {
+            method: 'GET',
+            credentials: 'include'
+        })
+                .then(response => response.json())
+                .then(technicians => {
+                    technicianSelect.innerHTML = '';
+                    technicians.forEach(tech => {
+                        const option = document.createElement('option');
+                        option.value = `${tech.id}`;
+                        option.textContent = `${tech.nameTech}`;
+                        technicianSelect.appendChild(option);
+                    });
+                    technicianSection.classList.remove('hidden');
+                })
+                .catch(error => {
+                    console.error('Lỗi khi tải kỹ thuật viên:', error);
+                    technicianSelect.innerHTML = '<option value="">-- Lỗi tải kỹ thuật viên --</option>';
+                });
+    }
+
+    function hideConfirmDialog() {
+        currentFacilityId = null;
+        document.getElementById('confirmModal').classList.add('hidden');
+    }
+
+
+    document.getElementById('confirmConfirmBtn').addEventListener('click', function () {
+        if (currentProblemId) {
+            confirmTechnician('problem-add-technician/', currentProblemId);
+        }
+    });
+
+    function confirmTechnician(endpoint, id) {
+        const selectedOptions = Array.from(technicianSelect.selectedOptions);
+        const technicianIds = selectedOptions.map(option => option.value);
+
+        if (technicianIds.length === 0) {
+            alert('Vui lòng chọn ít nhất một kỹ thuật viên.');
+            return;
+        }
+
+        const formData = new FormData();
+        technicianIds.forEach(id => formData.append('technicianIds', id));
+
+        fetch(endpoint + id, {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (!response.ok) {
+                alert('Có lỗi xảy ra khi xác nhận kỹ thuật viên');
+            } else {
+                window.location.reload();  // hoặc điều hướng tùy ý
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('Lỗi hệ thống khi gửi kỹ thuật viên');
+        }).finally(() => {
+            hideConfirmDialog();
+        });
+    }
+
     function showDeleteDialog(problemId) {
         currentProblemId = problemId;
         document.getElementById('deleteModal').classList.remove('hidden');
@@ -179,7 +280,7 @@
     }
 
     // Xử lý sự kiện khi click nút xác nhận xóa
-    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
         if (currentProblemId) {
             deleteProblem('problems/', currentProblemId);
         }

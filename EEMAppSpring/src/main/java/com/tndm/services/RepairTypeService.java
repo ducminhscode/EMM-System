@@ -4,17 +4,16 @@
  */
 package com.tndm.services;
 
-import com.tndm.pojo.ProblemStatus;
+import com.tndm.pojo.RepairType;
 import java.util.List;
 
 /**
  *
  * @author ADMIN
  */
-public interface ProblemStatusService {
+public interface RepairTypeService {
 
-    List<ProblemStatus> getProblemStatus();
+    RepairType getRepairTypeById(int repairId);
 
-    ProblemStatus getProblemStatusByName(String name);
-
+    List<RepairType> getAllRepairType();
 }

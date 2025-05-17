@@ -83,7 +83,7 @@ public class ProblemRepositoryImpl implements ProblemRepository {
     }
 
     @Override
-    public Problem updateProblem(Problem p) {
+    public Problem addOrUpdateProblem(Problem p) {
         Session s = this.factory.getObject().getCurrentSession();
         if (p.getId() == null) {
             s.persist(p);
@@ -92,5 +92,16 @@ public class ProblemRepositoryImpl implements ProblemRepository {
         }
         s.refresh(p);
         return p;
+    }
+
+    @Override
+    public List<Problem> getProblemsByTechnicianId(int technicianId) {
+        Session s = this.factory.getObject().getCurrentSession();
+        String hql = "SELECT rh.problemId FROM RepairHistory rh "
+                + "WHERE rh.technicianId.id = :technicianId "
+                + "AND rh.problemId.statusId.name != 'Đã sửa chữa'";
+        return s.createQuery(hql, Problem.class)
+                .setParameter("technicianId", technicianId)
+                .list();
     }
 }

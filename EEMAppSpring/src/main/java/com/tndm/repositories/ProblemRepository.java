@@ -18,10 +18,12 @@ public interface ProblemRepository {
 
     List<Problem> getProblemsByDeviceIds(List<Integer> deviceIds);
 
+    List<Problem> getProblemsByTechnicianId(int technicianId);
+    
     Problem getProblemById(int id);
 
-    Problem updateProblem(Problem p);
-    
+    Problem addOrUpdateProblem(Problem p);
+
     long countProblems(Map<String, String> params);
 
     void deleteProblem(int id);

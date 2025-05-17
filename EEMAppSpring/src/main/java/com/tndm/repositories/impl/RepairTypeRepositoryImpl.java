@@ -4,11 +4,11 @@
  */
 package com.tndm.repositories.impl;
 
-import com.tndm.pojo.ProblemStatus;
-import com.tndm.repositories.ProblemStatusRepository;
-import jakarta.persistence.Query;
+import com.tndm.pojo.RepairType;
+import com.tndm.repositories.RepairTypeRepository;
 import java.util.List;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
@@ -20,27 +20,23 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class ProblemStatusRepositoryImpl implements ProblemStatusRepository {
+public class RepairTypeRepositoryImpl implements RepairTypeRepository {
 
     @Autowired
     private LocalSessionFactoryBean factory;
 
     @Override
-    public List<ProblemStatus> getProblemStatus() {
+    public RepairType getRepairTypeById(int repairId) {
         Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("FROM ProblemStatus", ProblemStatus.class);
-
-        return q.getResultList();
+        return s.get(RepairType.class, repairId);
     }
 
     @Override
-    public ProblemStatus getProblemStatusByName(String name) {
-
+    public List<RepairType> getAllRepairType() {
         Session s = this.factory.getObject().getCurrentSession();
-        String hql = "FROM ProblemStatus WHERE name = :name";
-        return s.createQuery(hql, ProblemStatus.class)
-                .setParameter("name", name)
-                .uniqueResult();
+        Query q = s.createQuery("FROM RepairHistory", RepairType.class);
+
+        return q.getResultList();
     }
 
 }

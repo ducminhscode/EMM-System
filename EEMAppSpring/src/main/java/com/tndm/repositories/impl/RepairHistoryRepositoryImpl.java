@@ -41,4 +41,25 @@ public class RepairHistoryRepositoryImpl implements RepairHistoryRepository {
 
         return q.getResultList();
     }
+
+    @Override
+    public RepairHistory addOrUpdateRepairHistory(RepairHistory r) {
+        Session s = this.factory.getObject().getCurrentSession();
+        if (r.getId() == null) {
+            s.persist(r);
+        } else {
+            s.merge(r);
+        }
+        s.refresh(r);
+        return r;
+    }
+
+    @Override
+    public RepairHistory getRepairHistoryByProblemIdAndTechnicianId(int problemId, int technicianId) {
+        Session s = this.factory.getObject().getCurrentSession();
+        String hql = "FROM RepairHistory rh WHERE rh.problemId.id = :problemId AND rh.technicianId.id = :technicianId";
+        return s.createQuery(hql, RepairHistory.class)
+                .setParameter("problemId", problemId).setParameter("technicianId", technicianId).uniqueResult();
+    }
+
 }

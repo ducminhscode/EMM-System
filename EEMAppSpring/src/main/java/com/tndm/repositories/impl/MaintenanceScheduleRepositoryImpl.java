@@ -65,20 +65,27 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
     @Override
     public List<MaintenanceSchedule> findSchedulesToNotify() {
         Session s = this.factory.getObject().getCurrentSession();
-        String hql = "FROM MaintenanceSchedule WHERE (endDate > CURRENT_DATE AND maintenanceStatus = 'Chưa bảo trì') "
-                + "OR (endDate < CURRENT_DATE AND maintenanceStatus = 'Quá hạn bảo trì')";
+        String hql = "FROM MaintenanceSchedule maintenanceStatus = 'Chưa bảo trì'"
+                + "OR maintenanceStatus = 'Quá hạn bảo trì'";
         Query<MaintenanceSchedule> q = s.createQuery(hql, MaintenanceSchedule.class);
 
         return q.getResultList();
     }
 
     @Override
-    public List<MaintenanceSchedule> findScheduleOverTheTime() {
+    public List<MaintenanceSchedule> findScheduleToCreateNew() {
         Session s = this.factory.getObject().getCurrentSession();
         String hql = "FROM MaintenanceSchedule WHERE endDate < CURRENT_DATE "
                 + "AND maintenanceStatus = 'Đã bảo trì'";
         Query<MaintenanceSchedule> q = s.createQuery(hql, MaintenanceSchedule.class);
+        return q.getResultList();
+    }
 
+    @Override
+    public List<MaintenanceSchedule> findScheduleOverTheTime() {
+        Session s = this.factory.getObject().getCurrentSession();
+        String hql = "FROM MaintenanceSchedule WHERE endDate < CURRENT_DATE " + "AND maintenanceStatus = 'Chưa bảo trì'";
+        Query<MaintenanceSchedule> q = s.createQuery(hql, MaintenanceSchedule.class);
         return q.getResultList();
     }
 

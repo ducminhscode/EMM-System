@@ -67,7 +67,7 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     @Override
 //    @Scheduled(cron = "0 */3 * * * *") 
     public void createNewSchedule() {
-        List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.findScheduleOverTheTime();
+        List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.findScheduleToCreateNew();
         for (MaintenanceSchedule maintenance : listMaintenances) {
             if (maintenance.getFrequency() == null || maintenance.getEndDate() == null) {
                 continue;
@@ -130,5 +130,15 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     @Override
     public long countMaintenances(Map<String, String> params) {
         return this.mainScheduleRepo.countMaintenances(params);
+    }
+
+    @Override
+    //    @Scheduled(cron = "0 */3 * * * *") 
+    public void changeMaintenanceStatus() {
+        List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.findScheduleOverTheTime();
+        for (MaintenanceSchedule main : listMaintenances) {
+            main.setMaintenanceStatus("Quá hạn bảo trì");
+            mainScheduleRepo.addOrUpdateMaintenanceSchedule(main);
+        }
     }
 }

@@ -25,5 +25,10 @@ public class ProblemStatusServiceImpl implements ProblemStatusService{
     public List<ProblemStatus> getProblemStatus() {
         return this.problemStatusRepo.getProblemStatus();
     }
+
+    @Override
+    public ProblemStatus getProblemStatusByName(String name) {
+        return this.problemStatusRepo.getProblemStatusByName(name);
+    }
     
 }

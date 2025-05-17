@@ -16,5 +16,8 @@ public interface RepairHistoryRepository {
     List<RepairHistory> getRepairHistoriesByProblemId(int problemId);
 
     List<RepairHistory> getAllRepairHistorires();
-
+    
+    RepairHistory getRepairHistoryByProblemIdAndTechnicianId(int problemId, int technicianId);
+    
+    RepairHistory addOrUpdateRepairHistory(RepairHistory r);
 }

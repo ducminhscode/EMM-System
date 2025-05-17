@@ -13,17 +13,20 @@ import java.util.Map;
  * @author ADMIN
  */
 public interface MaintenanceScheduleRepository {
+
     List<MaintenanceSchedule> getMaintenanceSchedule();
-    
+
     MaintenanceSchedule addOrUpdateMaintenanceSchedule(MaintenanceSchedule m);
-    
+
     void deleteMaintenanceSchedule(int id);
-    
+
     MaintenanceSchedule getMaintenanceScheduleById(int id);
-    
+
     List<MaintenanceSchedule> findSchedulesToNotify();
-    
+
     List<MaintenanceSchedule> findScheduleOverTheTime();
-    
-    long countMaintenances(Map<String, String> params); 
+
+    List<MaintenanceSchedule> findScheduleToCreateNew();
+
+    long countMaintenances(Map<String, String> params);
 }

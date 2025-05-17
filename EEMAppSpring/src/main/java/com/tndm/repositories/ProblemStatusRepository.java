@@ -13,4 +13,8 @@ import java.util.List;
  */
 public interface ProblemStatusRepository {
     List<ProblemStatus> getProblemStatus();
+    
+    ProblemStatus getProblemStatusByName(String name);
+    
+    
 }
