@@ -70,6 +70,7 @@ public class ApiProblemController {
 
         for (Problem p : problems) {
             Map<String, Object> data = new HashMap<>();
+            data.put("id", p.getId());
             data.put("description", p.getDescription());
             data.put("happenedDate", p.getHappenedDate());
             data.put("fatalLevel", p.getFatalLevelId().getName());
@@ -95,17 +96,15 @@ public class ApiProblemController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
             }
 
-            String endDateStr = params.get("endDate");
             String expenseStr = params.get("expense");
             String description = params.get("description");
             int repairTypeId = Integer.parseInt(params.get("repairTypeId"));
 
-            if (endDateStr == null || expenseStr == null) {
-                return ResponseEntity.badRequest().body("Thiếu endDate hoặc expense");
+            if (expenseStr == null) {
+                return ResponseEntity.badRequest().body("Thiếu expense");
             }
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date endDate = sdf.parse(endDateStr);
+            Date endDate = new Date();
             BigDecimal expense = new BigDecimal(expenseStr);
 
             RepairType repTypeSaved = this.repTypeService.getRepairTypeById(repairTypeId);

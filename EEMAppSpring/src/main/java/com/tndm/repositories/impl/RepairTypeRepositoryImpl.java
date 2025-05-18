@@ -34,7 +34,7 @@ public class RepairTypeRepositoryImpl implements RepairTypeRepository {
     @Override
     public List<RepairType> getAllRepairType() {
         Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("FROM RepairHistory", RepairType.class);
+        Query q = s.createQuery("FROM RepairType", RepairType.class);
 
         return q.getResultList();
     }
