@@ -175,7 +175,7 @@ public class RepairHistory implements Serializable {
         return "com.tndm.pojo.RepairHistory[ id=" + id + " ]";
     }
 
-    public Boolean isDone() {
+    public boolean isDone() {
         return this.description != null && this.expense != null && this.endDate != null && this.typeId != null;
     }
 

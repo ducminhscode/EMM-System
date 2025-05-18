@@ -20,6 +20,7 @@ import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -79,37 +81,46 @@ public class ApiProblemController {
         return ResponseEntity.ok(listData);
     }
 
-    @PatchMapping("/problem/technician/{problemId}")
+    @PatchMapping("secure/problem/technician/{problemId}")
     @CrossOrigin
     public ResponseEntity<?> updateRepairHistory(
+            @PathVariable("problemId") int problemId,
             Principal principal,
-            @RequestParam Map<String, String> params,
-            @PathVariable("problemId") int problemId) {
+            @RequestParam Map<String, String> params) {
+
         try {
             String username = principal.getName();
-
             User existingUser = this.userDetailsService.getUserByUsername(username);
             if (existingUser == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
             }
 
             String endDateStr = params.get("endDate");
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String expenseStr = params.get("expense");
+            String description = params.get("description");
             int repairTypeId = Integer.parseInt(params.get("repairTypeId"));
+
+            if (endDateStr == null || expenseStr == null) {
+                return ResponseEntity.badRequest().body("Thiếu endDate hoặc expense");
+            }
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date endDate = sdf.parse(endDateStr);
+            BigDecimal expense = new BigDecimal(expenseStr);
 
             RepairType repTypeSaved = this.repTypeService.getRepairTypeById(repairTypeId);
             RepairHistory repSaved = this.repHistoryService.getRepairHistoryByProblemIdAndTechnicianId(problemId, existingUser.getId());
             Problem p = this.proService.getProblemById(problemId);
             ProblemStatus pStatus = this.proStatusService.getProblemStatusByName("Đã sửa chữa");
 
-            repSaved.setDescription(params.get("description"));
-            repSaved.setExpense(new BigDecimal(params.get("expense")));
-            repSaved.setEndDate(sdf.parse(endDateStr));
+            repSaved.setDescription(description);
+            repSaved.setExpense(expense);
+            repSaved.setEndDate(endDate);
             repSaved.setTypeId(repTypeSaved);
             this.repHistoryService.addOrUpdateRepairHistory(repSaved);
 
+            // Kiểm tra tất cả đã done hay chưa
             List<RepairHistory> repListSaved = this.repHistoryService.getRepairHistoriesByProblemId(problemId);
-
             boolean flag = repListSaved.stream().allMatch(RepairHistory::isDone);
 
             if (flag) {
@@ -117,11 +128,10 @@ public class ApiProblemController {
                 this.proService.addOrUpdateProblem(p);
             }
 
-            return new ResponseEntity<>(params, HttpStatus.OK);
+            return ResponseEntity.ok().body("Cập nhật thành công");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi khi cập nhật thông tin: " + e.getMessage());
+                    .body("Lỗi khi cập nhật: " + e.getMessage());
         }
     }
-
 }
