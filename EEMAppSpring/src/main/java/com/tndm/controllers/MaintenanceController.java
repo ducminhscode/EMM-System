@@ -72,13 +72,20 @@ public class MaintenanceController {
         model.addAttribute("technicians", this.techService.getTechnicianByFacilityId(mainSave.getDeviceId().getFacilityId().getId()));
         List<Integer> selectedTechIds = mainAssignSave.stream().map(assign -> assign.getTechnicianId().getId()).collect(Collectors.toList());
         model.addAttribute("selectedTechIds", selectedTechIds);
-
+        int leaderId = 0;
+        for (MaintenanceAssignment mainSaved : mainAssignSave) {
+            if (mainSaved.getIsCap() == true) {
+                leaderId = mainSaved.getTechnicianId().getId();
+            }
+        }
+        model.addAttribute("leaderId", leaderId);
         return "maintenance-edit";
     }
 
     @PostMapping("/maintenance-edit/add")
     public String updateMaintenanceSchedule(@ModelAttribute(value = "maintenance") MaintenanceSchedule m,
             @RequestParam("technicianIds") List<Integer> technicianIds,
+            @RequestParam("leaderId") int leaderId,
             Principal principal) {
         String username = principal.getName();
         User currentUser = usrSer.getUserByUsername(username);
@@ -95,7 +102,11 @@ public class MaintenanceController {
             for (Integer techId : technicianIds) {
                 MaintenanceAssignment assignment = new MaintenanceAssignment();
                 assignment.setMaintenanceScheduleId(ms);
-
+                if (leaderId == techId) {
+                    assignment.setIsCap(Boolean.TRUE);
+                } else {
+                    assignment.setIsCap(Boolean.FALSE);
+                }
                 Technician technician = techService.getTechnicianById(techId);
                 assignment.setTechnicianId(technician);
 
@@ -110,6 +121,7 @@ public class MaintenanceController {
     public String createMaintenanceSchedule(@ModelAttribute(value = "maintenance") MaintenanceSchedule m,
             @RequestParam("technicianIds") List<Integer> technicianIds,
             @RequestParam("deviceIds") List<Integer> deviceIds,
+            @RequestParam("leaderId") int leaderId,
             Principal principal) {
 
         String username = principal.getName();
@@ -132,7 +144,11 @@ public class MaintenanceController {
                     for (Integer techId : technicianIds) {
                         MaintenanceAssignment assignment = new MaintenanceAssignment();
                         assignment.setMaintenanceScheduleId(ms);
-
+                        if (leaderId == techId) {
+                            assignment.setIsCap(Boolean.TRUE);
+                        } else {
+                            assignment.setIsCap(Boolean.FALSE);
+                        }
                         Technician technician = techService.getTechnicianById(techId);
                         assignment.setTechnicianId(technician);
 

@@ -42,6 +42,8 @@ public class MaintenanceAssignment implements Serializable {
     @JoinColumn(name = "technician_id", referencedColumnName = "id")
     @ManyToOne
     private Technician technicianId;
+    @Column(name = "is_cap")
+    private Boolean isCap;
 
     public MaintenanceAssignment() {
     }
@@ -99,5 +101,18 @@ public class MaintenanceAssignment implements Serializable {
         return "com.tndm.pojo.MaintenanceAssignment[ id=" + id + " ]";
     }
 
+    /**
+     * @return the isCap
+     */
+    public Boolean getIsCap() {
+        return isCap;
+    }
+
+    /**
+     * @param isCap the isCap to set
+     */
+    public void setIsCap(Boolean isCap) {
+        this.isCap = isCap;
+    }
 
 }

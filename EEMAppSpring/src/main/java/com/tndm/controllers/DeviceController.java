@@ -35,65 +35,64 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  */
 @Controller
 public class DeviceController {
-
+    
     @Autowired
     private DeviceService devSer;
-
+    
     @Autowired
     private UserService usrSer;
-
+    
     @Autowired
     private TechnicianService techSer;
-
+    
     @Autowired
     private MaintenanceScheduleService mainScheduleService;
-
+    
     @Autowired
     private MaintenanceAssignmentService mainAssignmentService;
-
+    
     @GetMapping("/devices")
     public String viewDevice(Model model) {
         model.addAttribute("device", new Device());
         return "devices";
     }
-
+    
     @PostMapping("/devices/add")
     public String createDevice(@ModelAttribute(value = "device") Device d, Principal principal, RedirectAttributes redirectAttributes) {
         String username = principal.getName();
         User currentUser = usrSer.getUserByUsername(username);
         d.setUserId(currentUser);
-
+        
         Device savedDevice = this.devSer.addOrUpdateDevice(d);
         redirectAttributes.addAttribute("deviceId", savedDevice.getId());
-
+        
         return "redirect:/devices/maintenance-form/{deviceId}";
     }
-    
     
     @PostMapping("/devices/edit")
     public String updateDevice(@ModelAttribute(value = "device") Device d, Principal principal, RedirectAttributes redirectAttributes) {
         String username = principal.getName();
         User currentUser = usrSer.getUserByUsername(username);
         d.setUserId(currentUser);
-
+        
         Device savedDevice = this.devSer.addOrUpdateDevice(d);
         redirectAttributes.addAttribute("deviceId", savedDevice.getId());
-
+        
         return "redirect:/";
     }
-
+    
     @GetMapping("/devices/{deviceId}")
     public String viewDeviceDetail(Model model, @PathVariable(value = "deviceId") int id) {
         model.addAttribute("device", this.devSer.getDeviceById(id));
         return "devices";
     }
-
+    
     @DeleteMapping("/devices/{deviceId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void destroy(@PathVariable(value = "deviceId") int id) {
         this.devSer.deleteDevice(id);
     }
-
+    
     @GetMapping("/devices/maintenance-form/{deviceId}")
     public String maintenanceScheduleDevice(@PathVariable("deviceId") int id, Model model) {
         model.addAttribute("maintenance", new MaintenanceSchedule());
@@ -103,36 +102,41 @@ public class DeviceController {
         model.addAttribute("deviceId", id);
         return "maintenance-form";
     }
-
+    
     @PostMapping("/devices/maintenance-form/{deviceId}/add")
     public String createMaintenanceScheduleDevice(@ModelAttribute(value = "maintenance") MaintenanceSchedule m,
             @PathVariable("deviceId") int id,
             @RequestParam("technicianIds") List<Integer> technicianIds,
+            @RequestParam("leaderId") int leaderId,
             Principal principal) {
-
+        
         String username = principal.getName();
         User currentUser = usrSer.getUserByUsername(username);
         m.setUserId(currentUser);
         
         Device deviceSaved = devSer.getDeviceById(id);
         m.setDeviceId(deviceSaved);
-
+        
         m.setMaintenanceStatus("Chưa bảo trì");
-
+        
         MaintenanceSchedule ms = this.mainScheduleService.addOrUpdateMaintenanceSchedule(m);
-
+        
         if (technicianIds != null && !technicianIds.isEmpty()) {
             for (Integer techId : technicianIds) {
                 MaintenanceAssignment assignment = new MaintenanceAssignment();
                 assignment.setMaintenanceScheduleId(ms);
-
+                if (leaderId == techId) {
+                    assignment.setIsCap(Boolean.TRUE);
+                } else {
+                    assignment.setIsCap(Boolean.FALSE);
+                }
                 Technician technician = techSer.getTechnicianById(techId);
                 assignment.setTechnicianId(technician);
-
+                
                 mainAssignmentService.addMaintenanceAssignment(assignment);
             }
         }
-
+        
         return "redirect:/";
     }
 }

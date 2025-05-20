@@ -67,7 +67,6 @@ public class ApiProblemController {
     public ResponseEntity<?> getProblemByTechnicianId(@PathVariable("technicianId") int id) {
         List<Problem> problems = this.proService.getProblemsByTechnicianId(id);
         List<Map<String, Object>> listData = new ArrayList<>();
-
         for (Problem p : problems) {
             Map<String, Object> data = new HashMap<>();
             data.put("id", p.getId());
@@ -75,6 +74,7 @@ public class ApiProblemController {
             data.put("happenedDate", p.getHappenedDate());
             data.put("fatalLevel", p.getFatalLevelId().getName());
             data.put("deviceName", p.getDeviceId().getName());
+            data.put("isDone", this.repHistoryService.getRepairHistoryByProblemIdAndTechnicianId(p.getId(), id).isDone());
 
             listData.add(data);
         }
