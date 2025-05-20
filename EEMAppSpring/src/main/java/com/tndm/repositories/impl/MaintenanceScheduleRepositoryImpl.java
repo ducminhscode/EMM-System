@@ -26,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRepository {
 
+    public static final int PAGE_SIZE = 5;
+
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -98,6 +100,32 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
         q.select(b.count(root));
 
         return s.createQuery(q).getSingleResult();
+    }
+
+    @Override
+    public List<MaintenanceSchedule> findSchedulesToNotifyToTechnician(int technicianId, String pageStr) {
+        Session s = this.factory.getObject().getCurrentSession();
+        String hql = "SELECT ma.maintenanceScheduleId FROM MaintenanceAssignment ma "
+                + "WHERE ma.technicianId.id = :technicianId "
+                + "AND ma.maintenanceScheduleId.maintenanceStatus = 'Chưa bảo trì'"
+                + "OR ma.maintenanceScheduleId.maintenanceStatus = 'Quá hạn bảo trì'";
+
+        Query query = s.createQuery(hql, MaintenanceSchedule.class).setParameter("technicianId", technicianId);
+
+        int page = 1; // mặc định là trang đầu tiên
+        try {
+            if (pageStr != null) {
+                page = Integer.parseInt(pageStr);
+            }
+        } catch (NumberFormatException ex) {
+            // Giữ nguyên page = 1 nếu có lỗi parse
+        }
+
+        int start = (page - 1) * PAGE_SIZE;
+        query.setFirstResult(start);
+        query.setMaxResults(PAGE_SIZE);
+
+        return query.getResultList();
     }
 
 }

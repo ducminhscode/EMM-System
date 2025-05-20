@@ -58,8 +58,8 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public List<Problem> getProblemsByTechnicianId(int technicianId) {
-        return this.problemService.getProblemsByTechnicianId(technicianId);
+    public List<Problem> getProblemsByTechnicianId(int technicianId, String pageStr) {
+        return this.problemService.getProblemsByTechnicianId(technicianId, pageStr);
     }
 
 

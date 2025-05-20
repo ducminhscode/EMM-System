@@ -20,7 +20,7 @@ public interface ProblemService {
 
     Problem addOrUpdateProblem(Problem p);
 
-    List<Problem> getProblemsByTechnicianId(int technicianId);
+    List<Problem> getProblemsByTechnicianId(int technicianId, String pageStr);
 
     long countProblems(Map<String, String> params);
 

@@ -50,4 +50,9 @@ public class MaintenanceAssignmentServiceImpl implements MaintenanceAssignmentSe
     public void deleteMaintenanceAssignment(int id) {
         this.mainAssignmentRepo.deleteMaintenanceAssignment(id);
     }
+
+    @Override
+    public MaintenanceAssignment getAssignmentByTechnicianIdAndMaintenanceId(int technicianId, int maintenanceId) {
+        return this.mainAssignmentRepo.getAssignmentByTechnicianIdAndMaintenanceId(technicianId, maintenanceId);
+    }
 }

@@ -64,8 +64,8 @@ public class ApiProblemController {
 
     @GetMapping("/problem/technician/{technicianId}")
     @CrossOrigin
-    public ResponseEntity<?> getProblemByTechnicianId(@PathVariable("technicianId") int id) {
-        List<Problem> problems = this.proService.getProblemsByTechnicianId(id);
+    public ResponseEntity<?> getProblemByTechnicianId(@PathVariable("technicianId") int id, @RequestParam("page") String page) {
+        List<Problem> problems = this.proService.getProblemsByTechnicianId(id, page);
         List<Map<String, Object>> listData = new ArrayList<>();
         for (Problem p : problems) {
             Map<String, Object> data = new HashMap<>();

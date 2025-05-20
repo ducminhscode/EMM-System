@@ -77,4 +77,12 @@ public class MaintenanceAssignmentRepositoryImpl implements MaintenanceAssignmen
         return s.get(MaintenanceAssignment.class, id);
     }
 
+    @Override
+    public MaintenanceAssignment getAssignmentByTechnicianIdAndMaintenanceId(int technicianId, int maintenanceId) {
+        Session s = this.factory.getObject().getCurrentSession();
+        String hql = "FROM MaintenanceAssignment ma WHERE ma.maintenanceScheduleId.id = :maintenanceId AND ma.technicianId.id = :technicianId";
+        return s.createQuery(hql, MaintenanceAssignment.class)
+                .setParameter("technicianId", technicianId).setParameter("maintenanceId", maintenanceId).uniqueResult();
+    }
+
 }

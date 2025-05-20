@@ -4,6 +4,7 @@
  */
 package com.tndm.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,9 +39,11 @@ public class MaintenanceAssignment implements Serializable {
     private Integer id;
     @JoinColumn(name = "maintenance_schedule_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
+    @JsonIgnore
     private MaintenanceSchedule maintenanceScheduleId;
     @JoinColumn(name = "technician_id", referencedColumnName = "id")
     @ManyToOne
+    @JsonIgnore
     private Technician technicianId;
     @Column(name = "is_cap")
     private Boolean isCap;

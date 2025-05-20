@@ -131,8 +131,7 @@ public class MaintenanceController {
             for (Integer devId : deviceIds) {
                 Device deviceSaved = devService.getDeviceById(devId);
 
-                MaintenanceSchedule mainSaved = new MaintenanceSchedule();
-                mainSaved = new MaintenanceSchedule(m.getId(), m.getStartDate(), m.getEndDate(), m.getTitle(), m.getFrequency(), "Chưa bảo trì");
+                MaintenanceSchedule mainSaved = new MaintenanceSchedule(m.getId(), m.getStartDate(), m.getEndDate(), m.getTitle(), m.getFrequency(), "Chưa bảo trì");
                 mainSaved.setExpenseFirst(m.getExpenseFirst());
                 mainSaved.setDeviceId(deviceSaved);
                 mainSaved.setUserId(currentUser);

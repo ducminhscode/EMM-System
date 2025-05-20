@@ -18,7 +18,7 @@ public interface ProblemRepository {
 
     List<Problem> getProblemsByDeviceIds(List<Integer> deviceIds);
 
-    List<Problem> getProblemsByTechnicianId(int technicianId);
+    List<Problem> getProblemsByTechnicianId(int technicianId, String pageStr);
     
     Problem getProblemById(int id);
 

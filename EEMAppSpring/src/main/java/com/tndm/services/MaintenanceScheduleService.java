@@ -22,12 +22,13 @@ public interface MaintenanceScheduleService {
 
     MaintenanceSchedule getMaintenanceScheduleById(int id);
 
-    void notifySchedule();
-    
-    void createNewSchedule();
-    
-    void changeMaintenanceStatus();
-    
-    long countMaintenances(Map<String, String> params); 
-}
+    List<MaintenanceSchedule> findSchedulesToNotifyToTechnician(int technicianId, String pageStr);
 
+    void notifySchedule();
+
+    void createNewSchedule();
+
+    void changeMaintenanceStatus();
+
+    long countMaintenances(Map<String, String> params);
+}

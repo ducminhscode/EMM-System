@@ -22,6 +22,8 @@ public interface MaintenanceScheduleRepository {
 
     MaintenanceSchedule getMaintenanceScheduleById(int id);
 
+    List<MaintenanceSchedule> findSchedulesToNotifyToTechnician(int technicianId, String pageStr);
+
     List<MaintenanceSchedule> findSchedulesToNotify();
 
     List<MaintenanceSchedule> findScheduleOverTheTime();

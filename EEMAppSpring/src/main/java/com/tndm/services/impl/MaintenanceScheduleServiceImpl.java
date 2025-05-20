@@ -141,4 +141,10 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
             mainScheduleRepo.addOrUpdateMaintenanceSchedule(main);
         }
     }
+
+    @Override
+    public List<MaintenanceSchedule> findSchedulesToNotifyToTechnician(int technicianId, String pageStr) {
+        return this.mainScheduleRepo.findSchedulesToNotifyToTechnician(technicianId, pageStr);
+    }
+
 }

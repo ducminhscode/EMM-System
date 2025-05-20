@@ -95,13 +95,27 @@ public class ProblemRepositoryImpl implements ProblemRepository {
     }
 
     @Override
-    public List<Problem> getProblemsByTechnicianId(int technicianId) {
+    public List<Problem> getProblemsByTechnicianId(int technicianId, String pageStr) {
         Session s = this.factory.getObject().getCurrentSession();
         String hql = "SELECT rh.problemId FROM RepairHistory rh "
                 + "WHERE rh.technicianId.id = :technicianId "
                 + "AND rh.problemId.statusId.name != 'Đã sửa chữa'";
-        return s.createQuery(hql, Problem.class)
-                .setParameter("technicianId", technicianId)
-                .list();
+
+        Query query = s.createQuery(hql, Problem.class).setParameter("technicianId", technicianId);
+        // Xử lý phân trang
+        int page = 1; // mặc định là trang đầu tiên
+        try {
+            if (pageStr != null) {
+                page = Integer.parseInt(pageStr);
+            }
+        } catch (NumberFormatException ex) {
+            // Giữ nguyên page = 1 nếu có lỗi parse
+        }
+
+        int start = (page - 1) * PAGE_SIZE;
+        query.setFirstResult(start);
+        query.setMaxResults(PAGE_SIZE);
+
+        return query.getResultList();
     }
 }

@@ -17,6 +17,8 @@ public interface MaintenanceAssignmentService {
 
     List<MaintenanceAssignment> getAssignmentByTechnicianId(int technicianId);
 
+    MaintenanceAssignment getAssignmentByTechnicianIdAndMaintenanceId(int technicianId, int maintenanceId);
+
     MaintenanceAssignment getMaintenanceAssignmentById(int id);
 
     MaintenanceAssignment addMaintenanceAssignment(MaintenanceAssignment m);
