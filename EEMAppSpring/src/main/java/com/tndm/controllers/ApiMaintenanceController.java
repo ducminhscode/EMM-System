@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,25 +79,31 @@ public class ApiMaintenanceController {
             if (existingUser == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
             }
-            String expenseLast = params.get("expenseLast");
-            String description = params.get("description");
+            MaintenanceAssignment mainAssign = this.mainAssignService.getAssignmentByTechnicianIdAndMaintenanceId(existingUser.getId(), maintenanceId);
+            
+            if (mainAssign.getIsCap()) {
+                String expenseLast = params.get("expenseLast");
+                String description = params.get("description");
 
-            if (expenseLast == null) {
-                return ResponseEntity.badRequest().body("Thiếu expenseLast");
+                if (expenseLast == null) {
+                    return ResponseEntity.badRequest().body("Thiếu expenseLast");
+                }
+
+                Date maintenanceDate = new Date();
+                BigDecimal expense = new BigDecimal(expenseLast);
+
+                MaintenanceSchedule mainSaved = this.mainScheduleService.getMaintenanceScheduleById(maintenanceId);
+
+                mainSaved.setDescription(description);
+                mainSaved.setExpenseLast(expense);
+                mainSaved.setMaintenanceDate(maintenanceDate);
+                mainSaved.setMaintenanceStatus("Đã bảo trì");
+                this.mainScheduleService.addOrUpdateMaintenanceSchedule(mainSaved);
+
+                return ResponseEntity.ok().body("Cập nhật thành công");
+            } else {
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Bạn không có quyền cập nhật thông tin bảo trì");
             }
-
-            Date maintenanceDate = new Date();
-            BigDecimal expense = new BigDecimal(expenseLast);
-
-            MaintenanceSchedule mainSaved = this.mainScheduleService.getMaintenanceScheduleById(maintenanceId);
-
-            mainSaved.setDescription(description);
-            mainSaved.setExpenseLast(expense);
-            mainSaved.setMaintenanceDate(maintenanceDate);
-            mainSaved.setMaintenanceStatus("Đã bảo trì");
-            this.mainScheduleService.addOrUpdateMaintenanceSchedule(mainSaved);
-
-            return ResponseEntity.ok().body("Cập nhật thành công");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Lỗi khi cập nhật: " + e.getMessage());
