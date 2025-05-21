@@ -26,21 +26,9 @@ public class ApiDeviceController {
     @Autowired
     private DeviceService devService;
 
-<<<<<<< HEAD
-    @GetMapping("/devices-by-facilityId")
-    @ResponseBody
-    public List<Device> getDevicesByFacility(@RequestParam("facilityId") int facilityId) {
-        return devService.getDevicesByFacilityId(facilityId);
-    }
-
     @GetMapping("/devices")
     @ResponseBody
     public List<Device> getDevice(@RequestParam Map<String, String> params) {
         return devService.getDevices(params);
     }
-
-=======
-
-    
->>>>>>> 8bb2270cbfe47cca34b5260b5172306d22bb585d
 }
