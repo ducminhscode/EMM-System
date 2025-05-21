@@ -15,6 +15,7 @@ import Profile from "./components/Profile";
 import ChatBox from "./components/ChatBox";
 import ProblemTechnician from "./components/ProblemTechnician";
 import ProblemTechnicianList from "./components/ProblemTechnicianList";
+import DeviceList from "./components/DeviceList";
 
 const App = () => {
   const [user, dispatch] = useReducer(MyUserReducer, null);
@@ -65,6 +66,7 @@ const App = () => {
                           <Route path="/chat" element={user ? <ChatBox /> : <Navigate to="/login" />} />
                           <Route path="/problem-technician-list" element={user ? <ProblemTechnicianList /> : <Navigate to="/login" />} />
                           <Route path="/problem-technician" element={user ? <ProblemTechnician /> : <Navigate to="/login" />} />
+                          <Route path="/devices" element={user ? <DeviceList /> : <Navigate to="/login" />} />
                         </Routes>
                       </Container>
                     </div>

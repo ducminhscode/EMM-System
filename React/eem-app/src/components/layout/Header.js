@@ -99,7 +99,7 @@ const Header = () => {
                             style={{ maxHeight: '100px' }}
                             navbarScroll
                         >
-                            <Nav.Link href="#action2" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1 me-4">Thiết bị</Nav.Link>
+                            <Nav.Link href="/devices" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1 me-4">Thiết bị</Nav.Link>
                             <Nav.Link href="/chat" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1">Trò chuyện</Nav.Link>
                             <Nav.Link href="/problem-technician-list" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1">Sự cố</Nav.Link>
                         </Nav>
