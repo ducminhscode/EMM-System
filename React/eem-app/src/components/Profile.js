@@ -195,10 +195,8 @@ const Profile = () => {
 
     return (
         <>
-            {/* Main Content */}
             <Container className="py-4">
                 <Card className="border-0 shadow-sm overflow-hidden">
-                    {/* Tab Navigation */}
                     <div className="border-bottom mt-2">
                         <div className="nav nav-tabs">
                             <button
@@ -217,7 +215,6 @@ const Profile = () => {
                     </div>
 
                     <Card.Body className="p-4">
-                        {/* Alert Message */}
                         {message.text && (
                             <Alert
                                 variant={message.variant}
@@ -231,7 +228,6 @@ const Profile = () => {
 
                         {activeTab === "profile" ? (
                             <Form onSubmit={handleSubmit}>
-                                {/* Avatar & Basic Info */}
                                 <Row className="mb-4 align-items-center">
                                     <Col xs="auto">
                                         <div className="position-relative">
@@ -269,7 +265,6 @@ const Profile = () => {
                                     </Col>
                                 </Row>
 
-                                {/* Form Fields */}
                                 <Row className="g-3">
                                     <Col md={6}>
                                         <Form.Group controlId="firstName">

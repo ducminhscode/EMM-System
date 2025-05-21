@@ -8,12 +8,11 @@ const MaintenanceTechnician = () => {
   const navigate = useNavigate();
   const [expenseLast, setExpenseLast] = useState("");
   const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Placeholder for any initial data fetch if needed
     setLoading(false);
   }, []);
 
@@ -52,7 +51,7 @@ const MaintenanceTechnician = () => {
         onSubmit={handleSubmit}
         className="p-3 border rounded shadow-sm bg-light"
       >
-        <h5>Cập nhật bảo trì cho công việc #{maintenanceId}</h5>
+        <h5>Cập nhật bảo trì cho công việc {maintenanceId}</h5>
 
         {message && <Alert variant="success">{message}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}

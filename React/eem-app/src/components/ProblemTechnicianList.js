@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import { Card, Button, Spinner } from "react-bootstrap";
-import { useNavigate, useLocation } from "react-router-dom"; // Add useLocation
+import { useNavigate, useLocation } from "react-router-dom";
 import { authApis, endpoints } from "../configs/Apis";
 import { MyUserContext } from "../configs/Contexts";
 
@@ -13,7 +13,7 @@ const ProblemTechnicianList = () => {
   const [error, setError] = useState(null);
   const user = useContext(MyUserContext);
   const navigate = useNavigate();
-  const location = useLocation(); // Add useLocation
+  const location = useLocation();
 
   const filterDuplicates = useCallback((arr) => {
     const seen = new Set();
@@ -87,7 +87,7 @@ const ProblemTechnicianList = () => {
       setLoading(true);
       loadProblems(1);
     }
-  }, [user, loadProblems, location.state?.refresh]); // Add location.state?.refresh
+  }, [user, loadProblems, location.state?.refresh]);
 
   useEffect(() => {
     if (page > 1) {

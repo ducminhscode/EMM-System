@@ -31,7 +31,6 @@ const NotificationBell = () => {
       let allProblems = [];
       let allMaintenances = [];
 
-      // Fetch all pages for problems
       while (true) {
         const problemRes = await authApis().get(
           `${endpoints["problemTechnicianId"]}${user.id}`,
@@ -40,12 +39,11 @@ const NotificationBell = () => {
         const problems = problemRes.data || [];
         allProblems = [...allProblems, ...problems];
 
-        if (problems.length < 5 || problems.length === 0) break; // Assume 5 items per page as a threshold
+        if (problems.length < 5 || problems.length === 0) break;
         page++;
       }
 
-      page = 1; // Reset page for maintenances
-      // Fetch all pages for maintenances
+      page = 1;
       while (true) {
         const maintenanceRes = await authApis().get(
           `${endpoints["maintenanceTechnicianId"]}${user.id}`,
@@ -54,7 +52,7 @@ const NotificationBell = () => {
         const maintenances = maintenanceRes.data || [];
         allMaintenances = [...allMaintenances, ...maintenances];
 
-        if (maintenances.length < 5 || maintenances.length === 0) break; // Assume 5 items per page as a threshold
+        if (maintenances.length < 5 || maintenances.length === 0) break;
         page++;
       }
 
@@ -75,7 +73,7 @@ const NotificationBell = () => {
         id: `maintenance-${m.id}`,
         type: "maintenance",
         deviceName: m.deviceName,
-        title: m.tittle, // Note: Backend uses "tittle" (typo)
+        title: m.tittle,
         description: m.description,
         startDate: new Date(m.startDate).toLocaleDateString(),
         endDate: new Date(m.endDate).toLocaleDateString(),

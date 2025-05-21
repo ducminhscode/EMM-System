@@ -4,7 +4,6 @@ import { FaTools, FaChartLine, FaBell, FaCalendarCheck } from "react-icons/fa";
 const Home = () => {
   return (
     <div style={{ backgroundColor: "#f8f9fa", minHeight: "100vh", marginTop: "30px" }}>
-      {/* Hero Banner */}
       <div
         style={{
           background: "linear-gradient(to right, #007bff, #0056b3)",
@@ -39,7 +38,6 @@ const Home = () => {
         </Container>
       </div>
 
-      {/* Giới thiệu */}
       <Container style={{ padding: "3rem 2rem" }}>
         <Row className="align-items-center">
           <Col md={6}>
@@ -71,7 +69,6 @@ const Home = () => {
         </Row>
       </Container>
 
-      {/* Tính năng nổi bật */}
       <div style={{ backgroundColor: "#ffffff", padding: "3rem 2rem" }}>
         <Container>
           <h2 style={{ fontSize: "2rem", fontWeight: 600, textAlign: "center", marginBottom: "2rem", color: "#1a1a1a" }}>
@@ -162,7 +159,6 @@ const Home = () => {
         </Container>
       </div>
 
-      {/* Call-to-Action */}
       <div
         style={{
           backgroundColor: "#007bff",

@@ -1,33 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { authApis, endpoints } from '../configs/Apis';
-import {
-    Button,
-    Container,
-    Row,
-    Col,
-    Card,
-    Spinner,
-    Alert,
-    Form
-} from 'react-bootstrap';
+import { Button, Container, Row, Col, Card, Spinner, Alert, Form } from 'react-bootstrap';
 
 const DevicesList = () => {
     const [devices, setDevices] = useState([]);
+    const [filteredDevices, setFilteredDevices] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
     const observer = useRef();
-
-    const formatDate = (timestamp) => {
-        if (!timestamp) return 'N/A';
-        const date = new Date(timestamp);
-        return date.toLocaleDateString('vi-VN', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-        });
-    };
 
     const lastDeviceElementRef = useCallback(
         (node) => {
@@ -42,6 +26,16 @@ const DevicesList = () => {
         },
         [loading, hasMore]
     );
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedQuery(searchQuery);
+        }, 700);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchQuery]);
 
     useEffect(() => {
         const fetchDevices = async () => {
@@ -69,7 +63,22 @@ const DevicesList = () => {
         };
 
         fetchDevices();
-    }, [page]);
+    }, [page, hasMore]);
+
+    useEffect(() => {
+        if (debouncedQuery.trim() === '') {
+            setFilteredDevices(devices);
+        } else {
+            const filtered = devices.filter((device) =>
+                device.name.toLowerCase().includes(debouncedQuery.toLowerCase())
+            );
+            setFilteredDevices(filtered);
+        }
+    }, [devices, debouncedQuery]);
+
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value);
+    };
 
     const handleReportIssue = (deviceId) => {
         console.log(`Báo cáo sự cố cho thiết bị ID: ${deviceId}`);
@@ -89,10 +98,41 @@ const DevicesList = () => {
             </Container>
         );
 
-    if (devices.length === 0)
+    if (filteredDevices.length === 0)
         return (
-            <Container className="text-center mt-5">
-                <p className="text-muted">Không có thiết bị nào</p>
+            <Container className="py-5">
+                <Row className="align-items-center mb-4">
+                    <Col>
+                        <h3 className="text-3xl font-bold text-gray-900 tracking-tight">Danh sách thiết bị</h3>
+                    </Col>
+                    <Col md="6">
+                        <div className="position-relative">
+                            <Form.Control
+                                type="text"
+                                placeholder="Tìm kiếm thiết bị..."
+                                className="rounded-pill px-4 py-2 shadow-sm border border-secondary"
+                                value={searchQuery}
+                                onChange={handleSearch}
+                            />
+                            <svg
+                                className="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                ></path>
+                            </svg>
+                        </div>
+                    </Col>
+                </Row>
+                <p className="text-center mt-5">
+                    {searchQuery ? 'Không tìm thấy thiết bị phù hợp' : 'Không có thiết bị nào'}
+                </p>
             </Container>
         );
 
@@ -108,19 +148,31 @@ const DevicesList = () => {
                             type="text"
                             placeholder="Tìm kiếm thiết bị..."
                             className="rounded-pill px-4 py-2 shadow-sm border border-secondary"
+                            value={searchQuery}
+                            onChange={handleSearch}
                         />
-                        <svg className="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
+                        <svg
+                            className="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                            ></path>
+                        </svg>
                     </div>
                 </Col>
             </Row>
 
-            {devices.map((device, index) => (
+            {filteredDevices.map((device, index) => (
                 <Card
                     key={device.id}
                     className="mb-4 shadow-sm border-0 rounded-4"
-                    ref={devices.length === index + 1 ? lastDeviceElementRef : null}
+                    ref={filteredDevices.length === index + 1 ? lastDeviceElementRef : null}
                 >
                     <Card.Body className="p-4">
                         <Row>
@@ -128,12 +180,12 @@ const DevicesList = () => {
                                 <h5 className="fw-semibold text-dark mb-1">{device.name}</h5>
                                 <p className="text-muted mb-3">{device.manufacturer}</p>
                                 <Row className="mb-2">
-                                    <Col sm={6}><strong>Mã thiết bị:</strong>{device.id}</Col>
-                                    <Col sm={6}><strong>Ngày mua:</strong> {formatDate(device.purchaseDate)}</Col>
+                                    <Col sm={6}><strong>Mã thiết bị:</strong> {device.id}</Col>
+                                    <Col sm={6}><strong>Cơ sở:</strong> {device.facilityId}</Col>
                                 </Row>
                                 <Row>
-                                    <Col sm={6}><strong>Ngày tạo:</strong> {formatDate(device.createdDate)}</Col>
-                                    <Col sm={6}><strong>Cập nhật:</strong> {formatDate(device.updatedDate)}</Col>
+                                    <Col sm={6}><strong>Loại:</strong> {device.typeId}</Col>
+                                    <Col sm={6}><strong>Trạng thái:</strong> {device.statusId}</Col>
                                 </Row>
                             </Col>
                             <Col md={4} className="d-flex flex-column justify-content-center align-items-end gap-2 mt-3 mt-md-0">
@@ -144,14 +196,6 @@ const DevicesList = () => {
                                     onClick={() => handleReportIssue(device.id)}
                                 >
                                     Báo sự cố
-                                </Button>
-                                <Button
-                                    variant="outline-primary"
-                                    size="sm"
-                                    className="rounded-pill px-3 w-50"
-                                    onClick={() => console.log(`Xem chi tiết thiết bị ID: ${device.id}`)}
-                                >
-                                    Chi tiết
                                 </Button>
                             </Col>
                         </Row>

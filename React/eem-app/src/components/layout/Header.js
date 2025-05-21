@@ -1,5 +1,5 @@
-import { useContext} from "react";
-import { Button, Container, Image, Nav, Navbar} from "react-bootstrap";
+import { useContext } from "react";
+import { Button, Container, Image, Nav, Navbar } from "react-bootstrap";
 import { MyDispatchContext, MyUserContext } from "../../configs/Contexts";
 import { useNavigate } from "react-router-dom";
 import cookie from 'react-cookies';
@@ -34,46 +34,59 @@ const Header = () => {
               style={{ maxHeight: '100px' }}
               navbarScroll
             >
-              <Nav.Link href="/devices" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1 me-3">Thiết bị</Nav.Link>
-              <Nav.Link href="/chat" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1 me-3">Trò chuyện</Nav.Link>
-              <Nav.Link href="/problem-technician-list" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1 me-3">Sự cố</Nav.Link>
-              <Nav.Link href="/maintenance-technician-list" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1 me-3">Bảo trì</Nav.Link>
+              {user?.userRole === "ROLE_EMPLOYEE" && (
+                <Nav.Link href="/devices" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-2 me-3">Thiết bị</Nav.Link>
+              )}
+
+              {user?.userRole === "ROLE_TECHNICIAN" && (
+                <Nav.Link href="/chat" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-2 me-3">Trò chuyện</Nav.Link>
+              )}
+
+              {user?.userRole === "ROLE_TECHNICIAN" && (
+                <Nav.Link href="/problem-technician-list" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-2 me-3">Sự cố</Nav.Link>
+              )}
+
+              {user?.userRole === "ROLE_TECHNICIAN" && (
+                <Nav.Link href="/maintenance-technician-list" className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-2 me-3">Bảo trì</Nav.Link>
+              )}
             </Nav>
             <Nav className="ms-auto align-items-center">
               {user && (
-              <>
-                <NotificationBell />
-                <div
-                  className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1 ms-3"
-                  style={{
-                    cursor: "pointer",
-                    transition: "all 0.2s ease-in-out",
-                  }}
-                  onClick={navigateToProfile}
-                >
-                  <div className="position-relative me-2">
-                    <Image
-                      src={user.avatar || "/default-avatar.png"}
-                      roundedCircle
-                      width="40"
-                      height="40"
-                      className="object-fit-cover border border-2 border-primary"
-                      alt="Avatar"
-                      style={{
-                        minWidth: "40px",
-                        minHeight: "40px",
-                        transition: "transform 0.2s",
-                      }}
-                    />
+                <>
+                  {user?.userRole === "ROLE_TECHNICIAN" && (
+                    <NotificationBell />
+                  )}
+                  <div
+                    className="d-flex align-items-center rounded-lg hover:bg-gray-300 transition-all cursor-pointer p-1 ms-3"
+                    style={{
+                      cursor: "pointer",
+                      transition: "all 0.2s ease-in-out",
+                    }}
+                    onClick={navigateToProfile}
+                  >
+                    <div className="position-relative me-2">
+                      <Image
+                        src={user.avatar || "/default-avatar.png"}
+                        roundedCircle
+                        width="40"
+                        height="40"
+                        className="object-fit-cover border border-2 border-primary"
+                        alt="Avatar"
+                        style={{
+                          minWidth: "40px",
+                          minHeight: "40px",
+                          transition: "transform 0.2s",
+                        }}
+                      />
+                    </div>
+                    <div className="d-flex flex-column me-3">
+                      <span className="fw-semibold text-dark">
+                        {user.firstName} {user.lastName}
+                      </span>
+                    </div>
                   </div>
-                  <div className="d-flex flex-column me-3">
-                    <span className="fw-semibold text-dark">
-                      {user.firstName} {user.lastName}
-                    </span>
-                  </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
               <Button
                 variant="outline-danger"
                 onClick={handleLogout}

@@ -65,12 +65,12 @@ const App = () => {
                         <Routes>
                           <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
                           <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
-                          <Route path="/chat" element={user ? <ChatBox /> : <Navigate to="/login" />} />
-                          <Route path="/problem-technician-list" element={user ? <ProblemTechnicianList /> : <Navigate to="/login" />} />
-                          <Route path="/devices" element={user ? <DeviceList /> : <Navigate to="/login" />} />
-                          <Route path="/problem-technician/:problemId" element={user ? <ProblemTechnician /> : <Navigate to="/login" />} />
-                          <Route path="/maintenance-technician-list" element={user ? <MaintenanceTechnicianList /> : <Navigate to="/login" />} />
-                          <Route path="/maintenance-technician/:maintenanceId" element={user ? <MaintenanceTechnician /> : <Navigate to="/login" />} />
+                          <Route path="/chat" element={user ? (user.userRole === "ROLE_TECHNICIAN" ? (<ChatBox />) : <Navigate to="/" />) : <Navigate to="/login" />} />
+                          <Route path="/problem-technician-list" element={user ? (user.userRole === "ROLE_TECHNICIAN" ? (<ProblemTechnicianList />) : <Navigate to="/" />) : <Navigate to="/login" />} />
+                          <Route path="/devices" element={user ? (user.userRole === "ROLE_EMPLOYEE" ? (<DeviceList />) : <Navigate to="/" />) : <Navigate to="/login" />} />
+                          <Route path="/problem-technician/:problemId" element={user ? (user.userRole === "ROLE_TECHNICIAN" ? (<ProblemTechnician />) : <Navigate to="/" />) : <Navigate to="/login" />} />
+                          <Route path="/maintenance-technician-list" element={user ? (user.userRole === "ROLE_TECHNICIAN" ? (<MaintenanceTechnicianList />) : <Navigate to="/" />) : <Navigate to="/login" />} />
+                          <Route path="/maintenance-technician/:maintenanceId" element={user ? (user.userRole === "ROLE_TECHNICIAN" ? (<MaintenanceTechnician />) : <Navigate to="/" />) : <Navigate to="/login" />} />
                         </Routes>
                       </Container>
                     </div>
