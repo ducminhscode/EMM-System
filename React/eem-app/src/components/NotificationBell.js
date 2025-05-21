@@ -22,21 +22,45 @@ const NotificationBell = () => {
       return;
     }
 
-    try {
-      setLoading(true);
-      const problemRes = await authApis().get(
-        `${endpoints["problemTechnicianId"]}${user.id}`,
-        { params: { page: 1 } }
-      );
-      const maintenanceRes = await authApis().get(
-        `${endpoints["maintenanceTechnicianId"]}${user.id}`,
-        { params: { page: 1 } }
-      );
+    setLoading(true);
+    setNotifications([]);
+    setCount(0);
 
-      const activeProblems = problemRes.data.filter((p) => !p.isDone) || [];
+    try {
+      let page = 1;
+      let allProblems = [];
+      let allMaintenances = [];
+
+      // Fetch all pages for problems
+      while (true) {
+        const problemRes = await authApis().get(
+          `${endpoints["problemTechnicianId"]}${user.id}`,
+          { params: { page } }
+        );
+        const problems = problemRes.data || [];
+        allProblems = [...allProblems, ...problems];
+
+        if (problems.length < 5 || problems.length === 0) break; // Assume 5 items per page as a threshold
+        page++;
+      }
+
+      page = 1; // Reset page for maintenances
+      // Fetch all pages for maintenances
+      while (true) {
+        const maintenanceRes = await authApis().get(
+          `${endpoints["maintenanceTechnicianId"]}${user.id}`,
+          { params: { page } }
+        );
+        const maintenances = maintenanceRes.data || [];
+        allMaintenances = [...allMaintenances, ...maintenances];
+
+        if (maintenances.length < 5 || maintenances.length === 0) break; // Assume 5 items per page as a threshold
+        page++;
+      }
+
+      const activeProblems = allProblems.filter((p) => !p.isDone) || [];
       const activeMaintenance =
-        maintenanceRes.data.filter((m) => m.maintenanceStatus !== "COMPLETED") ||
-        [];
+        allMaintenances.filter((m) => m.maintenanceStatus !== "COMPLETED") || [];
 
       const problemNotifications = activeProblems.map((p) => ({
         id: `problem-${p.id}`,

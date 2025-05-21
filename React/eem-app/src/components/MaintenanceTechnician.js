@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Button, Alert, Spinner } from "react-bootstrap";
+import { Form, Button, Alert} from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import { authApis, endpoints } from "../configs/Apis";
 

@@ -122,9 +122,8 @@ const ProblemTechnicianList = () => {
             <Button
               variant={p.isDone ? "secondary" : "success"}
               onClick={() => handleNavigateToRepair(p.id)}
-              disabled={p.isDone}
             >
-              {p.isDone ? "Đã hoàn thành" : "Xác nhận sửa chữa"}
+              {p.isDone ? "Đã sửa chữa, cập nhật lại" : "Xác nhận sửa chữa"}
             </Button>
           </Card.Body>
         </Card>

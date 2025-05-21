@@ -1,9 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-import { Button, Container, Image, Nav, Navbar, Popover } from "react-bootstrap";
+import { useContext} from "react";
+import { Button, Container, Image, Nav, Navbar} from "react-bootstrap";
 import { MyDispatchContext, MyUserContext } from "../../configs/Contexts";
 import { useNavigate } from "react-router-dom";
 import cookie from 'react-cookies';
-import { authApis, endpoints } from "../../configs/Apis";
 import NotificationBell from "../NotificationBell";
 
 const Header = () => {
@@ -21,68 +20,6 @@ const Header = () => {
   const navigateToProfile = () => {
     nav("/profile");
   };
-
-  const [problems, setProblems] = useState([]);
-
-  useEffect(() => {
-    const fetchProblems = async () => {
-      if (user && user.userRole === "ROLE_TECHNICIAN") {
-        try {
-          const response = await authApis().get(`${endpoints['problemTechnicianId']}${user.id}`);
-          setProblems(response.data || []);
-        } catch (err) {
-          console.error("Lỗi khi lấy danh sách problems:", err);
-        }
-      }
-    };
-    fetchProblems();
-  }, [user]);
-
-
-
-  const getBadgeVariant = (level) => {
-    switch (level?.toLowerCase()) {
-      case "cao":
-        return "danger";
-      case "trung bình":
-        return "warning";
-      case "thấp":
-        return "info";
-      default:
-        return "secondary";
-    }
-  };
-
-  const notificationPopover = (
-    <Popover id="notification-popover" className="shadow-lg rounded-3 border-0">
-      <Popover.Header as="h5" className="bg-primary text-white rounded-top">🔔 Thông báo lỗi</Popover.Header>
-      <Popover.Body style={{ maxHeight: '300px', overflowY: 'auto' }}>
-        {problems.length === 0 ? (
-          <div className="text-center text-muted">Không có lỗi nào</div>
-        ) : (
-          <ul className="list-unstyled mb-0">
-            {problems.map((p, index) => (
-              <li key={index} className="mb-3 pb-2 border-bottom">
-                <div className="fw-semibold text-dark">
-                  <span className="text-primary">Thiết bị: {p.deviceName}</span>
-                </div>
-                <div className="text-body mb-1">Mô tả: {p.description}</div>
-                <div className="d-flex justify-content-between align-items-center">
-                  <span className={`badge bg-${getBadgeVariant(p.fatalLevel)} px-2 py-1`}>
-                    Mức độ: {p.fatalLevel}
-                  </span>
-                  <small className="text-muted fst-italic">
-                    {new Date(p.happenedDate).toLocaleString()}
-                  </small>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Popover.Body>
-    </Popover>
-  );
-
 
   return (
     <>
