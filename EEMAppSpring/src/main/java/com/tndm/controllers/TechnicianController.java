@@ -8,18 +8,24 @@ import com.tndm.pojo.Technician;
 import com.tndm.services.TechnicianService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author ADMIN
  */
-@RestController
-@RequestMapping("/api")
-public class ApiTechnicianController {
+@Controller
+public class TechnicianController {
 
+    @Autowired
+    private TechnicianService techService;
+
+    @GetMapping("/technicians-by-facilityId")
+    @ResponseBody
+    public List<Technician> getTechniciansByFacility(@RequestParam("facilityId") int facilityId) {
+        return techService.getTechnicianByFacilityId(facilityId);
+    }
 }

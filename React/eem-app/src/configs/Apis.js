@@ -10,9 +10,16 @@ export const endpoints = {
     'changePassword': '/secure/profile/change-password',
     'users': '/users',
     'problemTechnicianId': '/problem/technician/',
+<<<<<<< HEAD
     'updateProblemTechnicianId': 'secure/problem/technician/',
     'repairType': '/repair-type',
     'devices': '/devices',
+=======
+    'updateProblemTechnicianId': '/secure/problem/technician/',
+    'repairType': '/repair-type',
+    'maintenanceTechnicianId': '/maintenance/technician/',
+    'updateMaintenanceTechnicianId': '/secure/maintenance/technician/',
+>>>>>>> 8bb2270cbfe47cca34b5260b5172306d22bb585d
 }
 
 export const authApis = () => {

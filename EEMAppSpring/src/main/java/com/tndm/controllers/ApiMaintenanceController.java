@@ -56,7 +56,7 @@ public class ApiMaintenanceController {
             Map<String, Object> data = new HashMap<>();
             data.put("id", ms.getId());
             data.put("description", ms.getDescription());
-            data.put("tittle", ms.getTitle());
+            data.put("title", ms.getTitle());
             data.put("maintenanceStatus", ms.getMaintenanceStatus());
             data.put("deviceName", ms.getDeviceId().getName());
             data.put("startDate", ms.getStartDate());
@@ -67,7 +67,7 @@ public class ApiMaintenanceController {
         return ResponseEntity.ok(listData);
     }
 
-    @PatchMapping("secure/maintenance/technician/{technicianId}")
+    @PatchMapping("secure/maintenance/technician/{maintenanceId}")
     @CrossOrigin
     public ResponseEntity<?> updateMaintenance(@PathVariable("maintenanceId") int maintenanceId,
             Principal principal,

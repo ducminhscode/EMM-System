@@ -15,7 +15,12 @@ import Profile from "./components/Profile";
 import ChatBox from "./components/ChatBox";
 import ProblemTechnician from "./components/ProblemTechnician";
 import ProblemTechnicianList from "./components/ProblemTechnicianList";
+<<<<<<< HEAD
 import DeviceList from "./components/DeviceList";
+=======
+import MaintenanceTechnicianList from "./components/MaintenanceTechnicianList";
+import MaintenanceTechnician from "./components/MaintenanceTechnician";
+>>>>>>> 8bb2270cbfe47cca34b5260b5172306d22bb585d
 
 const App = () => {
   const [user, dispatch] = useReducer(MyUserReducer, null);
@@ -65,8 +70,14 @@ const App = () => {
                           <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
                           <Route path="/chat" element={user ? <ChatBox /> : <Navigate to="/login" />} />
                           <Route path="/problem-technician-list" element={user ? <ProblemTechnicianList /> : <Navigate to="/login" />} />
+<<<<<<< HEAD
                           <Route path="/problem-technician" element={user ? <ProblemTechnician /> : <Navigate to="/login" />} />
                           <Route path="/devices" element={user ? <DeviceList /> : <Navigate to="/login" />} />
+=======
+                          <Route path="/problem-technician/:problemId" element={user ? <ProblemTechnician /> : <Navigate to="/login" />} />
+                          <Route path="/maintenance-technician-list" element={user ? <MaintenanceTechnicianList /> : <Navigate to="/login" />} />
+                          <Route path="/maintenance-technician/:maintenanceId" element={user ? <MaintenanceTechnician /> : <Navigate to="/login" />} />
+>>>>>>> 8bb2270cbfe47cca34b5260b5172306d22bb585d
                         </Routes>
                       </Container>
                     </div>
