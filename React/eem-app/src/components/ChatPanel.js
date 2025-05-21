@@ -10,12 +10,12 @@ import {
 } from "firebase/firestore";
 import { MyUserContext } from "../configs/Contexts";
 import "../styles/ChatPanel.css";
+import { IoSend } from "react-icons/io5";
 
 export default function ChatPanel({ selectedUser }) {
   const user = useContext(MyUserContext);
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
-  const endRef = useRef();
   const chatHistoryRef = useRef();
   const current = user.email;
   const other = selectedUser.email;
@@ -43,8 +43,9 @@ export default function ChatPanel({ selectedUser }) {
 
   useEffect(() => {
     const chatHistory = chatHistoryRef.current;
-    if (!chatHistory) return;
-    endRef.current?.scrollIntoView({ behavior: "auto" });
+    if (chatHistory) {
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
   }, [messages]);
 
   const sendMessage = async e => {
@@ -69,7 +70,9 @@ export default function ChatPanel({ selectedUser }) {
     );
 
     setText("");
-    endRef.current?.scrollIntoView({ behavior: "auto" });
+    if (chatHistoryRef.current) {
+      chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
+    }
   };
 
   return (
@@ -86,7 +89,6 @@ export default function ChatPanel({ selectedUser }) {
             <div className="msg-text">{m.text}</div>
           </div>
         ))}
-        <div ref={endRef} />
       </div>
       <form className="chat-input" onSubmit={sendMessage}>
         <input
@@ -94,7 +96,9 @@ export default function ChatPanel({ selectedUser }) {
           onChange={e => setText(e.target.value)}
           placeholder="Nhập tin nhắn..."
         />
-        <button type="submit">Gửi</button>
+        <button type="submit" className="send-btn">
+          <IoSend/>
+        </button>
       </form>
     </div>
   );

@@ -91,7 +91,7 @@ export default function ChatBox() {
   }
 
   return (
-    <div style={{ display: "flex", height: "50vh" }}>
+    <div style={{ display: "flex", height: "80vh", marginTop: "50px", marginBottom:"100px", border: "1px solid #ccc", borderRadius: "10px" }}>
       <Sidebar
         users={users}
         currentEmail={user.email}
