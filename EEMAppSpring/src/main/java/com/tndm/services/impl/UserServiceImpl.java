@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService {
             }
 
         } else {
-            u.setPassword(this.passwordEncoder.encode("123"));
+            u.setPassword(this.passwordEncoder.encode("ou@123"));
             if (u.getFile() != null && !u.getFile().isEmpty()) {
                 try {
                     Map res = cloudinary.uploader().upload(u.getFile().getBytes(), ObjectUtils.asMap(

@@ -75,7 +75,7 @@ public class UserController {
             @RequestParam("specialization") String specialization) {
 
         if (u.getId() == null) {
-            u.setPassword(this.passwordEncoder.encode("123"));
+            u.setPassword(this.passwordEncoder.encode("ou@123"));
             mailService.sendMail(u.getEmail(),
                     "Thông báo tài khoản của bạn",
                     "Chào " + u.getFirstName() + u.getLastName() + ",\n\n"

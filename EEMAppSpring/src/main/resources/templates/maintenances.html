@@ -222,7 +222,7 @@
 
         if (facilityId) {
             // Lấy danh sách thiết bị
-            fetch(`${contextPath}api/devices-by-facilityId?facilityId=${facilityId}`, {
+            fetch(`${contextPath}devices-by-facilityId?facilityId=${facilityId}`, {
                 method: 'GET',
                 credentials: 'include'
             })
@@ -243,7 +243,7 @@
                     });
 
             // Lấy danh sách kỹ thuật viên
-            fetch(`${contextPath}api/technicians-by-facilityId?facilityId=${facilityId}`, {
+            fetch(`${contextPath}technicians-by-facilityId?facilityId=${facilityId}`, {
                 method: 'GET',
                 credentials: 'include'
             })

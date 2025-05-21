@@ -21,12 +21,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class ApiTechnicianController {
-    @Autowired
-    private TechnicianService techService;
-    
-    @GetMapping("/technicians-by-facilityId")
-    @ResponseBody
-    public List<Technician> getTechniciansByFacility(@RequestParam("facilityId") int facilityId) {
-        return techService.getTechnicianByFacilityId(facilityId);
-    }
+
 }
