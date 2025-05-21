@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import { Card, Button, Spinner } from "react-bootstrap";
-import { useNavigate, useLocation } from "react-router-dom"; // Add useLocation
+import { useNavigate, useLocation } from "react-router-dom";
 import { authApis, endpoints } from "../configs/Apis";
 import { MyUserContext } from "../configs/Contexts";
 
-const ProblemTechnicianList = () => {
-  const [problems, setProblems] = useState([]);
+const MaintenanceTechnicianList = () => {
+  const [maintenances, setMaintenances] = useState([]);
   const [page, setPage] = useState(1);
   const [hasNext, setHasNext] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -13,7 +13,7 @@ const ProblemTechnicianList = () => {
   const [error, setError] = useState(null);
   const user = useContext(MyUserContext);
   const navigate = useNavigate();
-  const location = useLocation(); // Add useLocation
+  const location = useLocation();
 
   const filterDuplicates = useCallback((arr) => {
     const seen = new Set();
@@ -25,7 +25,7 @@ const ProblemTechnicianList = () => {
     });
   }, []);
 
-  const loadProblems = useCallback(
+  const loadMaintenances = useCallback(
     async (pageNumber) => {
       if (!user?.id) {
         setError("Không tìm thấy thông tin người dùng");
@@ -34,7 +34,7 @@ const ProblemTechnicianList = () => {
       }
 
       try {
-        const url = `${endpoints["problemTechnicianId"]}${user.id}`;
+        const url = `${endpoints["maintenanceTechnicianId"]}${user.id}`;
         const res = await authApis().get(url, {
           params: { page: pageNumber },
         });
@@ -45,14 +45,14 @@ const ProblemTechnicianList = () => {
         }
 
         const newData = filterDuplicates(res.data);
-        setProblems((prev) => filterDuplicates([...prev, ...newData]));
+        setMaintenances((prev) => filterDuplicates([...prev, ...newData]));
 
         if (newData.length < 5) {
           setHasNext(false);
         }
       } catch (err) {
-        console.error("Lỗi khi tải problems:", err);
-        setError("Không thể tải danh sách lỗi");
+        console.error("Lỗi khi tải maintenances:", err);
+        setError("Không thể tải danh sách bảo trì");
         setHasNext(false);
       } finally {
         setLoading(false);
@@ -81,50 +81,49 @@ const ProblemTechnicianList = () => {
 
   useEffect(() => {
     if (user) {
-      setProblems([]);
+      setMaintenances([]);
       setPage(1);
       setHasNext(true);
       setLoading(true);
-      loadProblems(1);
+      loadMaintenances(1);
     }
-  }, [user, loadProblems, location.state?.refresh]); // Add location.state?.refresh
+  }, [user, loadMaintenances, location.state?.refresh]);
 
   useEffect(() => {
     if (page > 1) {
-      loadProblems(page);
+      loadMaintenances(page);
     }
-  }, [page, loadProblems]);
+  }, [page, loadMaintenances]);
 
-  const handleNavigateToRepair = (problemId) => {
-    navigate(`/problem-technician/${problemId}`);
+  const handleNavigateToMaintenance = (maintenanceId) => {
+    navigate(`/maintenance-technician/${maintenanceId}`);
   };
 
   if (loading) return <div className="text-center mt-4"><Spinner animation="border" /></div>;
   if (error) return <div className="text-danger text-center mt-4">{error}</div>;
-  if (problems.length === 0 && !loading)
-    return <div className="text-center mt-4">Không có lỗi nào được giao</div>;
+  if (maintenances.length === 0 && !loading)
+    return <div className="text-center mt-4">Không có công việc bảo trì nào được giao</div>;
 
   return (
     <div className="container mt-4">
-      <h4 className="mb-4">Danh sách lỗi được giao</h4>
+      <h4 className="mb-4">Danh sách công việc bảo trì được giao</h4>
 
-      {problems.map((p) => (
-        <Card key={p.id} className="mb-3 shadow-sm">
+      {maintenances.map((m) => (
+        <Card key={m.id} className="mb-3 shadow-sm">
           <Card.Body>
-            <Card.Title>{p.deviceName}</Card.Title>
+            <Card.Title>{m.deviceName}</Card.Title>
             <Card.Text>
-              <strong>Mô tả:</strong> {p.description}<br />
-              <strong>Ngày xảy ra:</strong>{" "}
-              {new Date(p.happenedDate).toLocaleDateString()}<br />
-              <strong>Mức độ:</strong> {p.fatalLevel}
+              <strong>Tiêu đề:</strong> {m.title}<br />
+              <strong>Bắt đầu:</strong> {new Date(m.startDate).toLocaleDateString()}<br />
+              <strong>Kết thúc:</strong> {new Date(m.endDate).toLocaleDateString()}<br />
+              <strong>Trạng thái:</strong> {m.maintenanceStatus}
             </Card.Text>
 
             <Button
-              variant={p.isDone ? "secondary" : "success"}
-              onClick={() => handleNavigateToRepair(p.id)}
-              disabled={p.isDone}
+              onClick={() => handleNavigateToMaintenance(m.id)}
+              hidden={!m.isCap}
             >
-              {p.isDone ? "Đã hoàn thành" : "Xác nhận sửa chữa"}
+              {m.maintenanceStatus === "COMPLETED" ? "Đã hoàn thành" : "Xác nhận bảo trì"}
             </Button>
           </Card.Body>
         </Card>
@@ -136,13 +135,13 @@ const ProblemTechnicianList = () => {
         </div>
       )}
 
-      {!hasNext && problems.length > 0 && (
+      {!hasNext && maintenances.length > 0 && (
         <div className="text-center text-muted py-3">
-          Đã tải hết danh sách lỗi
+          Đã tải hết danh sách công việc bảo trì
         </div>
       )}
     </div>
   );
 };
 
-export default ProblemTechnicianList;
+export default MaintenanceTechnicianList;

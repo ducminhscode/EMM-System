@@ -10,8 +10,10 @@ export const endpoints = {
     'changePassword': '/secure/profile/change-password',
     'users': '/users',
     'problemTechnicianId': '/problem/technician/',
-    'updateProblemTechnicianId': 'secure/problem/technician/',
-    'repairType': '/repair-type'
+    'updateProblemTechnicianId': '/secure/problem/technician/',
+    'repairType': '/repair-type',
+    'maintenanceTechnicianId': '/maintenance/technician/',
+    'updateMaintenanceTechnicianId': '/secure/maintenance/technician/',
 }
 
 export const authApis = () => {
