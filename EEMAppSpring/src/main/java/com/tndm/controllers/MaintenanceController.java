@@ -7,6 +7,8 @@ package com.tndm.controllers;
 import com.tndm.pojo.Device;
 import com.tndm.pojo.MaintenanceAssignment;
 import com.tndm.pojo.MaintenanceSchedule;
+import com.tndm.pojo.Problem;
+import com.tndm.pojo.RepairHistory;
 import com.tndm.pojo.Technician;
 import com.tndm.pojo.User;
 import com.tndm.services.DeviceService;
@@ -14,9 +16,12 @@ import com.tndm.services.MaintenanceAssignmentService;
 import com.tndm.services.MaintenanceScheduleService;
 import com.tndm.services.TechnicianService;
 import com.tndm.services.UserService;
+import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +33,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
@@ -169,11 +173,22 @@ public class MaintenanceController {
 
     @GetMapping("/maintenance-chart")
     public String maintenanceChart(
-            Model model) {
+            Model model,
+            @RequestParam(name = "year", required = false) Integer year,
+            @RequestParam(name = "deviceId", required = false) Integer deviceId,
+            @RequestParam(name = "month", required = false) Integer month) {
 
-        List<MaintenanceSchedule> schedules = mainScheduleService.getMaintenanceByFacilityIdAndMonth(1, 5);
+        List<MaintenanceSchedule> schedules = Collections.EMPTY_LIST;
+        if (deviceId != null && year != null && month != null) {
+            schedules = this.mainScheduleService.getMaintenanceScheduleByDeviceIdAndTime(deviceId, month, year);
+        }
+        model.addAttribute("devices", this.devService.getAllDevices());
+        model.addAttribute("month", month);
+        model.addAttribute("year", year);
+        model.addAttribute("deviceId", deviceId);
+        model.addAttribute("schedules", schedules);
 
-        model.addAttribute("schedules", schedules != null ? schedules : Collections.emptyList());
         return "maintenance-chart";
     }
+
 }

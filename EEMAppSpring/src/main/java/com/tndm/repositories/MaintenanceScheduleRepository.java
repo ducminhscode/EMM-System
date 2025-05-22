@@ -16,9 +16,7 @@ public interface MaintenanceScheduleRepository {
 
     List<MaintenanceSchedule> getMaintenanceSchedule();
 
-    List<MaintenanceSchedule> getMaintenanceByFacilityIdAndMonth(int facilityId, int month);
-
-    List<MaintenanceSchedule> getMaintenanceScheduleByDeviceId(int deviceId);
+    List<MaintenanceSchedule> getMaintenanceScheduleByDeviceIdAndTime(int deviceId, int month, int year);
 
     MaintenanceSchedule addOrUpdateMaintenanceSchedule(MaintenanceSchedule m);
 

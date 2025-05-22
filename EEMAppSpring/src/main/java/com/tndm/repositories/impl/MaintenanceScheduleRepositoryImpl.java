@@ -129,29 +129,18 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
     }
 
     @Override
-    public List<MaintenanceSchedule> getMaintenanceByFacilityIdAndMonth(int facilityId, int month) {
-        Session s = this.factory.getObject().getCurrentSession();
-        String hql = "FROM MaintenanceSchedule ms "
-                + "WHERE ms.deviceId.facilityId.id = :facilityId "
-                + "AND MONTH(ms.maintenanceDate) = :month "
-                + "AND ms.maintenanceStatus = 'Đã bảo trì'";
-
-        Query<MaintenanceSchedule> query = s.createQuery(hql, MaintenanceSchedule.class);
-        query.setParameter("facilityId", facilityId);
-        query.setParameter("month", month);
-
-        return query.getResultList();
-    }
-
-    @Override
-    public List<MaintenanceSchedule> getMaintenanceScheduleByDeviceId(int deviceId) {
+    public List<MaintenanceSchedule> getMaintenanceScheduleByDeviceIdAndTime(int deviceId, int month, int year) {
         Session s = this.factory.getObject().getCurrentSession();
         String hql = "FROM MaintenanceSchedule ms "
                 + "WHERE ms.deviceId.id = :deviceId "
+                + "AND MONTH(ms.maintenanceDate) = :month "
+                + "AND YEAR(ms.maintenanceDate) = :year "
                 + "AND ms.maintenanceStatus = 'Đã bảo trì'";
 
         Query<MaintenanceSchedule> query = s.createQuery(hql, MaintenanceSchedule.class);
         query.setParameter("deviceId", deviceId);
+        query.setParameter("month", month);
+        query.setParameter("year", year);
 
         return query.getResultList();
     }

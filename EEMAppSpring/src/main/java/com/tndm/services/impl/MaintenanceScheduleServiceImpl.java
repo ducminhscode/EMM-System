@@ -148,12 +148,8 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     }
 
     @Override
-    public List<MaintenanceSchedule> getMaintenanceByFacilityIdAndMonth(int facilityId, int month) {
-        return this.mainScheduleRepo.getMaintenanceByFacilityIdAndMonth(facilityId, month);
+    public List<MaintenanceSchedule> getMaintenanceScheduleByDeviceIdAndTime(int deviceId, int month, int year) {
+        return this.mainScheduleRepo.getMaintenanceScheduleByDeviceIdAndTime(deviceId, month, year);
     }
 
-    @Override
-    public List<MaintenanceSchedule> getMaintenanceScheduleByDeviceId(int deviceId) {
-        return this.mainScheduleRepo.getMaintenanceScheduleByDeviceId(deviceId);
-    }
 }

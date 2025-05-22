@@ -111,29 +111,18 @@
             <main class="p-6 container">
                 <!-- Filter Section -->
                 <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-                    <form th:action="@{/index-reports}" method="get" id="filterForm">
+                    <form th:action="@{/maintenance-chart}" method="get" id="filterForm">
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <!-- Device Type Dropdown -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Loại thiết bị</label>
-                                <select name="typeId" id="typeSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                                    <option value="">Chọn cơ sở</option>
-                                    <option th:each="type : ${deviceTypes}"
-                                            th:value="${type.id}"
-                                            th:text="${type.name}"
-                                            th:selected="${selectedTypeId == type.id}"></option>
-                                </select>
-                            </div>
 
                             <!-- Device Dropdown -->
-                            <div>
+                            <div id="deviceSection">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Thiết bị</label>
-                                <select name="deviceId" id="deviceSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <select name="deviceId" id="deviceId" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
                                     <option value="">Chọn thiết bị</option>
-                                    <option th:each="device : ${devices}"
-                                            th:value="${device.id}"
-                                            th:text="${device.name} + ' ' + ${device.facilityId?.name}"
-                                            th:selected="${selectedDeviceId == device.id}"></option>
+                                    <option th:each="d : ${devices}"
+                                            th:value="${d.id}"
+                                            th:text="${d.name}"
+                                            th:selected="${deviceId == d.id}"></option>
                                 </select>
                             </div>
 
@@ -144,7 +133,19 @@
                                     <option th:each="i : ${#numbers.sequence(1,12)}"
                                             th:value="${i}"
                                             th:text="'Tháng ' + ${i}"
-                                            th:selected="${selectedMonth == i}"></option>
+                                            th:selected="${month == i}"></option>
+                                </select>
+                            </div>
+
+                            <!-- Year Dropdown -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Năm</label>
+                                <select name="year" id="yearSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                    <option value="">Chọn năm</option>
+                                    <option th:each="y : ${#numbers.sequence(T(java.time.Year).now().value - 10, T(java.time.Year).now().value)}"
+                                            th:value="${y}"
+                                            th:text="${y}"
+                                            th:selected="${year == y}"></option>
                                 </select>
                             </div>
 
@@ -214,6 +215,7 @@
     </div>
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function () {
+
             const ctx = document.getElementById('maintenanceEfficiencyChart');
             const loading = document.getElementById('chart-loading');
             const errorDiv = document.getElementById('chart-error');
