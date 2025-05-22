@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.tndm.controllers;
 
 import com.tndm.pojo.Device;
@@ -62,7 +58,7 @@ public class ExcelExportController {
             Map<Integer, BigDecimal> repairTotal = (Map<Integer, BigDecimal>) modelData.get("repairTotal");
 
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            response.setHeader("Content-Disposition", "attachment; filename=bao_cao.xlsx");
+            response.setHeader("Content-Disposition", "attachment; filename=bao_cao_sua_chua.xlsx");
 
             try (Workbook workbook = new XSSFWorkbook()) {
                 Sheet sheet = workbook.createSheet("Báo cáo sự cố");
@@ -80,22 +76,28 @@ public class ExcelExportController {
                     List<RepairHistory> repairs = repairMap.getOrDefault(problem.getId(), Collections.emptyList());
                     BigDecimal total = repairTotal.getOrDefault(problem.getId(), BigDecimal.ZERO);
 
-                    rowNum = processProblemRow(
-                            workbook,
-                            sheet,
-                            problem,
-                            repairs,
-                            total,
-                            rowNum,
-                            currencyStyle,
-                            dateStyle,
-                            mergedCenterStyle,
-                            totalStyle
-                    );
+                    if (!repairs.isEmpty()) { // Only process problems with repairs
+                        rowNum = processProblemRow(
+                                workbook,
+                                sheet,
+                                problem,
+                                repairs,
+                                total,
+                                rowNum,
+                                currencyStyle,
+                                dateStyle,
+                                mergedCenterStyle,
+                                totalStyle
+                        );
+                    }
                 }
 
-                for (int i = 0; i < 10; i++) {
+                // Auto-size columns after all data is written
+                for (int i = 0; i <= TOTAL_COST_COLUMN; i++) {
                     sheet.autoSizeColumn(i);
+                    // Add extra width to ensure content fits
+                    int currentWidth = sheet.getColumnWidth(i);
+                    sheet.setColumnWidth(i, Math.min(currentWidth + 1000, 255 * 256)); // Limit to max Excel width
                 }
 
                 workbook.write(response.getOutputStream());
@@ -115,22 +117,34 @@ public class ExcelExportController {
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
         return style;
     }
 
     private CellStyle createCurrencyStyle(Workbook workbook) {
         CellStyle style = workbook.createCellStyle();
-        style.setDataFormat(workbook.createDataFormat().getFormat("#,##0.00\" VND\""));
-        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setDataFormat(workbook.createDataFormat().getFormat("#,##0\" VND\""));
+        style.setAlignment(HorizontalAlignment.RIGHT);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
         return style;
     }
 
     private CellStyle createDateStyle(Workbook workbook) {
         CellStyle style = workbook.createCellStyle();
-        style.setDataFormat(workbook.createDataFormat().getFormat("dd/MM/yyyy HH:mm"));
+        style.setDataFormat(workbook.createDataFormat().getFormat("dd/MM/yyyy"));
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
         return style;
     }
 
@@ -139,6 +153,10 @@ public class ExcelExportController {
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
         style.setWrapText(true);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
         return style;
     }
 
@@ -146,12 +164,16 @@ public class ExcelExportController {
         CellStyle style = workbook.createCellStyle();
         style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setAlignment(HorizontalAlignment.RIGHT);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
-        style.setDataFormat(workbook.createDataFormat().getFormat("#,##0.00\" VND\""));
+        style.setDataFormat(workbook.createDataFormat().getFormat("#,##0\" VND\""));
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
         return style;
     }
-    
+
     private int processProblemRow(Workbook workbook,
             Sheet sheet,
             Problem problem,
@@ -167,11 +189,7 @@ public class ExcelExportController {
 
         for (RepairHistory repair : repairs) {
             Row row = sheet.createRow(rowNum++);
-
-            if (rowNum == startRow + 1) {
-                addCommonProblemInfo(row, problem, dateStyle, mergedCenterStyle);
-            }
-
+            addCommonProblemInfo(row, problem, dateStyle, mergedCenterStyle, startRow == rowNum - 1);
             addRepairDetails(row, repair, currencyStyle, mergedCenterStyle);
         }
 
@@ -179,7 +197,9 @@ public class ExcelExportController {
             addTotalRow(sheet, startRow, rowNum - 1, total, totalStyle);
         }
 
-        mergeCommonCells(sheet, startRow, rowNum - 1, mergedCenterStyle);
+        if (startRow < rowNum - 1) {
+            mergeCommonCells(sheet, startRow, rowNum - 1, mergedCenterStyle);
+        }
 
         return rowNum;
     }
@@ -190,20 +210,16 @@ public class ExcelExportController {
             BigDecimal total,
             CellStyle totalStyle) {
 
-        if (startRow >= endRow) {
-            Row firstRow = sheet.getRow(startRow);
+        Row row = sheet.getRow(startRow);
+        if (row == null) {
+            row = sheet.createRow(startRow);
+        }
 
-            Cell totalCell = firstRow.createCell(TOTAL_COST_COLUMN);
-            totalCell.setCellValue(total != null ? total.doubleValue() : 0);
-            totalCell.setCellStyle(totalStyle);
-        } else {
+        Cell totalCell = row.createCell(TOTAL_COST_COLUMN);
+        totalCell.setCellValue(total != null ? total.doubleValue() : 0);
+        totalCell.setCellStyle(totalStyle);
 
-            Row firstRow = sheet.getRow(startRow);
-
-            Cell totalCell = firstRow.createCell(TOTAL_COST_COLUMN);
-            totalCell.setCellValue(total != null ? total.doubleValue() : 0);
-            totalCell.setCellStyle(totalStyle);
-
+        if (startRow < endRow) {
             sheet.addMergedRegion(new CellRangeAddress(
                     startRow,
                     endRow,
@@ -216,30 +232,33 @@ public class ExcelExportController {
     private void addCommonProblemInfo(Row row,
             Problem problem,
             CellStyle dateStyle,
-            CellStyle mergedCenterStyle) {
+            CellStyle mergedCenterStyle,
+            boolean writeValues) {
 
-        safeCreateCell(row, 0,
-                problem.getDeviceId() != null ? problem.getDeviceId().getName() : "N/A",
-                mergedCenterStyle);
+        if (writeValues) {
+            safeCreateCell(row, 0,
+                    problem.getDeviceId() != null ? problem.getDeviceId().getName() : "N/A",
+                    mergedCenterStyle);
 
-        safeCreateCell(row, 1,
-                (problem.getDeviceId() != null && problem.getDeviceId().getFacilityId() != null)
-                ? problem.getDeviceId().getFacilityId().getName()
-                : "N/A",
-                mergedCenterStyle);
+            safeCreateCell(row, 1,
+                    (problem.getDeviceId() != null && problem.getDeviceId().getFacilityId() != null)
+                    ? problem.getDeviceId().getFacilityId().getName()
+                    : "N/A",
+                    mergedCenterStyle);
 
-        safeCreateCell(row, 2, problem.getDescription(), mergedCenterStyle);
+            safeCreateCell(row, 2, problem.getDescription(), mergedCenterStyle);
 
-        safeCreateCell(row, 3,
-                (problem.getStatusId() != null) ? problem.getStatusId().getName() : "N/A",
-                mergedCenterStyle);
+            safeCreateCell(row, 3,
+                    (problem.getStatusId() != null) ? problem.getStatusId().getName() : "N/A",
+                    mergedCenterStyle);
 
-        Cell dateCell = row.createCell(4);
-        dateCell.setCellStyle(dateStyle);
-        if (problem.getHappenedDate() != null) {
-            dateCell.setCellValue(problem.getHappenedDate());
-        } else {
-            dateCell.setCellValue("N/A");
+            Cell dateCell = row.createCell(4);
+            dateCell.setCellStyle(dateStyle);
+            if (problem.getHappenedDate() != null) {
+                dateCell.setCellValue(problem.getHappenedDate());
+            } else {
+                dateCell.setCellValue("N/A");
+            }
         }
     }
 
@@ -263,51 +282,12 @@ public class ExcelExportController {
         safeCreateCell(row, REPAIR_TYPE_COLUMN, repairType, mergedCenterStyle);
 
         Cell expenseCell = row.createCell(COST_COLUMN);
-        if (repair.getExpense() != null) {
-            expenseCell.setCellValue(repair.getExpense().doubleValue());
-        } else {
-            expenseCell.setCellValue(0);
-        }
+        expenseCell.setCellValue(repair.getExpense() != null ? repair.getExpense().doubleValue() : 0);
         expenseCell.setCellStyle(currencyStyle);
 
-        String repairDate = formatRepairDate(repair);
-        safeCreateCell(row, REPAIR_DATE_COLUMN, repairDate, mergedCenterStyle);
-    }
-
-    private void mergeAndAddTotalCost(Sheet sheet,
-            int startRow,
-            int endRow,
-            BigDecimal total,
-            CellStyle totalStyle) {
-
-        if (startRow >= endRow) {
-            return;
-        }
-
-        sheet.addMergedRegion(new CellRangeAddress(
-                startRow,
-                endRow,
-                TOTAL_COST_COLUMN,
-                TOTAL_COST_COLUMN
-        ));
-
-        Row firstRow = sheet.getRow(startRow);
-        Cell totalCell = firstRow.createCell(TOTAL_COST_COLUMN);
-        totalCell.setCellValue(total.doubleValue());
-        totalCell.setCellStyle(totalStyle);
-    }
-
-    private void addSingleTotalRow(Row row,
-            BigDecimal total,
-            CellStyle totalStyle) {
-
-        for (int i = 0; i < TOTAL_COST_COLUMN; i++) {
-            safeCreateCell(row, i, "N/A", totalStyle);
-        }
-
-        Cell totalCell = row.createCell(TOTAL_COST_COLUMN);
-        totalCell.setCellValue(total != null ? total.doubleValue() : 0);
-        totalCell.setCellStyle(totalStyle);
+        Cell dateCell = row.createCell(REPAIR_DATE_COLUMN);
+        dateCell.setCellValue(formatRepairDate(repair));
+        dateCell.setCellStyle(mergedCenterStyle);
     }
 
     private void createHeaderRow(Sheet sheet, CellStyle headerStyle) {
@@ -324,31 +304,16 @@ public class ExcelExportController {
             cell.setCellStyle(headerStyle);
         }
     }
-    
+
     private void mergeCommonCells(Sheet sheet,
             int startRow,
             int endRow,
             CellStyle mergedStyle) {
 
-        if (startRow >= endRow) {
-            return;
-        }
-
         for (int i = 0; i < 5; i++) {
             CellRangeAddress region = new CellRangeAddress(startRow, endRow, i, i);
             if (!isRegionOverlap(sheet, region)) {
                 sheet.addMergedRegion(region);
-
-                // Áp dụng style
-                for (int r = startRow; r <= endRow; r++) {
-                    Row row = sheet.getRow(r);
-                    if (row != null) {
-                        Cell cell = row.getCell(i);
-                        if (cell != null) {
-                            cell.setCellStyle(mergedStyle);
-                        }
-                    }
-                }
             }
         }
     }
@@ -364,20 +329,18 @@ public class ExcelExportController {
     }
 
     private void safeCreateCell(Row row, int column, String value, CellStyle style) {
-        
         String displayValue = (value == null || value.isEmpty()) ? "N/A" : value;
-
         Cell cell = row.createCell(column);
         cell.setCellValue(displayValue);
         cell.setCellStyle(style);
     }
 
     private String formatRepairDate(RepairHistory repair) {
-        if (repair.getStartDate() == null || repair.getEndDate() == null) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        if (repair.getStartDate() == null) {
             return "N/A";
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        return sdf.format(repair.getStartDate()) + " - " + sdf.format(repair.getEndDate());
+        return sdf.format(repair.getStartDate());
     }
 
     private void handleExportError(HttpServletResponse response, Exception e) {
@@ -391,11 +354,14 @@ public class ExcelExportController {
             ex.printStackTrace();
         }
     }
-    
+
     private Map<String, Object> getReportData(Integer deviceId, Integer typeId) {
         Map<String, Object> model = new HashMap<>();
 
-        List<Problem> problems = fetchProblems(deviceId, typeId);
+        List<Problem> problems = fetchProblems(deviceId, typeId).stream()
+                .filter(p -> p.getStatusId() != null && "Đã sửa chữa".equals(p.getStatusId().getName()))
+                .collect(Collectors.toList());
+
         Map<Integer, List<RepairHistory>> repairMap = problems.stream()
                 .collect(Collectors.toMap(
                         Problem::getId,
@@ -441,5 +407,4 @@ public class ExcelExportController {
                                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 ));
     }
-
 }

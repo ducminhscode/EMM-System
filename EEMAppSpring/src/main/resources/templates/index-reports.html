@@ -2,152 +2,173 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>Báo cáo sự cố</title>
-        <th:block th:replace="base :: styles"></th:block>
-    </head>
-    <body class="bg-gray-100 font-sans">
-        <div class="flex h-screen">
-            <!-- Sidebar -->
-            <th:block th:replace="base :: sidebar"></th:block>
+    <th:block th:replace="base :: styles"></th:block>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <th:block th:replace="base :: sidebar"></th:block>
 
-            <!-- Main Content -->
-            <div class="flex-1 ml-64 overflow-auto">
-                <!-- Header -->
-                <th:block th:replace="base :: header (pageTitle='Báo cáo sự cố theo thiết bị')"></th:block>
+        <!-- Main Content -->
+        <div class="flex-1 ml-64 overflow-auto">
+            <!-- Header -->
+            <th:block th:replace="base :: header (pageTitle='Báo cáo sự cố theo thiết bị')"></th:block>
 
-                <!-- Main Section -->
-                <main class="p-6">
-                    <!-- Filter Section -->
-                    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-                        <form th:action="@{/index-reports}" method="get" id="filterForm">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                                <!-- Device Type Dropdown -->
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Loại thiết bị</label>
-                                    <select name="typeId" id="typeSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                                        <option value="">Chọn loại thiết bị</option>
-                                        <option th:each="type : ${deviceTypes}"
-                                                th:value="${type.id}"
-                                                th:text="${type.name}"
-                                                th:selected="${selectedTypeId == type.id}"></option>
-                                    </select>
-                                </div>
-
-                                <!-- Device Dropdown -->
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Thiết bị</label>
-                                    <select name="deviceId" id="deviceSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                                        <option value="">Chọn thiết bị</option>
-                                        <option th:each="device : ${devices}"
-                                                th:value="${device.id}"
-                                                th:text="${device.name} + ' ' + ${device.facilityId.name}"
-                                                th:selected="${selectedDeviceId == device.id}"></option>
-                                    </select>
-                                </div>
-
-                                <!-- Filter Button -->
-                                <div class="flex items-end">
-                                    <button type="submit" 
-                                            class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                                        Lọc
-                                    </button>
-                                </div>
-
-                                <!-- Export Excel Button -->
-                                <div class="flex items-end">
-                                    <a th:href="@{/export-excel(deviceId=${selectedDeviceId}, typeId=${selectedTypeId})}"
-                                       class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-center">
-                                        Xuất Excel
-                                    </a>
-                                </div>
+            <!-- Main Section -->
+            <main class="p-6">
+                <!-- Filter Section -->
+                <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                    <form th:action="@{/index-reports}" method="get" id="filterForm">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <!-- Device Type Dropdown -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Loại thiết bị</label>
+                                <select name="typeId" id="typeSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                    <option value="">Chọn loại thiết bị</option>
+                                    <option th:each="type : ${deviceTypes}"
+                                            th:value="${type.id}"
+                                            th:text="${type.name}"
+                                            th:selected="${selectedTypeId == type.id}"></option>
+                                </select>
                             </div>
-                        </form>
-                    </div>
 
-                    <!-- Results Section -->
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-                            <h3 class="font-semibold text-lg text-gray-800">Kết quả báo cáo</h3>
-                        </div>
-
-                        <!-- Problems List -->
-                        <div class="p-6">
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Thiết Bị</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Cơ Sở</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Mô Tả Sự Cố</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Trạng Thái Sự Cố</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Ngày Xảy Ra</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Kỹ Thuật Viên</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Chi Phí</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Ngày Sửa Chữa</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Tổng Chi Phí</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-200">
-                                        <tr th:each="problem : ${problems}" class="hover:bg-gray-50">
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${problem.deviceId.name}"></td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${problem.deviceId.facilityId.name}"></td>
-                                            <td class="px-6 py-4 text-sm text-gray-900" th:text="${problem.description}"></td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800" th:text="${problem.statusId.name}"></span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
-                                                th:text="${#dates.format(problem.happenedDate, 'HH:mm dd/MM/yyyy')}"></td>
-                                            <td class="px-6 py-4 text-sm text-gray-900">
-                                                <span th:each="repair : ${repairDetail[problem.id]}">
-                                                    <span th:text="${repair.technicianId.user.firstName} + ' ' +  ${repair.technicianId.user.lastName}"></span><br/>
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 text-sm text-gray-900">
-                                                <span th:each="repair : ${repairDetail[problem.id]}">
-                                                    <span th:text="${repair.typeId.name} + ': ' + ${#numbers.formatDecimal(repair.expense, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span><br/>
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 text-sm text-gray-900">
-                                                <span th:each="repair : ${repairDetail[problem.id]}">
-                                                    <span th:text="${#dates.format(repair.startDate, 'HH:mm dd/MM/yyyy')} + ' - ' + ${#dates.format(repair.endDate, 'HH:mm dd/MM/yyyy')}"></span><br/>
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-red-600">
-                                                <span th:text="${#numbers.formatDecimal(repairTotal[problem.id], 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <!-- Device Dropdown -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Thiết bị</label>
+                                <select name="deviceId" id="deviceSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                    <option value="">Chọn thiết bị</option>
+                                    <option th:each="device : ${devices}"
+                                            th:value="${device.id}"
+                                            th:text="${device.name} + ' ' + ${device.facilityId?.name}"
+                                            th:selected="${selectedDeviceId == device.id}"></option>
+                                </select>
                             </div>
-                            <div th:if="${#lists.isEmpty(problems)}" class="text-center text-gray-500 py-6">
-                                Không có sự cố nào
+
+                            <!-- Filter Button -->
+                            <div class="flex items-end">
+                                <button type="submit" 
+                                        class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                    Lọc
+                                </button>
+                            </div>
+
+                            <!-- Export Excel Button -->
+                            <div class="flex items-end">
+                                <a th:href="@{/export-excel(deviceId=${selectedDeviceId}, typeId=${selectedTypeId})}"
+                                   class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-center">
+                                    Xuất Excel
+                                </a>
                             </div>
                         </div>
+                    </form>
+                </div>
+
+                <!-- Results Section -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-semibold text-lg text-gray-800">Kết quả báo cáo</h3>
                     </div>
-                </main>
-            </div>
+
+                    <!-- Problems List -->
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Thiết Bị</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Cơ Sở</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Mô Tả Sự Cố</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Trạng Thái Sự Cố</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Ngày Xảy Ra</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Kỹ Thuật Viên</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Loại Sửa Chữa</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Chi Phí</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Ngày Sửa Chữa</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Tổng Chi Phí</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr th:each="problem : ${problems}" class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${problem.deviceId?.name} ?: 'N/A'"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${problem.deviceId?.facilityId?.name} ?: 'N/A'"></td>
+                                        <td class="px-6 py-4 text-sm text-gray-900" 
+                                            th:text="${problem.description} ?: 'N/A'"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800" 
+                                                  th:text="${problem.statusId?.name} ?: 'N/A'"></span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
+                                            th:text="${problem.happenedDate != null ? #dates.format(problem.happenedDate, 'dd/MM/yyyy HH:mm') : 'N/A'}"></td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                            <span th:each="repair : ${repairDetail[problem.id]}" 
+                                                  th:if="${repair != null}">
+                                                <span th:text="${repair.technicianId != null and repair.technicianId.user != null} ? 
+                                                      ${repair.technicianId.user.firstName + ' ' + repair.technicianId.user.lastName} : 'N/A'"></span><br/>
+                                            </span>
+                                            <span th:if="${#lists.isEmpty(repairDetail[problem.id])}">N/A</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                            <span th:each="repair : ${repairDetail[problem.id]}" 
+                                                  th:if="${repair != null}">
+                                                <span th:text="${repair.typeId?.name} ?: 'N/A'"></span><br/>
+                                            </span>
+                                            <span th:if="${#lists.isEmpty(repairDetail[problem.id])}">N/A</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                            <span th:each="repair : ${repairDetail[problem.id]}" 
+                                                  th:if="${repair != null}">
+                                                <span th:text="${repair.expense != null} ? 
+                                                      ${#numbers.formatDecimal(repair.expense, 0, 'COMMA', 0, 'POINT') + ' VNĐ'} : '0 VNĐ'"></span><br/>
+                                            </span>
+                                            <span th:if="${#lists.isEmpty(repairDetail[problem.id])}">0 VNĐ</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                            <span th:each="repair : ${repairDetail[problem.id]}" 
+                                                  th:if="${repair != null}">
+                                                <span th:text="${repair.startDate != null} ? 
+                                                      ${#dates.format(repair.startDate, 'dd/MM/yyyy HH:mm')} : 'N/A'"></span><br/>
+                                            </span>
+                                            <span th:if="${#lists.isEmpty(repairDetail[problem.id])}">N/A</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-red-600"
+                                            th:text="${repairTotal[problem.id] != null} ? 
+                                            ${#numbers.formatDecimal(repairTotal[problem.id], 0, 'COMMA', 0, 'POINT') + ' VNĐ'} : '0 VNĐ'"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:if="${#lists.isEmpty(problems)}" class="text-center text-gray-500 py-6">
+                            Không có sự cố nào
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
+    </div>
 
-        <th:block th:replace="base :: scripts"></th:block>
+<th:block th:replace="base :: scripts"></th:block>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const deviceSelect = document.getElementById('deviceSelect');
-                const typeSelect = document.getElementById('typeSelect');
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deviceSelect = document.getElementById('deviceSelect');
+        const typeSelect = document.getElementById('typeSelect');
 
-                // Handle device selection change
-                deviceSelect.addEventListener('change', function () {
-                    if (this.value !== "") {
-                        typeSelect.value = ""; // Reset type to default
-                    }
-                });
+        // Handle device selection change
+        deviceSelect.addEventListener('change', function () {
+            if (this.value !== "") {
+                typeSelect.value = ""; // Reset type to default
+            }
+        });
 
-                // Handle type selection change
-                typeSelect.addEventListener('change', function () {
-                    if (this.value !== "") {
-                        deviceSelect.value = ""; // Reset device to default
-                    }
-                });
-            });
-        </script>
-    </body>
+        // Handle type selection change
+        typeSelect.addEventListener('change', function () {
+            if (this.value !== "") {
+                deviceSelect.value = ""; // Reset device to default
+            }
+        });
+    });
+</script>
+</body>
 </html>
