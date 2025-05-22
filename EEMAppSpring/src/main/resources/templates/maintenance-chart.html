@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Báo cáo hiệu suất bảo trì</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+        .chart-container canvas {
+            max-height: 100%;
+            width: 100%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background: #f3f4f6;
+        }
+        tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+        @media (max-width: 768px) {
+            .ml-64 {
+                margin-left: 0;
+            }
+            .chart-container {
+                height: 300px;
+            }
+            th, td {
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex min-h-screen">
+        <div class="flex-1 ml-64 overflow-auto">
+            <main class="p-6 container">
+                <div class="card">
+                    <h3><i class="fas fa-chart-bar text-blue-600"></i> Hiệu suất bảo trì (Tỷ lệ chênh lệch chi phí)</h3>
+                    <div class="chart-container">
+                        <div id="chart-loading" class="text-center">
+                            <i class="fas fa-spinner fa-spin text-blue-600"></i>
+                        </div>
+                        <canvas id="maintenanceEfficiencyChart" style="display: none;"></canvas>
+                        <div id="chart-error" class="text-center text-red-600" style="display: none;">
+                            Đã xảy ra lỗi khi tải biểu đồ. Vui lòng thử lại sau.
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-money-bill-wave text-blue-600"></i> Chi tiết bảo trì</h3>
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th>Tiêu đề</th>
+                                <th>Giá tiền trước</th>
+                                <th>Giá tiền sau</th>
+                                <th>Hiệu quả bảo trì</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="schedule : ${schedules}" class="border-b">
+                                <td th:text="${schedule.title} ?: 'N/A'"></td>
+                                <td>
+                                    <span th:if="${schedule.expenseFirst != null}"
+                                          th:text="${#numbers.formatDecimal(schedule.expenseFirst, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
+                                    <span th:unless="${schedule.expenseFirst != null}" class="text-gray-400">N/A</span>
+                                </td>
+                                <td>
+                                    <span th:if="${schedule.expenseLast != null}"
+                                          th:text="${#numbers.formatDecimal(schedule.expenseLast, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
+                                    <span th:unless="${schedule.expenseLast != null}" class="text-gray-400">N/A</span>
+                                </td>
+                                <td>
+                                    <span th:if="${schedule.expenseFirst != null and schedule.expenseLast != null and schedule.expenseFirst != 0}"
+                                          th:classappend="${(schedule.expenseFirst - schedule.expenseLast) > 0} ? 'text-green-600' : (${(schedule.expenseFirst - schedule.expenseLast) < 0} ? 'text-red-600' : 'text-gray-600')">
+                                        <span th:text="${#numbers.formatDecimal(((schedule.expenseFirst - schedule.expenseLast) / schedule.expenseFirst * 100), 1, 'COMMA', 2, 'POINT') + '%'}"></span>
+                                        <span th:text="${(schedule.expenseFirst - schedule.expenseLast) > 0} ? ' (Tốt)' : (${(schedule.expenseFirst - schedule.expenseLast) < 0} ? ' (Không tốt)' : ' (Trung bình)')"></span>
+                                    </span>
+                                    <span th:unless="${schedule.expenseFirst != null and schedule.expenseLast != null and schedule.expenseFirst != 0}" class="text-gray-400">N/A</span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(schedules)}">
+                                <td colspan="4" class="text-center text-gray-500 p-4">Không có dữ liệu bảo trì để hiển thị.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+<script inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('maintenanceEfficiencyChart');
+        const loading = document.getElementById('chart-loading');
+        const errorDiv = document.getElementById('chart-error');
+        const schedules = '[[${schedules}]]';
+
+
+        try {
+            console.log("Schedules:", schedules);
+
+            if (!schedules || schedules.length === 0) {
+                loading.innerHTML = '<p class="text-center text-gray-500">Không có dữ liệu để hiển thị biểu đồ.</p>';
+                return;
+            }
+
+            const chartData = [];
+            const chartLabels = [];
+            const backgroundColors = [];
+            const borderColors = [];
+
+            schedules.forEach(s => {
+                if (s.expenseFirst != null && s.expenseLast != null && s.expenseFirst !== 0) {
+                    const date = s.maintenanceDate ? new Date(s.maintenanceDate) : null;
+                    chartLabels.push(s.title + ' (' + (date && !isNaN(date) ? date.toLocaleDateString('vi-VN') : 'N/A') + ')');
+                    chartData.push(((s.expenseFirst - s.expenseLast) / s.expenseFirst * 100));
+                    const isPositive = (s.expenseFirst - s.expenseLast) > 0;
+                    const isNegative = (s.expenseFirst - s.expenseLast) < 0;
+                    backgroundColors.push(isPositive ? 'rgba(34, 197, 94, 0.6)' : isNegative ? 'rgba(239, 68, 68, 0.6)' : 'rgba(107, 114, 128, 0.6)');
+                    borderColors.push(isPositive ? 'rgba(34, 197, 94, 1)' : isNegative ? 'rgba(239, 68, 68, 1)' : 'rgba(107, 114, 128, 1)');
+                }
+            });
+
+            if (chartLabels.length === 0 || chartData.length === 0) {
+                loading.innerHTML = '<p class="text-center text-gray-500">Không có dữ liệu hợp lệ để hiển thị biểu đồ.</p>';
+                return;
+            }
+
+            loading.style.display = 'none';
+            ctx.style.display = 'block';
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                            label: 'Tỷ lệ chênh lệch chi phí (%)',
+                            data: chartData,
+                            backgroundColor: backgroundColors,
+                            borderColor: borderColors,
+                            borderWidth: 1,
+                            hoverBackgroundColor: backgroundColors.map(color => color.replace('0.6', '0.8')),
+                            hoverBorderColor: borderColors
+                        }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {display: true, text: 'Tỷ lệ chênh lệch (%)', font: {size: 14}},
+                            grid: {color: '#e5e7eb'}
+                        },
+                        x: {
+                            title: {display: true, text: 'Lịch bảo trì', font: {size: 14}},
+                            ticks: {autoSkip: false, maxRotation: 45, minRotation: 45, font: {size: 12}},
+                            grid: {display: false}
+                        }
+                    },
+                    plugins: {
+                        legend: {display: true, position: 'top', labels: {font: {size: 12}}},
+                        tooltip: {
+                            backgroundColor: '#1f2937',
+                            titleFont: {size: 14},
+                            bodyFont: {size: 12},
+                            callbacks: {
+                                label: function (context) {
+                                    return 'Tỷ lệ: ' + context.parsed.y.toFixed(2) + '%';
+                                }
+                            }
+                        }
+                    },
+                    animation: {duration: 1000, easing: 'easeOutQuart'}
+                }
+            });
+        } catch (error) {
+            console.error('Error rendering chart:', error);
+            loading.style.display = 'none';
+            errorDiv.style.display = 'block';
+        }
+    });
+</script>
+</html>

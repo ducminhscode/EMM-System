@@ -306,10 +306,12 @@
 
         startDateInput.value = datePart;
         startDateInput.min = datePart;
+        endDateInput.min = datePart;
 
 
         startDateInput.addEventListener('change', function () {
-            startDateInput.min = this.value;
+            endDateInput.min = this.value;
+            endDateInput.value = this.value;
             if (maintenanceType.value === '1') {
                 calculateEndDate();
             }

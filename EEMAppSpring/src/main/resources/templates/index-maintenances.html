@@ -28,14 +28,23 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="bg-white rounded-xl shadow-md overflow-hidden">
                     <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                         <h3 class="font-semibold text-lg text-gray-800">Danh sách Lịch Bảo trì</h3>
-                        <a th:href="@{/maintenances}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
-                            <i class="fas fa-plus"></i>
-                            <span>Thêm lịch bảo trì</span>
-                        </a>
+
+                        <div class="flex space-x-4">
+                            <a th:href="@{/maintenances}"
+                               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                <i class="fas fa-plus"></i>
+                                <span>Thêm lịch bảo trì</span>
+                            </a>
+                            <a th:href="@{/maintenance-chart}"
+                               class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Xem hiệu quả</span>
+                            </a>
+                        </div>
                     </div>
                     <div class="p-6">
                         <div class="overflow-x-auto">

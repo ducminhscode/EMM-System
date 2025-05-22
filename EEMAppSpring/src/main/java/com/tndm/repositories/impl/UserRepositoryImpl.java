@@ -78,7 +78,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean authenticate(String username, String password) {
         User u = this.getUserByUsername(username);
-        return this.passwordEncoder.matches(password, u.getPassword());
+        return u.getActive() ? this.passwordEncoder.matches(password, u.getPassword()) : false;
     }
 
     @Override

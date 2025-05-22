@@ -15,6 +15,7 @@ import com.tndm.services.MaintenanceScheduleService;
 import com.tndm.services.TechnicianService;
 import com.tndm.services.UserService;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,5 +164,15 @@ public class MaintenanceController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void destroy(@PathVariable(value = "maintenanceId") int id) {
         this.mainScheduleService.deleteMaintenanceSchedule(id);
+    }
+
+    @GetMapping("/maintenance-chart")
+    public String maintenanceChart(
+            Model model) {
+
+        List<MaintenanceSchedule> schedules = mainScheduleService.getMaintenanceScheduleByDeviceId(1);
+
+        model.addAttribute("schedules", schedules != null ? schedules : Collections.emptyList());
+        return "maintenance-chart";
     }
 }
