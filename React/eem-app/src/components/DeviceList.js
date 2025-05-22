@@ -23,6 +23,7 @@ const DevicesList = () => {
     const [submitError, setSubmitError] = useState('');
     const [submitSuccess, setSubmitSuccess] = useState('');
     const observer = useRef();
+    const [purchaseDate, setPurchaseDate] = useState('');
 
     const lastDeviceElementRef = useCallback(
         (node) => {
@@ -101,6 +102,8 @@ const DevicesList = () => {
 
     const handleReportClick = (device) => {
         setSelectedDevice(device);
+        setPurchaseDate(device.purchaseDate);
+        console.log( new Date(Number(device.purchaseDate)).toISOString().split("T")[0]);
         setShowReportDialog(true);
     };
 
@@ -328,7 +331,12 @@ const DevicesList = () => {
                                     onChange={handleReportChange}
                                     disabled={submitting}
                                     required
-                                />
+                                    max={new Date().toISOString().split("T")[0]}
+                                    min={
+                                        purchaseDate
+                                            ? new Date(Number(purchaseDate)).toISOString().split("T")[0]
+                                            : ""
+                                    } />
                             </Form.Group>
 
                             <Form.Group className="mb-3">
