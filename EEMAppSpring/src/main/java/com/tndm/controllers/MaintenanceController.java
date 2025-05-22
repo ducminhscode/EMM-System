@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
@@ -170,7 +171,7 @@ public class MaintenanceController {
     public String maintenanceChart(
             Model model) {
 
-        List<MaintenanceSchedule> schedules = mainScheduleService.getMaintenanceScheduleByDeviceId(1);
+        List<MaintenanceSchedule> schedules = mainScheduleService.getMaintenanceByFacilityIdAndMonth(1, 5);
 
         model.addAttribute("schedules", schedules != null ? schedules : Collections.emptyList());
         return "maintenance-chart";

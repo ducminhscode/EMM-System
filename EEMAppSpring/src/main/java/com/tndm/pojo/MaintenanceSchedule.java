@@ -4,6 +4,7 @@
  */
 package com.tndm.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -104,6 +105,7 @@ public class MaintenanceSchedule implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private User userId;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "maintenanceScheduleId")
     private Set<MaintenanceAssignment> maintenanceAssignmentSet;
 

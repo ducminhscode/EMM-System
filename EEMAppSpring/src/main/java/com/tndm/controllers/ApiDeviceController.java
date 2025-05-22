@@ -43,6 +43,7 @@ public class ApiDeviceController {
             data.put("statusId", d.getStatusId().getName());
             data.put("typeId", d.getTypeId().getName());
             data.put("facilityId", d.getFacilityId().getName());
+            data.put("purchaseDate", d.getPurchaseDate());
             listData.add(data);
         }
         return ResponseEntity.ok(listData);

@@ -2,12 +2,14 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>Báo cáo hiệu suất bảo trì</title>
+    <th:block th:replace="base :: styles"></th:block>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            background: linear-gradient(to right, #f9fafb, #e5e7eb);
+            color: #111827;
         }
         .container {
             max-width: 1200px;
@@ -15,15 +17,19 @@
         }
         .card {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
             margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
         }
         .card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1f2937;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e40af;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -42,14 +48,42 @@
             border-collapse: collapse;
         }
         th, td {
-            padding: 0.75rem;
+            padding: 0.75rem 1rem;
             text-align: left;
         }
         th {
-            background: #f3f4f6;
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #374151;
         }
         tr {
             border-bottom: 1px solid #e5e7eb;
+            transition: background-color 0.2s ease;
+        }
+        tr:hover {
+            background-color: #f9fafb;
+        }
+        .text-green-600 {
+            color: #16a34a;
+            font-weight: 600;
+        }
+        .text-red-600 {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        .text-gray-400 {
+            color: #9ca3af;
+        }
+        .text-gray-600 {
+            color: #4b5563;
+        }
+        #chart-loading i {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+        }
+        #chart-error {
+            font-weight: 600;
+            padding: 1rem;
         }
         @media (max-width: 768px) {
             .ml-64 {
@@ -61,13 +95,69 @@
             th, td {
                 font-size: 0.875rem;
             }
+            .card {
+                padding: 1.25rem;
+            }
+            .card h3 {
+                font-size: 1.25rem;
+            }
         }
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="flex min-h-screen">
         <div class="flex-1 ml-64 overflow-auto">
+            <th:block th:replace="base :: header (pageTitle='Báo cáo hiệu suất bảo trì')"></th:block>
             <main class="p-6 container">
+                <!-- Filter Section -->
+                <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                    <form th:action="@{/index-reports}" method="get" id="filterForm">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <!-- Device Type Dropdown -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Loại thiết bị</label>
+                                <select name="typeId" id="typeSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                    <option value="">Chọn cơ sở</option>
+                                    <option th:each="type : ${deviceTypes}"
+                                            th:value="${type.id}"
+                                            th:text="${type.name}"
+                                            th:selected="${selectedTypeId == type.id}"></option>
+                                </select>
+                            </div>
+
+                            <!-- Device Dropdown -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Thiết bị</label>
+                                <select name="deviceId" id="deviceSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                    <option value="">Chọn thiết bị</option>
+                                    <option th:each="device : ${devices}"
+                                            th:value="${device.id}"
+                                            th:text="${device.name} + ' ' + ${device.facilityId?.name}"
+                                            th:selected="${selectedDeviceId == device.id}"></option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Tháng</label>
+                                <select name="month" id="monthSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                    <option value="">Chọn tháng</option>
+                                    <option th:each="i : ${#numbers.sequence(1,12)}"
+                                            th:value="${i}"
+                                            th:text="'Tháng ' + ${i}"
+                                            th:selected="${selectedMonth == i}"></option>
+                                </select>
+                            </div>
+
+                            <!-- Filter Button -->
+                            <div class="flex items-end">
+                                <button type="submit" 
+                                        class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                    Lọc
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div class="card">
                     <h3><i class="fas fa-chart-bar text-blue-600"></i> Hiệu suất bảo trì (Tỷ lệ chênh lệch chi phí)</h3>
                     <div class="chart-container">
@@ -122,97 +212,130 @@
             </main>
         </div>
     </div>
-</body>
-<script inline="javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        const ctx = document.getElementById('maintenanceEfficiencyChart');
-        const loading = document.getElementById('chart-loading');
-        const errorDiv = document.getElementById('chart-error');
-        const schedules = '[[${schedules}]]';
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('maintenanceEfficiencyChart');
+            const loading = document.getElementById('chart-loading');
+            const errorDiv = document.getElementById('chart-error');
+            const schedules = [[${schedules}]];
+            const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.7)');
+            gradient.addColorStop(1, 'rgba(147, 197, 253, 0.2)');
 
+            try {
+                // Debug dữ liệu
+                console.log("Schedules:", JSON.stringify(schedules, null, 2));
 
-        try {
-            console.log("Schedules:", schedules);
-
-            if (!schedules || schedules.length === 0) {
-                loading.innerHTML = '<p class="text-center text-gray-500">Không có dữ liệu để hiển thị biểu đồ.</p>';
-                return;
-            }
-
-            const chartData = [];
-            const chartLabels = [];
-            const backgroundColors = [];
-            const borderColors = [];
-
-            schedules.forEach(s => {
-                if (s.expenseFirst != null && s.expenseLast != null && s.expenseFirst !== 0) {
-                    const date = s.maintenanceDate ? new Date(s.maintenanceDate) : null;
-                    chartLabels.push(s.title + ' (' + (date && !isNaN(date) ? date.toLocaleDateString('vi-VN') : 'N/A') + ')');
-                    chartData.push(((s.expenseFirst - s.expenseLast) / s.expenseFirst * 100));
-                    const isPositive = (s.expenseFirst - s.expenseLast) > 0;
-                    const isNegative = (s.expenseFirst - s.expenseLast) < 0;
-                    backgroundColors.push(isPositive ? 'rgba(34, 197, 94, 0.6)' : isNegative ? 'rgba(239, 68, 68, 0.6)' : 'rgba(107, 114, 128, 0.6)');
-                    borderColors.push(isPositive ? 'rgba(34, 197, 94, 1)' : isNegative ? 'rgba(239, 68, 68, 1)' : 'rgba(107, 114, 128, 1)');
+                if (!schedules || schedules.length === 0) {
+                    loading.innerHTML = '<p class="text-center text-gray-500">Không có dữ liệu để hiển thị biểu đồ.</p>';
+                    return;
                 }
-            });
 
-            if (chartLabels.length === 0 || chartData.length === 0) {
-                loading.innerHTML = '<p class="text-center text-gray-500">Không có dữ liệu hợp lệ để hiển thị biểu đồ.</p>';
-                return;
-            }
+                const chartData = [];
+                const chartLabels = [];
+                const backgroundColors = [];
+                const borderColors = [];
 
-            loading.style.display = 'none';
-            ctx.style.display = 'block';
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: chartLabels,
-                    datasets: [{
-                            label: 'Tỷ lệ chênh lệch chi phí (%)',
-                            data: chartData,
-                            backgroundColor: backgroundColors,
-                            borderColor: borderColors,
-                            borderWidth: 1,
-                            hoverBackgroundColor: backgroundColors.map(color => color.replace('0.6', '0.8')),
-                            hoverBorderColor: borderColors
-                        }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {display: true, text: 'Tỷ lệ chênh lệch (%)', font: {size: 14}},
-                            grid: {color: '#e5e7eb'}
-                        },
-                        x: {
-                            title: {display: true, text: 'Lịch bảo trì', font: {size: 14}},
-                            ticks: {autoSkip: false, maxRotation: 45, minRotation: 45, font: {size: 12}},
-                            grid: {display: false}
-                        }
+                schedules.forEach((s, index) => {
+                    console.log(`Schedule ${index}:`, {
+                        title: s.title,
+                        expenseFirst: s.expenseFirst,
+                        expenseLast: s.expenseLast,
+                        maintenanceDate: s.maintenanceDate
+                    });
+
+                    if (s.expenseFirst != null && s.expenseLast != null && s.expenseFirst !== 0) {
+                        const date = s.maintenanceDate ? new Date(s.maintenanceDate) : null;
+                        const label = s.title;
+                        chartLabels.push(label);
+                        chartData.push(((s.expenseFirst - s.expenseLast) / s.expenseFirst * 100));
+                        const isPositive = (s.expenseFirst - s.expenseLast) > 0;
+                        const isNegative = (s.expenseFirst - s.expenseLast) < 0;
+                        backgroundColors.push(isPositive ? 'rgba(34, 197, 94, 0.6)' : isNegative ? 'rgba(239, 68, 68, 0.6)' : 'rgba(107, 114, 128, 0.6)');
+                        borderColors.push(isPositive ? 'rgba(34, 197, 94, 1)' : isNegative ? 'rgba(239, 68, 68, 1)' : 'rgba(107, 114, 128, 1)');
+                    } else {
+                        console.warn(`Schedule ${index} skipped due to invalid data:`, {
+                            expenseFirst: s.expenseFirst,
+                            expenseLast: s.expenseLast
+                        });
+                    }
+                });
+
+                if (chartLabels.length === 0 || chartData.length === 0) {
+                    loading.innerHTML = '<p class="text-center text-gray-500">Không có dữ liệu hợp lệ để hiển thị biểu đồ.</p>';
+                    return;
+                }
+
+                loading.style.display = 'none';
+                ctx.style.display = 'block';
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                                label: 'Tỷ lệ chênh lệch chi phí (%)',
+                                data: chartData,
+                                backgroundColor: chartData.map((value, i) => {
+                                    const diff = schedules[i].expenseFirst - schedules[i].expenseLast;
+                                    if (diff > 0)
+                                        return gradient;
+                                    if (diff < 0)
+                                        return 'rgba(239, 68, 68, 0.6)';
+                                    return 'rgba(107, 114, 128, 0.6)';
+                                }),
+                                borderColor: borderColors,
+                                borderWidth: 1,
+                                hoverBackgroundColor: backgroundColors.map(color => color.replace('0.6', '0.8')),
+                                hoverBorderColor: borderColors
+                            }]
                     },
-                    plugins: {
-                        legend: {display: true, position: 'top', labels: {font: {size: 12}}},
-                        tooltip: {
-                            backgroundColor: '#1f2937',
-                            titleFont: {size: 14},
-                            bodyFont: {size: 12},
-                            callbacks: {
-                                label: function (context) {
-                                    return 'Tỷ lệ: ' + context.parsed.y.toFixed(2) + '%';
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {display: true, text: 'Tỷ lệ chênh lệch (%)', font: {size: 14}},
+                                grid: {color: '#e5e7eb'}
+                            },
+                            x: {
+                                title: {display: true, text: 'Lịch bảo trì', font: {size: 14}},
+                                ticks: {
+                                    autoSkip: true,
+                                    maxRotation: 0,
+                                    minRotation: 0,
+                                    font: {size: 12},
+                                    callback: function (value, index, values) {
+                                        const label = chartLabels[index];
+                                        // Truncate long labels to prevent overlap
+                                        return label.length > 20 ? label.substring(0, 17) + '...' : label;
+                                    }
+                                },
+                                grid: {display: false}
+                            }
+                        },
+                        plugins: {
+                            legend: {display: true, position: 'top', labels: {font: {size: 12}}},
+                            tooltip: {
+                                backgroundColor: '#1f2937',
+                                titleFont: {size: 14},
+                                bodyFont: {size: 12},
+                                callbacks: {
+                                    label: function (context) {
+                                        return 'Tỷ lệ: ' + context.parsed.y.toFixed(2) + '%';
+                                    }
                                 }
                             }
-                        }
-                    },
-                    animation: {duration: 1000, easing: 'easeOutQuart'}
-                }
-            });
-        } catch (error) {
-            console.error('Error rendering chart:', error);
-            loading.style.display = 'none';
-            errorDiv.style.display = 'block';
-        }
-    });
-</script>
+                        },
+                        animation: {duration: 1000, easing: 'easeOutQuart'}
+                    }
+                });
+            } catch (error) {
+                console.error('Error rendering chart:', error);
+                loading.style.display = 'none';
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
 </html>
