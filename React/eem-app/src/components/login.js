@@ -138,6 +138,7 @@ const Login = () => {
                       <a
                         href="#forgot-password"
                         className="text-sm font-medium text-primary hover-text-primary"
+                        style={{ textDecoration: 'none' }}
                       >
                         Quên mật khẩu?
                       </a>
