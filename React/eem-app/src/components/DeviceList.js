@@ -134,7 +134,6 @@ const DevicesList = () => {
             setSubmitting(true);
             setSubmitError('');
 
-            // Tạo query string từ dữ liệu báo cáo
             const queryParams = new URLSearchParams({
                 deviceId: selectedDevice.id,
                 description: reportData.description,
@@ -142,7 +141,6 @@ const DevicesList = () => {
                 happenedDate: reportData.happenedDate
             }).toString();
 
-            // Gửi yêu cầu POST với query parameters
             await authApis().post(`${endpoints['problem']}?${queryParams}`);
 
             setSubmitSuccess('Báo cáo sự cố thành công!');
@@ -291,19 +289,18 @@ const DevicesList = () => {
                     <Modal.Title>Báo cáo sự cố</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {selectedDevice && (
-                        <div className="mb-3">
-                            <h6>Tên thiết bị: {selectedDevice.name}</h6>
-                            <p className="text-muted mb-3">{selectedDevice.manufacturer}</p>
-                        </div>
-                    )}
 
                     {submitSuccess ? (
                         <Alert variant="success">{submitSuccess}</Alert>
                     ) : (
                         <>
                             {submitError && <Alert variant="danger">{submitError}</Alert>}
-
+                            {selectedDevice && (
+                                <div className="mb-3">
+                                    <h6>Tên thiết bị: {selectedDevice.name}</h6>
+                                    <p className="text-muted mb-3">{selectedDevice.manufacturer}</p>
+                                </div>
+                            )}
                             <Form.Group className="mb-3">
                                 <Form.Label>Mức độ nghiêm trọng <span className="text-danger">*</span></Form.Label>
                                 <Form.Select

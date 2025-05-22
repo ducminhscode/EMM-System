@@ -63,6 +63,12 @@ const Login = () => {
 
         let u = await authApis().get(endpoints['profile']);
 
+        if (!u.data.active) {
+          setMsg('Tài khoản đã ngừng hoạt động');
+          cookie.remove('token', { path: '/' });
+          return;
+        }
+
         dispatch({
           type: 'login',
           payload: u.data,
