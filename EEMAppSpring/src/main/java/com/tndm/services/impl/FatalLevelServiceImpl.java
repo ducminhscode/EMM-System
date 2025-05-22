@@ -16,7 +16,8 @@ import org.springframework.stereotype.Service;
  * @author ADMIN
  */
 @Service
-public class FatalLevelServiceImpl implements FatalLevelService{
+public class FatalLevelServiceImpl implements FatalLevelService {
+
     @Autowired
     private FatalLevelRepository fatalRepo;
 
@@ -24,7 +25,9 @@ public class FatalLevelServiceImpl implements FatalLevelService{
     public List<FatalLevel> getFatalLevel() {
         return this.fatalRepo.getFatalLevel();
     }
-    
-    
-    
+
+    @Override
+    public FatalLevel getFatalLevelById(int id) {
+        return this.fatalRepo.getFatalLevelById(id);
+    }
 }

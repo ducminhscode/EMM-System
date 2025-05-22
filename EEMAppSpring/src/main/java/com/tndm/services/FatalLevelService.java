@@ -12,5 +12,8 @@ import java.util.List;
  * @author ADMIN
  */
 public interface FatalLevelService {
+
     List<FatalLevel> getFatalLevel();
+
+    FatalLevel getFatalLevelById(int id);
 }

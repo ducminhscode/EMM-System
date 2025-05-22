@@ -4,21 +4,24 @@
  */
 package com.tndm.controllers;
 
+import com.tndm.pojo.Device;
+import com.tndm.pojo.FatalLevel;
 import com.tndm.pojo.Problem;
 import com.tndm.pojo.ProblemStatus;
 import com.tndm.pojo.RepairHistory;
 import com.tndm.pojo.RepairType;
 import com.tndm.pojo.User;
+import com.tndm.services.DeviceService;
+import com.tndm.services.FatalLevelService;
 import com.tndm.services.ProblemService;
 import com.tndm.services.ProblemStatusService;
 import com.tndm.services.RepairHistoryService;
 import com.tndm.services.RepairTypeService;
-import com.tndm.services.TechnicianService;
 import com.tndm.services.UserService;
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,7 +54,10 @@ public class ApiProblemController {
     private RepairHistoryService repHistoryService;
 
     @Autowired
-    private TechnicianService techService;
+    private DeviceService deviceService;
+
+    @Autowired
+    private FatalLevelService fatalLevelService;
 
     @Autowired
     private UserService userDetailsService;
@@ -120,7 +126,6 @@ public class ApiProblemController {
             repSaved.setTypeId(repTypeSaved);
             this.repHistoryService.addOrUpdateRepairHistory(repSaved);
 
-            // Kiểm tra tất cả đã done hay chưa
             List<RepairHistory> repListSaved = this.repHistoryService.getRepairHistoriesByProblemId(problemId);
             boolean flag = repListSaved.stream().allMatch(RepairHistory::isDone);
 
@@ -135,4 +140,78 @@ public class ApiProblemController {
                     .body("Lỗi khi cập nhật: " + e.getMessage());
         }
     }
+
+    @PostMapping("secure/problem")
+    @CrossOrigin
+    public ResponseEntity<?> createProblem(
+            @RequestParam Map<String, String> params,
+            Principal principal) {
+
+        try {
+            String username = principal.getName();
+            User existingUser = this.userDetailsService.getUserByUsername(username);
+            if (existingUser == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
+            }
+
+            String deviceIdStr = params.get("deviceId");
+            String description = params.get("description");
+            String fatalLevelIdStr = params.get("fatalLevelId");
+            String happenedDateStr = params.get("happenedDate");
+
+            if (deviceIdStr == null || fatalLevelIdStr == null || happenedDateStr == null) {
+                return ResponseEntity.badRequest().body("Thiếu tham số bắt buộc");
+            }
+
+            int deviceId;
+            int fatalLevelId;
+            try {
+                deviceId = Integer.parseInt(deviceIdStr);
+                fatalLevelId = Integer.parseInt(fatalLevelIdStr);
+            } catch (NumberFormatException e) {
+                return ResponseEntity.badRequest().body("deviceId hoặc fatalLevelId phải là số nguyên");
+            }
+
+            Date happenedDate;
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                happenedDate = dateFormat.parse(happenedDateStr);
+            } catch (ParseException e) {
+                return ResponseEntity.badRequest().body("Định dạng happenedDate không hợp lệ");
+            }
+
+            Device device = this.deviceService.getDeviceById(deviceId);
+            if (device == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy thiết bị");
+            }
+
+            FatalLevel fatalLevel = this.fatalLevelService.getFatalLevelById(fatalLevelId);
+            if (fatalLevel == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy mức độ nghiêm trọng");
+            }
+
+            ProblemStatus defaultStatus = this.proStatusService.getProblemStatusByName("Chưa xác nhận");
+            if (defaultStatus == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không tìm thấy trạng thái mặc định");
+            }
+
+            Problem problem = new Problem();
+            problem.setDeviceId(device);
+            problem.setDescription(description);
+            problem.setFatalLevelId(fatalLevel);
+            problem.setHappenedDate(happenedDate);
+            problem.setStatusId(defaultStatus);
+            problem.setUserId(existingUser);
+            problem.setCreatedDate(new Date());
+            problem.setUpdatedDate(new Date());
+
+            this.proService.addOrUpdateProblem(problem);
+
+            return ResponseEntity.ok().body("Tạo sự cố thành công");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi khi tạo sự cố: " + e.getMessage());
+        }
+    }
+
 }

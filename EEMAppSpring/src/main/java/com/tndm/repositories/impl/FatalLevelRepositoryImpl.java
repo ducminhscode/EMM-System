@@ -31,4 +31,10 @@ public class FatalLevelRepositoryImpl implements FatalLevelRepository {
 
         return q.getResultList();
     }
+
+    @Override
+    public FatalLevel getFatalLevelById(int id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        return s.get(FatalLevel.class, id);
+    }
 }

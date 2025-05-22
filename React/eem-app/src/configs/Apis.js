@@ -14,7 +14,9 @@ export const endpoints = {
     'updateProblemTechnicianId': '/secure/problem/technician/',
     'repairType': '/repair-type',
     'maintenanceTechnicianId': '/maintenance/technician/',
-    'updateMaintenanceTechnicianId': '/secure/maintenance/technician/'
+    'updateMaintenanceTechnicianId': '/secure/maintenance/technician/',
+    'problem':'/secure/problem',
+    'fatal-level':'/fatal-level',
 }
 
 export const authApis = () => {

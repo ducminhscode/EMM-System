@@ -13,4 +13,7 @@ import java.util.List;
  */
 public interface FatalLevelRepository {
     List<FatalLevel> getFatalLevel();
+    
+    FatalLevel getFatalLevelById(int id);
+    
 }

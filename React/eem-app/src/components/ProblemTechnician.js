@@ -66,7 +66,7 @@ const ProblemTechnician = () => {
         onSubmit={handleSubmit}
         className="p-3 border rounded shadow-sm bg-light"
       >
-        <h5>Cập nhật sửa chữa cho vấn đề #{problemId}</h5>
+        <h5>Cập nhật sửa chữa cho vấn đề {problemId}</h5>
 
         {message && <Alert variant="success">{message}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}
