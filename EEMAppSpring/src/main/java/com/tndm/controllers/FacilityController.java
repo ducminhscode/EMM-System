@@ -4,7 +4,6 @@
  */
 package com.tndm.controllers;
 
-import com.tndm.pojo.Device;
 import com.tndm.pojo.Facility;
 import com.tndm.pojo.User;
 import com.tndm.services.DeviceService;
@@ -12,7 +11,6 @@ import com.tndm.services.FacilityService;
 import com.tndm.services.MaintenanceScheduleService;
 import com.tndm.services.UserService;
 import java.security.Principal;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -36,12 +34,6 @@ public class FacilityController {
 
     @Autowired
     private UserService usrSer;
-
-    @Autowired
-    private DeviceService devService;
-    
-    @Autowired
-    private MaintenanceScheduleService mainScheduleService;
 
     @GetMapping("/facilities")
     public String viewFacility(Model model) {

@@ -106,16 +106,13 @@
     document.addEventListener('DOMContentLoaded', function () {
         const purchaseDate = document.getElementById("purchaseDate");
 
-        // Get today's date
         const today = new Date();
 
-        // Format the date to YYYY-MM-DD
         const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based, so add 1
+        const month = String(today.getMonth() + 1).padStart(2, '0');
         const day = String(today.getDate()).padStart(2, '0');
         const todayFormatted = `${year}-${month}-${day}`;
 
-        // Set the max attribute to today's date
         purchaseDate.max = todayFormatted;
     });
 </script>

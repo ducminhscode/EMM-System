@@ -54,7 +54,6 @@ public class IndexController {
     @Autowired
     private DeviceTypeService deviceTypeService;
 
-
     @Autowired
     private ProblemService proService;
 
@@ -91,6 +90,7 @@ public class IndexController {
         List<Device> devices = this.devService.getDevices(params);
         model.addAttribute("devices", devices);
         model.addAttribute("countDevices", this.devService.countDevices(params));
+        model.addAttribute("countDevicesActive", this.devService.countDevicesActive(params));
 
         long totalDevices = this.devService.countDevices(params);
         int totalPages = (int) Math.ceil((double) totalDevices / DeviceRepositoryImpl.PAGE_SIZE);
@@ -232,7 +232,7 @@ public class IndexController {
 
     @RequestMapping("/index-maintenances")
     public String indexMaintenance(Model model, @RequestParam Map<String, String> params) {
-        
+
         List<MaintenanceSchedule> mainSche = this.mainScheduleService.getMaintenanceSchedule(params);
         model.addAttribute("maintenances", mainSche);
         model.addAttribute("countMaintenances", this.mainScheduleService.countMaintenances(params));
@@ -264,8 +264,7 @@ public class IndexController {
             model.addAttribute("searchType", searchType);
             model.addAttribute("searchValue", searchValue);
         }
-        
-        
+
         return "index-maintenances";
     }
 

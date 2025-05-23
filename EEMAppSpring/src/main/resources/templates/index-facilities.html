@@ -17,7 +17,7 @@
                     <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-gray-500 text-sm">Tổng cơ sở</p>
+                                <p class="text-gray-500 text-sm" th:text="#{idf.totalFaci}"></p>
                                 <h3 class="text-2xl font-bold text-gray-800" th:text="${countFacilities}"></h3>
                             </div>
                             <div class="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
@@ -28,10 +28,10 @@
                 </div>
                 <div class="bg-white rounded-xl shadow-md overflow-hidden">
                     <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-                        <h3 class="font-semibold text-lg text-gray-800">Danh sách cơ sở</h3>
+                        <h3 class="font-semibold text-lg text-gray-800" th:text="#{idf.facilityList}"></h3>
                         <a th:href="@{/facilities}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
                             <i class="fas fa-plus"></i>
-                            <span>Thêm cơ sở</span>
+                            <span th:text="#{idf.addFaci}"></span>
                         </a>
                     </div>
                     <div class="p-6">
@@ -39,13 +39,13 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Mã</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Tên cơ sở</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Địa Chỉ</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Ngày Tạo</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Ngày Cập Nhật</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Được Tạo Bởi</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">Hành Động</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap" th:text="#{idd.iD}"></th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap" th:text="#{idf.faciName}"></th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap" th:text="#{idf.address}"></th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap" th:text="#{idf.createdDate}"></th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap" th:text="#{idf.updateDate}"></th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap" th:text="#{idf.createBy}"></th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap" th:text="#{idd.action}"></th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
@@ -58,10 +58,10 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${f.userId.firstName} + ' ' + ${f.userId.lastName} "></td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             <a th:href="@{'/facilities/' + ${f.id}}" class="text-yellow-600 hover:text-yellow-800 mr-3"><i class="fas fa-edit"></i>
-                                                <span class="hidden sm:inline">Sửa</span></a>
+                                                <span class="hidden sm:inline" th:text="#{edit}"></span></a>
                                             <button th:onclick="'showDeleteDialog(' + ${f.id} + ')'" class="text-red-600 hover:text-red-800">
                                                 <i class="fas fa-trash-alt"></i>
-                                                <span class="hidden sm:inline">Xóa</span>
+                                                <span class="hidden sm:inline" th:text="#{delete}"></span>
                                             </button>
                                         </td>
                                     </tr>
@@ -69,22 +69,22 @@
                             </table>
                         </div>
                         <div th:if="${#lists.isEmpty(facilities)}" class="text-center text-gray-500 py-6">
-                            Chưa có cơ sở nào
+                            <span th:text="#{idf.noInfo}"></span>
                         </div>
                     </div>
 
                     <div class="flex items-center justify-between px-6 py-4 border-t border-gray-200">
                         <div class="text-sm text-gray-500"> 
-                            Hiển thị trang <span th:text="${params.containsKey('page') ? params.page : 1}"></span>  
-                            của <span th:text="${totalPages}"></span> 
+                            <span th:text="#{showPage}"></span> <span th:text="${params.containsKey('page') ? params.page : 1}"></span>  
+                            <span th:text="#{of}"></span> <span th:text="${totalPages}"></span> 
                         </div>
 
                         <form th:action="@{/index-facilities}" method="get" class="flex items-center space-x-2">
                         
                             <select id="searchType" name="searchType"
                                     class="border border-gray-300 rounded-full px-4 py-2 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700">
-                                <option value="name" selected>Tên cơ sở</option>
-                                <option value="address">Địa chỉ</option>
+                                <option value="name" th:text="#{idf.faciName}" selected></option>
+                                <option value="address" th:text="#{idf.address}"></option>
                             </select>
 
                           
@@ -92,7 +92,7 @@
                                 <i class="fas fa-search pl-3 text-gray-400"></i>
                                 <input
                                     type="text"
-                                    placeholder="Tìm kiếm..."
+                                    th:placeholder="#{search}"
                                     name="value"
                                     class="pl-2 pr-4 py-2 w-64 border-none rounded-full focus:outline-none"
                                     id="searchInput"
@@ -159,11 +159,11 @@
 
                 <div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
                     <div class="bg-white rounded-lg p-6 w-96">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Xác nhận xóa cơ sở</h3>
-                        <p class="text-gray-600 mb-6">Bạn có chắc chắn muốn xóa cơ sở không?</p>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4" th:text="#{idf.confirmDialog}"></h3>
+                        <p class="text-gray-600 mb-6" th:text="#{idf.questionConfirm}"></p>
                         <div class="flex justify-end space-x-4">
-                            <button th:onclick="hideDeleteDialog()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Hủy</button>
-                            <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Xác nhận</button>
+                            <button th:onclick="hideDeleteDialog()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400" th:text="#{base.cancel}"></button>
+                            <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700" th:text="#{base.confirm}"></button>
                         </div>
                     </div>
                 </div>

@@ -10,7 +10,7 @@
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen flex flex-col">
-        
+
         <header class="bg-blue-600 text-white shadow-md">
             <div class="container mx-auto px-4 py-6 flex justify-between items-center">
                 <a th:href="@{/index-users}" class="flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
@@ -23,7 +23,7 @@
 
         <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
-         
+
                 <div class="bg-blue-600 px-6 py-4">
                     <h2 class="text-xl font-semibold text-white">
                         <span th:if="${user.id == null}">Thêm người dùng mới</span>
@@ -39,9 +39,9 @@
                 </div>
 
                 <form method="post" th:action="@{/users/add}" th:object="${user}" class="p-6 space-y-6" enctype="multipart/form-data" id="userForm">
-                    
+
                     <div class="flex flex-col md:flex-row items-center gap-6 mb-6">
-                       
+
                         <div class="relative">
                             <img th:src="${user.avatar != null} ? ${user.avatar} : 'https://res.cloudinary.com/dp9b0dkkt/image/upload/v1745512749/de995be2-6311-4125-9ac2-19e11fcaf801_jo8gcs.png'" 
                                  alt="Avatar" 
@@ -52,7 +52,6 @@
                             </label>
                         </div>
 
-                        
                         <div class="flex-1" th:if="${user.id != null}">
                             <h2 class="text-2xl font-bold text-gray-800" th:text="${user.firstName + ' ' + user.lastName}"></h2>
                             <p class="text-gray-600" th:text="${user.userRole == 'ROLE_ADMIN' ? 'Quản trị viên' : 
@@ -65,7 +64,6 @@
                         </div>
                     </div>
 
-                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">Họ <span class="text-red-500">*</span></label>
@@ -82,7 +80,6 @@
                         </div>
                     </div>
 
-                    
                     <div class="space-y-6">
                         <div class="grid grid-cols-1 gap-6">
                             <div>
@@ -99,7 +96,6 @@
                         </div>
                     </div>
 
-                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
@@ -116,7 +112,6 @@
                         </div>
                     </div>
 
-                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div th:classappend="${user.id != null} ? 'hidden'">
                             <label for="userRole" class="block text-sm font-medium text-gray-700 mb-1">Vai trò</label>
@@ -155,8 +150,6 @@
                         </div>
                     </div>
 
-
-                    
                     <div class="pt-6">
                         <input type="hidden" th:field="*{id}"/>
                         <button type="submit" class="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
@@ -167,11 +160,8 @@
                 </form>
             </div>
         </main>
-
-        
         <th:block th:replace="base :: footer"></th:block>
     </div>
-
 <th:block th:replace="base :: scripts"></th:block>
 <script>
     function toggleTechnicianFields() {

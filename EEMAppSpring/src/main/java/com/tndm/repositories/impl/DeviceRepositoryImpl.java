@@ -137,4 +137,18 @@ public class DeviceRepositoryImpl implements DeviceRepository {
                 .setParameter("facilityId", facilityId)
                 .list();
     }
+
+    @Override
+    public long countDevicesActive(Map<String, String> params) {
+        Session s = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Long> q = b.createQuery(Long.class);
+        Root<Device> root = q.from(Device.class);
+        q.select(b.count(root));
+
+        Predicate pre = b.equal(root.get("deviceStatus"), "Hoạt động");
+        q.select(b.count(root)).where(pre);
+
+        return s.createQuery(q).getSingleResult();
+    }
 }

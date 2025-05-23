@@ -29,4 +29,6 @@ public interface DeviceService {
     void deleteDevice(int id);
 
     long countDevices(Map<String, String> params);
+    
+    long countDevicesActive(Map<String, String> params);
 }

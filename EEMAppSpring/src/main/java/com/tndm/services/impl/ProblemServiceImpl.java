@@ -8,7 +8,6 @@ import com.tndm.pojo.Problem;
 import com.tndm.repositories.ProblemRepository;
 import com.tndm.services.ProblemService;
 import com.tndm.services.RepairHistoryService;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,6 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Autowired
     private ProblemRepository problemService;
-
-    @Autowired
-    private RepairHistoryService repHistoryService;
 
     @Override
     public List<Problem> getProblem(Map<String, String> params) {

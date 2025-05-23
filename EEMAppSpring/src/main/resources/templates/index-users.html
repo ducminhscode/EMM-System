@@ -218,7 +218,6 @@
 <script>
     let currentUserId = null;
 
-
     function showDeleteDialog(userId) {
         currentUserId = userId;
         document.getElementById('deleteModal').classList.remove('hidden');
@@ -229,14 +228,12 @@
         document.getElementById('deleteModal').classList.add('hidden');
     }
 
-  
     document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
         if (currentUserId) {
             deleteUser('users/', currentUserId);
         }
     });
 
-  
     function deleteUser(endpoint, id) {
         fetch(endpoint + id, {
             method: 'delete'

@@ -62,4 +62,9 @@ public class DeviceServiceImpl implements DeviceService {
     public List<Device> getDevicesByFacilityId(int facilityId) {
         return this.devRepo.getDevicesByFacilityId(facilityId);
     }
+
+    @Override
+    public long countDevicesActive(Map<String, String> params) {
+        return this.devRepo.countDevicesActive(params);
+    }
 }
