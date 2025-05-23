@@ -9,7 +9,7 @@
     <th:block th:replace="base :: styles"></th:block>
 </head>
 <body class="bg-gray-50 font-sans min-h-screen">
-    <!-- Navigation Bar -->
+
     <nav class="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg fixed top-0 left-0 right-0 z-10">
         <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div class="flex items-center gap-3">
@@ -23,12 +23,12 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
+
     <main class="max-w-7xl mx-auto px-4 pt-24 pb-12 sm:px-6 lg:px-8">
-        <!-- Problem Overview Card -->
+    
         <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 transition-transform transform hover:scale-[1.02]">
             <div class="flex flex-col md:flex-row justify-between items-start gap-6">
-                <!-- Left Section -->
+         
                 <div class="flex-1">
                     <div class="flex items-center gap-3 mb-4">
                         <h2 class="text-xl font-semibold text-gray-900" th:text="${problem.deviceId.name}"></h2>
@@ -51,7 +51,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- Right Section -->
+               
                 <div class="text-right">
                     <label class="block text-sm text-gray-500 mb-1">Người báo cáo</label>
                     <p class="font-semibold text-gray-900" 
@@ -59,28 +59,28 @@
                     <p class="text-sm text-gray-500" th:text="${problem.userId.phone}"></p>
                     <label class="block text-sm text-gray-500 mt-2">Ngày xảy ra</label>
                     <p class="font-medium text-gray-900" 
-                       th:text="${#dates.format(problem.happenedDate, 'HH:mm dd/MM/yyyy')}"></p>
+                       th:text="${#dates.format(problem.happenedDate, 'dd/MM/yyyy')}"></p>
                 </div>
             </div>
         </div>
 
-        <!-- Repair History Section -->
+      
         <div class="bg-white rounded-2xl shadow-xl p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
                 <i class="fas fa-tools text-blue-600 mr-2"></i>
                 Lịch sử sửa chữa
             </h3>
-            <!-- Empty State -->
+       
             <div th:if="${#lists.isEmpty(repairs)}" class="text-center py-12 text-gray-400">
                 <i class="fas fa-history text-5xl mb-4"></i>
                 <p class="text-base">Chưa có hoạt động sửa chữa nào</p>
             </div>
-            <!-- Repair List -->
+       
             <div th:unless="${#lists.isEmpty(repairs)}" class="space-y-6">
                 <div th:each="repair : ${repairs}" 
                      class="border rounded-xl p-4 hover:bg-gray-50 transition-colors">
                     <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
-                        <!-- Repair Info -->
+                  
                         <div class="flex-1">
                             <div class="flex items-center gap-3 mb-2">
                                 <h4 class="font-semibold text-blue-600" th:text="${repair.typeId == null ? 'Chưa có thông tin' : repair.typeId.name}"></h4>
@@ -100,13 +100,13 @@
                                 <span th:unless="${repair.description}" class="text-gray-400">Không có mô tả chi tiết</span>
                             </p>
                         </div>
-                        <!-- Repair Cost -->
+                
                         <div class="sm:text-right mt-2 sm:mt-0">
                             <p class="text-lg font-semibold text-green-600">
                                 <span th:if="${repair.expense != null}">
                                     <span th:text="${#numbers.formatDecimal(repair.expense, 0, 'COMMA', 0, 'POINT')}"></span> VNĐ
                                 </span>
-                                <span th:if="${repair.expense == null}" class="text-gray-400">N/A</span>
+                                <span th:if="${repair.expense == null}" class="text-gray-400"></span>
                             </p>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
         </div>
     </main>
 
-    <!-- Footer -->
+
     <th:block th:replace="base :: footer"></th:block>
 
     <th:block th:replace="base :: scripts"></th:block>

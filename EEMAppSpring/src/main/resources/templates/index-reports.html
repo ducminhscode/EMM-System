@@ -6,21 +6,18 @@
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="flex h-screen">
-        <!-- Sidebar -->
+  
         <th:block th:replace="base :: sidebar"></th:block>
 
-        <!-- Main Content -->
         <div class="flex-1 ml-64 overflow-auto">
-            <!-- Header -->
+        
             <th:block th:replace="base :: header (pageTitle='Báo cáo sự cố theo thiết bị')"></th:block>
 
-            <!-- Main Section -->
             <main class="p-6">
-                <!-- Filter Section -->
                 <div class="bg-white rounded-xl shadow-md p-6 mb-8">
                     <form th:action="@{/index-reports}" method="get" id="filterForm">
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <!-- Device Type Dropdown -->
+                          
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Loại thiết bị</label>
                                 <select name="typeId" id="typeSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
@@ -32,7 +29,6 @@
                                 </select>
                             </div>
 
-                            <!-- Device Dropdown -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Thiết bị</label>
                                 <select name="deviceId" id="deviceSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
@@ -44,7 +40,6 @@
                                 </select>
                             </div>
 
-                            <!-- Filter Button -->
                             <div class="flex items-end">
                                 <button type="submit" 
                                         class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
@@ -52,7 +47,6 @@
                                 </button>
                             </div>
 
-                            <!-- Export Excel Button -->
                             <div class="flex items-end">
                                 <a th:href="@{/export-excel(deviceId=${selectedDeviceId}, typeId=${selectedTypeId})}"
                                    class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-center">
@@ -63,13 +57,11 @@
                     </form>
                 </div>
 
-                <!-- Results Section -->
                 <div class="bg-white rounded-xl shadow-md overflow-hidden">
                     <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                         <h3 class="font-semibold text-lg text-gray-800">Kết quả báo cáo</h3>
                     </div>
 
-                    <!-- Problems List -->
                     <div class="p-6">
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
@@ -90,33 +82,42 @@
                                 <tbody class="divide-y divide-gray-200">
                                     <tr th:each="problem : ${problems}" class="hover:bg-gray-50">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
-                                            th:text="${problem.deviceId?.name} ?: 'N/A'"></td>
+                                            th:text="${problem.deviceId?.name} ?: ''"></td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
-                                            th:text="${problem.deviceId?.facilityId?.name} ?: 'N/A'"></td>
-                                        <td class="px-6 py-4 text-sm text-gray-900" 
-                                            th:text="${problem.description} ?: 'N/A'"></td>
+                                            th:text="${problem.deviceId?.facilityId?.name} ?: ''"></td>
+                                        <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900" 
+                                            th:text="${problem.description} ?: ''"></td>
+
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800" 
-                                                  th:text="${problem.statusId?.name} ?: 'N/A'"></span>
+                                            <span th:class="${problem.statusId?.id == 1 ? 
+                                                  'px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800' : 
+                                                  (problem.statusId?.id == 2 ? 
+                                                  'px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800' : 
+                                                  (problem.statusId?.id == 3 ? 
+                                                  'px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800' : 
+                                                  'px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800'))}" 
+                                                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                                  th:text="${problem.statusId?.name}"></span>
                                         </td>
+
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" 
-                                            th:text="${problem.happenedDate != null ? #dates.format(problem.happenedDate, 'dd/MM/yyyy HH:mm') : 'N/A'}"></td>
-                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                            th:text="${problem.happenedDate != null ? #dates.format(problem.happenedDate, 'dd/MM/yyyy') : ''}"></td>
+                                        <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900">
                                             <span th:each="repair : ${repairDetail[problem.id]}" 
                                                   th:if="${repair != null}">
                                                 <span th:text="${repair.technicianId != null and repair.technicianId.user != null} ? 
-                                                      ${repair.technicianId.user.firstName + ' ' + repair.technicianId.user.lastName} : 'N/A'"></span><br/>
+                                                      ${repair.technicianId.user.firstName + ' ' + repair.technicianId.user.lastName} : ''"></span><br/>
                                             </span>
-                                            <span th:if="${#lists.isEmpty(repairDetail[problem.id])}">N/A</span>
+                                            <span th:if="${#lists.isEmpty(repairDetail[problem.id])}"></span>
                                         </td>
-                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                        <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900">
                                             <span th:each="repair : ${repairDetail[problem.id]}" 
                                                   th:if="${repair != null}">
-                                                <span th:text="${repair.typeId?.name} ?: 'N/A'"></span><br/>
+                                                <span th:text="${repair.typeId?.name} ?: ''"></span><br/>
                                             </span>
-                                            <span th:if="${#lists.isEmpty(repairDetail[problem.id])}">N/A</span>
+                                            <span th:if="${#lists.isEmpty(repairDetail[problem.id])}"></span>
                                         </td>
-                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                        <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900">
                                             <span th:each="repair : ${repairDetail[problem.id]}" 
                                                   th:if="${repair != null}">
                                                 <span th:text="${repair.expense != null} ? 
@@ -124,13 +125,13 @@
                                             </span>
                                             <span th:if="${#lists.isEmpty(repairDetail[problem.id])}">0 VNĐ</span>
                                         </td>
-                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                        <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900">
                                             <span th:each="repair : ${repairDetail[problem.id]}" 
                                                   th:if="${repair != null}">
                                                 <span th:text="${repair.startDate != null} ? 
-                                                      ${#dates.format(repair.startDate, 'dd/MM/yyyy HH:mm')} : 'N/A'"></span><br/>
+                                                      ${#dates.format(repair.startDate, 'dd/MM/yyyy')} : ''"></span><br/>
                                             </span>
-                                            <span th:if="${#lists.isEmpty(repairDetail[problem.id])}">N/A</span>
+                                            <span th:if="${#lists.isEmpty(repairDetail[problem.id])}"></span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-red-600"
                                             th:text="${repairTotal[problem.id] != null} ? 
@@ -155,17 +156,17 @@
         const deviceSelect = document.getElementById('deviceSelect');
         const typeSelect = document.getElementById('typeSelect');
 
-        // Handle device selection change
+      
         deviceSelect.addEventListener('change', function () {
             if (this.value !== "") {
-                typeSelect.value = ""; // Reset type to default
+                typeSelect.value = "";
             }
         });
 
-        // Handle type selection change
+     
         typeSelect.addEventListener('change', function () {
             if (this.value !== "") {
-                deviceSelect.value = ""; // Reset device to default
+                deviceSelect.value = "";
             }
         });
     });

@@ -76,7 +76,7 @@ public class ExcelExportController {
                     List<RepairHistory> repairs = repairMap.getOrDefault(problem.getId(), Collections.emptyList());
                     BigDecimal total = repairTotal.getOrDefault(problem.getId(), BigDecimal.ZERO);
 
-                    if (!repairs.isEmpty()) { // Only process problems with repairs
+                    if (!repairs.isEmpty()) {
                         rowNum = processProblemRow(
                                 workbook,
                                 sheet,
@@ -92,12 +92,10 @@ public class ExcelExportController {
                     }
                 }
 
-                // Auto-size columns after all data is written
                 for (int i = 0; i <= TOTAL_COST_COLUMN; i++) {
                     sheet.autoSizeColumn(i);
-                    // Add extra width to ensure content fits
                     int currentWidth = sheet.getColumnWidth(i);
-                    sheet.setColumnWidth(i, Math.min(currentWidth + 1000, 255 * 256)); // Limit to max Excel width
+                    sheet.setColumnWidth(i, Math.min(currentWidth + 1000, 255 * 256));
                 }
 
                 workbook.write(response.getOutputStream());

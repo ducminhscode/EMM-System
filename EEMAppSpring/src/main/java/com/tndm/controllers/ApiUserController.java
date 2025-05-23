@@ -38,16 +38,6 @@ public class ApiUserController {
     @Autowired
     private UserService userDetailsService;
 
-    //API tạo User
-    @PostMapping("/users")
-    public ResponseEntity<User> create(@RequestParam Map<String, String> params,
-            @RequestParam("avatar") MultipartFile avatar) {
-        User u = this.userDetailsService.addUser(params, avatar);
-
-        return new ResponseEntity<>(u, HttpStatus.CREATED);
-    }
-
-    //API đăng nhập User
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User u) {
 

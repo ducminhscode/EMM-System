@@ -8,7 +8,9 @@ import com.tndm.pojo.MaintenanceSchedule;
 import com.tndm.repositories.MaintenanceScheduleRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
@@ -32,11 +34,38 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
     private LocalSessionFactoryBean factory;
 
     @Override
-    public List<MaintenanceSchedule> getMaintenanceSchedule() {
+    public List<MaintenanceSchedule> getMaintenanceSchedule(Map<String, String> params) {
         Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("FROM MaintenanceSchedule", MaintenanceSchedule.class);
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<MaintenanceSchedule> q = b.createQuery(MaintenanceSchedule.class);
+        Root<MaintenanceSchedule> root = q.from(MaintenanceSchedule.class);
+        q.select(root);
 
-        return q.getResultList();
+        if (params != null) {
+            List<Predicate> predicates = new ArrayList<>();
+
+            String searchType = params.get("searchType");
+            String value = params.get("value");
+
+            if (searchType != null && value != null && !value.isEmpty()) {
+                switch (searchType) {
+                    case "title":
+                        predicates.add(b.like(root.get("title"), "%" + value + "%"));
+                        break;
+                }
+            }
+
+            q.where(predicates.toArray(Predicate[]::new));
+        }
+
+        Query query = s.createQuery(q);
+
+        int page = Integer.parseInt(params.getOrDefault("page", "1"));
+        int start = (page - 1) * PAGE_SIZE;
+        query.setMaxResults(PAGE_SIZE);
+        query.setFirstResult(start);
+
+        return query.getResultList();
     }
 
     @Override
@@ -112,13 +141,13 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
 
         Query query = s.createQuery(hql, MaintenanceSchedule.class).setParameter("technicianId", technicianId);
 
-        int page = 1; // mặc định là trang đầu tiên
+        int page = 1;
         try {
             if (pageStr != null) {
                 page = Integer.parseInt(pageStr);
             }
         } catch (NumberFormatException ex) {
-            // Giữ nguyên page = 1 nếu có lỗi parse
+
         }
 
         int start = (page - 1) * PAGE_SIZE;

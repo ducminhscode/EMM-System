@@ -5,11 +5,13 @@
 package com.tndm.controllers;
 
 import com.tndm.pojo.Device;
+import com.tndm.pojo.MaintenanceSchedule;
 import com.tndm.pojo.Problem;
 import com.tndm.pojo.RepairHistory;
 import com.tndm.pojo.User;
 import com.tndm.repositories.impl.DeviceRepositoryImpl;
 import com.tndm.repositories.impl.FacilityRepositoryImpl;
+import com.tndm.repositories.impl.MaintenanceScheduleRepositoryImpl;
 import com.tndm.repositories.impl.ProblemRepositoryImpl;
 import com.tndm.repositories.impl.UserRepositoryImpl;
 import com.tndm.services.DeviceService;
@@ -233,8 +235,41 @@ public class IndexController {
     }
 
     @RequestMapping("/index-maintenances")
-    public String indexMaintenance(Model model) {
-        model.addAttribute("maintenances", this.mainScheduleService.getMaintenanceSchedule());
+    public String indexMaintenance(Model model, @RequestParam Map<String, String> params) {
+        
+        List<MaintenanceSchedule> mainSche = this.mainScheduleService.getMaintenanceSchedule(params);
+        model.addAttribute("maintenances", mainSche);
+        model.addAttribute("countMaintenances", this.mainScheduleService.countMaintenances(params));
+
+        long totalMainSche = this.mainScheduleService.countMaintenances(params);
+        int totalPages = (int) Math.ceil((double) totalMainSche / MaintenanceScheduleRepositoryImpl.PAGE_SIZE);
+        totalPages = Math.max(1, totalPages);
+        model.addAttribute("totalPages", totalPages);
+
+        int currentPage;
+        try {
+            currentPage = Integer.parseInt(params.getOrDefault("page", "1"));
+            if (currentPage < 1) {
+                currentPage = 1;
+            }
+            if (currentPage > totalPages && totalPages > 0) {
+                currentPage = totalPages;
+            }
+        } catch (NumberFormatException e) {
+            currentPage = 1;
+        }
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("params", params);
+
+        String searchType = params.get("searchType");
+        String searchValue = params.get("value");
+
+        if (searchType != null && searchValue != null) {
+            model.addAttribute("searchType", searchType);
+            model.addAttribute("searchValue", searchValue);
+        }
+        
+        
         return "index-maintenances";
     }
 

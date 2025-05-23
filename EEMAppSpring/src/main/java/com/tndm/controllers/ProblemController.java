@@ -12,8 +12,6 @@ import com.tndm.services.ProblemService;
 import com.tndm.services.ProblemStatusService;
 import com.tndm.services.RepairHistoryService;
 import com.tndm.services.TechnicianService;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

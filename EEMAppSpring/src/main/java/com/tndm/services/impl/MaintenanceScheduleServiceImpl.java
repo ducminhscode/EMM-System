@@ -33,8 +33,8 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     private MailService mailSer;
 
     @Override
-    public List<MaintenanceSchedule> getMaintenanceSchedule() {
-        return this.mainScheduleRepo.getMaintenanceSchedule();
+    public List<MaintenanceSchedule> getMaintenanceSchedule(Map<String, String> params) {
+        return this.mainScheduleRepo.getMaintenanceSchedule(params);
     }
 
     @Override

@@ -11,7 +11,6 @@
 </head>
 <body class="bg-gray-100 font-sans">
 
-    <!-- Sidebar Fragment -->
 <th:block th:fragment="sidebar">
     <div class="w-64 bg-blue-900 text-white h-screen p-6 fixed">
         <div class="flex items-center space-x-3 mb-10">
@@ -63,7 +62,6 @@
                     </button>
                 </li>
 
-                <!-- Logout Confirmation Modal -->
                 <div id="logoutModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
                     <div class="bg-white rounded-lg p-6 w-96">
                         <h3 class="text-lg font-semibold text-gray-800 mb-4" th:text="#{base.confirmDialog}"></h3>
@@ -79,12 +77,10 @@
     </div>
 </th:block>
 
-<!-- Header Fragment -->
 <th:block th:fragment="header">
     <header class="bg-white shadow-md p-4 flex justify-between items-center ml-64 rounded-xl">
         <h2 class="text-xl font-semibold text-gray-800" th:text="${pageTitle}"></h2>
         <div class="flex items-center space-x-6">
-            <!-- Language Selector -->
             <div class=" flex items-center">
                 <select 
                     onchange="window.location.href = '?lang=' + this.value"
@@ -103,10 +99,10 @@
                     </a>
                 </div>
             </div>
+        </div>
     </header>
 </th:block>
 
-<!-- Footer -->
 <th:block th:fragment="footer">
     <footer class="bg-gray-100 py-4 mt-8">
         <div class="container mx-auto px-4 text-center text-gray-600 text-sm">
@@ -115,14 +111,12 @@
     </footer>
 </th:block>
 
-<!-- Scripts Fragment -->
 <th:block th:fragment="scripts">
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const menuItems = document.querySelectorAll('.menu-item');
             const currentPath = window.location.pathname;
 
-            // Function to set active menu item
             function setActiveMenuItem(item) {
                 menuItems.forEach(menu => menu.classList.remove('bg-blue-700'));
                 item.classList.add('bg-blue-700');
@@ -155,7 +149,7 @@
                 }
             }
         });
-        // Functions to show/hide logout dialog
+        
         function showLogoutDialog() {
             document.getElementById('logoutModal').classList.remove('hidden');
         }

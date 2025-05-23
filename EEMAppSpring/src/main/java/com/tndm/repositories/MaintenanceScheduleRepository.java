@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public interface MaintenanceScheduleRepository {
 
-    List<MaintenanceSchedule> getMaintenanceSchedule();
+    List<MaintenanceSchedule> getMaintenanceSchedule(Map<String, String> params);
 
     List<MaintenanceSchedule> getMaintenanceScheduleByDeviceIdAndTime(int deviceId, int month, int year);
 

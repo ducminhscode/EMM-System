@@ -46,18 +46,6 @@ public class UserRepositoryImpl implements UserRepository {
         return (User) q.getSingleResult();
     }
 
-    //API tạo User
-    @Override
-    public User addUser(User u) {
-        Session s = this.factory.getObject().getCurrentSession();
-
-        s.persist(u);
-
-        s.refresh(u);
-
-        return u;
-    }
-
     @Override
     public User addOrUpdateUser(User u) {
         Session s = this.factory.getObject().getCurrentSession();

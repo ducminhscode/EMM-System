@@ -32,6 +32,4 @@ public interface UserService extends UserDetailsService {
     
     long countActiveUsers();
     
-    //API tạo User
-    User addUser(Map<String, String> params, MultipartFile avatar);
 }

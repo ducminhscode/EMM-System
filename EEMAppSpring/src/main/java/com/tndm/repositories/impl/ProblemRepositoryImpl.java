@@ -102,14 +102,14 @@ public class ProblemRepositoryImpl implements ProblemRepository {
                 + "AND rh.problemId.statusId.name != 'Đã sửa chữa'";
 
         Query query = s.createQuery(hql, Problem.class).setParameter("technicianId", technicianId);
-        // Xử lý phân trang
-        int page = 1; // mặc định là trang đầu tiên
+        
+        int page = 1; 
         try {
             if (pageStr != null) {
                 page = Integer.parseInt(pageStr);
             }
         } catch (NumberFormatException ex) {
-            // Giữ nguyên page = 1 nếu có lỗi parse
+            
         }
 
         int start = (page - 1) * PAGE_SIZE;

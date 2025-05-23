@@ -9,7 +9,7 @@
     <th:block th:replace="base :: styles"></th:block>
 </head>
 <body class="bg-gray-50 font-sans min-h-screen">
-    <!-- Navigation Bar -->
+    
     <nav class="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg fixed top-0 left-0 right-0 z-10">
         <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div class="flex items-center gap-3">
@@ -23,12 +23,12 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
+ 
     <main class="max-w-7xl mx-auto px-4 pt-24 pb-12 sm:px-6 lg:px-8">
-        <!-- Header Card -->
+       
         <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 transition-transform transform hover:scale-[1.02]">
             <div class="flex flex-col md:flex-row justify-between items-start gap-6">
-                <!-- Left Section -->
+           
                 <div>
                     <div class="flex items-center gap-3 mb-2">
                         <span class="text-sm text-blue-600 font-semibold">
@@ -39,7 +39,7 @@
                         <span th:text="${' ' + schedules.description} ?: ' Không có mô tả'"></span>
                     </p>
                 </div>
-                <!-- Right Section: Creator Info -->
+              
                 <div class="text-right">
                     <p class="text-sm text-gray-500 mb-1">Người tạo</p>
                     <p class="font-semibold text-gray-900" 
@@ -49,9 +49,9 @@
             </div>
         </div>
 
-        <!-- Schedule Details -->
+ 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <!-- Date Info Card -->
+        
             <div class="bg-white rounded-2xl shadow-xl p-6 transition-transform transform hover:scale-[1.02]">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                     <i class="fas fa-calendar-alt text-blue-600 mr-2"></i>
@@ -80,7 +80,7 @@
                 </div>
             </div>
 
-            <!-- Expense Info Card -->
+         
             <div class="bg-white rounded-2xl shadow-xl p-6 transition-transform transform hover:scale-[1.02]">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                     <i class="fas fa-money-bill-wave text-blue-600 mr-2"></i>
@@ -93,7 +93,7 @@
                             <span th:if="${schedules.expenseFirst != null}" 
                                   th:text="${#numbers.formatDecimal(schedules.expenseFirst, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
                             <span th:unless="${schedules.expenseFirst != null}" 
-                                  class="text-gray-400">N/A</span>
+                                  class="text-gray-400"></span>
                         </p>
                     </div>
                     <div>
@@ -102,7 +102,7 @@
                             <span th:if="${schedules.expenseLast != null}" 
                                   th:text="${#numbers.formatDecimal(schedules.expenseLast, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
                             <span th:unless="${schedules.expenseLast != null}" 
-                                  class="text-gray-400">N/A</span>
+                                  class="text-gray-400"></span>
                         </p>
                     </div>
                     <div>
@@ -110,16 +110,16 @@
                         <p class="font-medium">
                             <span th:if="${schedules.expenseFirst != null and schedules.expenseLast != null and schedules.expenseFirst != 0}" 
                                   th:classappend="${(schedules.expenseLast - schedules.expenseFirst) > 0 ? 'text-red-600' : 'text-green-600'}">
-                                <span th:text="${(schedules.expenseLast - schedules.expenseFirst) > 0 ? '(Không tốt)' : '(Tốt)'}"></span>
+                                <span th:text="${(schedules.expenseLast - schedules.expenseFirst) > 0 ? 'Không tốt' : 'Tốt'}"></span>
                             </span>
                             <span th:unless="${schedules.expenseFirst != null and schedules.expenseLast != null and schedules.expenseFirst != 0}" 
-                                  class="text-gray-400">N/A</span>
+                                  class="text-gray-400"></span>
                         </p>
                     </div>
                 </div>
             </div>
 
-            <!-- Configuration Card -->
+       
             <div class="bg-white rounded-2xl shadow-xl p-6 transition-transform transform hover:scale-[1.02]">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                     <i class="fas fa-cog text-blue-600 mr-2"></i>
@@ -138,18 +138,18 @@
             </div>
         </div>
 
-        <!-- Technician Assignments -->
+     
         <div class="bg-white rounded-2xl shadow-xl p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
                 <i class="fas fa-users-cog text-blue-600 mr-2"></i>
                 Kỹ thuật viên được phân công
             </h3>
-            <!-- Empty State -->
+    
             <div th:if="${#lists.isEmpty(assignments)}" class="text-center py-12 text-gray-400">
                 <i class="fas fa-user-times text-5xl mb-4"></i>
                 <p class="text-base">Chưa có phân công nào</p>
             </div>
-            <!-- Assignment List -->
+    
             <div th:unless="${#lists.isEmpty(assignments)}" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div th:each="assignment : ${assignments}" 
                      class="border rounded-xl p-4 hover:bg-gray-50 transition-colors">
@@ -172,7 +172,7 @@
         </div>
     </main>
 
-    <!-- Footer -->
+
     <th:block th:replace="base :: footer"></th:block>
 
     <th:block th:replace="base :: scripts"></th:block>

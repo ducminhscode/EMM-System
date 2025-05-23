@@ -8,7 +8,7 @@
 <body class="bg-gray-50">
     <div class="min-h-screen flex flex-col">
 
-        <!-- Header -->
+       
         <header class="bg-blue-600 text-white shadow-md">
             <div class="container mx-auto px-4 py-6 flex justify-between items-center">
                 <a th:href="@{/index-maintenances}" class="flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
@@ -19,7 +19,7 @@
             </div>
         </header>
 
-        <!-- Main Content -->
+      
         <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
                 <form method="post" 
@@ -100,7 +100,7 @@
                                    maxlength="50">
                         </div>
 
-                        <!-- Loại bảo trì -->
+                     
                         <div>
                             <label for="maintenanceType" class="block text-sm font-medium text-gray-700 mb-1">
                                 Loại bảo trì <span class="text-red-500">*</span>
@@ -116,7 +116,7 @@
                         </div>
                     </div>
 
-                    <!-- Tần suất -->
+              
                     <div class="dynamic-field hidden" id="frequencySection">
 
                         <div>
@@ -150,7 +150,7 @@
                     </div>
 
 
-                    <!-- Ngày bắt đầu -->
+               
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">
@@ -164,7 +164,7 @@
                             <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
                         </div>
 
-                        <!-- Ngày kết thúc -->
+                    
                         <div>
                             <label for="endDate" class="block text-sm font-medium text-gray-700 mb-1">
                                 Ngày kết thúc <span class="text-red-500">*</span>
@@ -188,7 +188,7 @@
                         </div>
                     </div>
 
-                    <!-- Nút Submit -->
+        
                     <div class="flex justify-end">
                         <input type="hidden" th:field="*{id}"/>
                         <button type="submit" 
@@ -215,13 +215,13 @@
         const leaderSection = document.getElementById('technicianLeader');
 
         const contextPath = '[[@{/}]]';
-        // Reset các dropdown
+      
         deviceSelect.innerHTML = '<option value="">-- Đang tải thiết bị... --</option>';
         technicianSelect.innerHTML = '<option value="">-- Đang tải kỹ thuật viên... --</option>';
         leaderSelect.innerHTML = '<option value="">-- Đang tải kỹ thuật viên... --</option>';
 
         if (facilityId) {
-            // Lấy danh sách thiết bị
+          
             fetch(`${contextPath}devices-by-facilityId?facilityId=${facilityId}`, {
                 method: 'GET',
                 credentials: 'include'
@@ -242,7 +242,7 @@
                         deviceSelect.innerHTML = '<option value="">-- Lỗi tải thiết bị --</option>';
                     });
 
-            // Lấy danh sách kỹ thuật viên
+      
             fetch(`${contextPath}technicians-by-facilityId?facilityId=${facilityId}`, {
                 method: 'GET',
                 credentials: 'include'
@@ -291,7 +291,6 @@
         const startDateInput = document.getElementById('startDate');
         const frequencySelect = document.getElementById('frequency');
 
-        // Kiểm tra tồn tại các phần tử
         if (!startDateInput || !endDateInput || !frequencySelect) {
             console.error('Không tìm thấy các phần tử cần thiết');
             return;
