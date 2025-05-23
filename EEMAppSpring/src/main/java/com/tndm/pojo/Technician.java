@@ -26,7 +26,7 @@ import java.util.Set;
 
 /**
  *
- * @author Tran Nguyen Duc Minh
+ * @author ADMIN
  */
 @Entity
 @Table(name = "technician")
@@ -66,11 +66,6 @@ public class Technician implements Serializable {
 
     public Technician(Integer id) {
         this.id = id;
-    }
-
-    public Technician(Integer id, String specialization) {
-        this.id = id;
-        this.specialization = specialization;
     }
 
     public Integer getId() {

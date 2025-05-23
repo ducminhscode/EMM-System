@@ -40,7 +40,7 @@ public class ApiDeviceController {
             data.put("id", d.getId());
             data.put("name", d.getName());
             data.put("manufacturer", d.getManufacturer());
-            data.put("statusId", d.getStatusId().getName());
+            data.put("statusId", d.getDeviceStatus());
             data.put("typeId", d.getTypeId().getName());
             data.put("facilityId", d.getFacilityId().getName());
             data.put("purchaseDate", d.getPurchaseDate());

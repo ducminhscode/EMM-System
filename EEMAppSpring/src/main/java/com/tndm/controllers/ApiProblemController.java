@@ -7,14 +7,12 @@ package com.tndm.controllers;
 import com.tndm.pojo.Device;
 import com.tndm.pojo.FatalLevel;
 import com.tndm.pojo.Problem;
-import com.tndm.pojo.ProblemStatus;
 import com.tndm.pojo.RepairHistory;
 import com.tndm.pojo.RepairType;
 import com.tndm.pojo.User;
 import com.tndm.services.DeviceService;
 import com.tndm.services.FatalLevelService;
 import com.tndm.services.ProblemService;
-import com.tndm.services.ProblemStatusService;
 import com.tndm.services.RepairHistoryService;
 import com.tndm.services.RepairTypeService;
 import com.tndm.services.UserService;
@@ -65,9 +63,6 @@ public class ApiProblemController {
     @Autowired
     private RepairTypeService repTypeService;
 
-    @Autowired
-    private ProblemStatusService proStatusService;
-
     @GetMapping("/problem/technician/{technicianId}")
     @CrossOrigin
     public ResponseEntity<?> getProblemByTechnicianId(@PathVariable("technicianId") int id, @RequestParam("page") String page) {
@@ -80,6 +75,7 @@ public class ApiProblemController {
             data.put("id", p.getId());
             data.put("description", p.getDescription());
             data.put("happenedDate", p.getHappenedDate());
+            data.put("problemStatus", p.getProblemStatus());
             data.put("fatalLevel", p.getFatalLevelId().getName());
             data.put("deviceName", p.getDeviceId().getName());
             data.put("isDone", this.repHistoryService.getRepairHistoryByProblemIdAndTechnicianId(p.getId(), id).isDone());
@@ -88,6 +84,35 @@ public class ApiProblemController {
         }
 
         return ResponseEntity.ok(listData);
+    }
+
+    @PatchMapping("secure/problem/{problemId}")
+    @CrossOrigin
+    public ResponseEntity<?> updateRepairHistory(
+            @PathVariable("problemId") int problemId,
+            Principal principal) {
+
+        try {
+            String username = principal.getName();
+            User existingUser = this.userDetailsService.getUserByUsername(username);
+            if (existingUser == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
+            }
+
+            Problem p = this.proService.getProblemById(problemId);
+            RepairHistory repSaved = this.repHistoryService.getRepairHistoryByProblemIdAndTechnicianId(problemId, existingUser.getId());
+            if (repSaved == null) {
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Bạn không có trong danh sách kĩ sư sửa chữa");
+            } else {
+                p.setProblemStatus("Đang sửa chữa");
+                this.proService.addOrUpdateProblem(p);
+            }
+
+            return ResponseEntity.ok().body("Cập nhật thành công");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi khi cập nhật: " + e.getMessage());
+        }
     }
 
     @PatchMapping("secure/problem/technician/{problemId}")
@@ -118,7 +143,6 @@ public class ApiProblemController {
             RepairType repTypeSaved = this.repTypeService.getRepairTypeById(repairTypeId);
             RepairHistory repSaved = this.repHistoryService.getRepairHistoryByProblemIdAndTechnicianId(problemId, existingUser.getId());
             Problem p = this.proService.getProblemById(problemId);
-            ProblemStatus pStatus = this.proStatusService.getProblemStatusByName("Đã sửa chữa");
 
             repSaved.setDescription(description);
             repSaved.setExpense(expense);
@@ -130,7 +154,10 @@ public class ApiProblemController {
             boolean flag = repListSaved.stream().allMatch(RepairHistory::isDone);
 
             if (flag) {
-                p.setStatusId(pStatus);
+                p.setProblemStatus("Đã sửa chữa");
+                Device d = this.deviceService.getDeviceById(p.getDeviceId().getId());
+                d.setDeviceStatus("Hoạt động");
+                this.deviceService.addOrUpdateDevice(d);
                 this.proService.addOrUpdateProblem(p);
             }
 
@@ -190,17 +217,12 @@ public class ApiProblemController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy mức độ nghiêm trọng");
             }
 
-            ProblemStatus defaultStatus = this.proStatusService.getProblemStatusByName("Chưa xác nhận");
-            if (defaultStatus == null) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Không tìm thấy trạng thái mặc định");
-            }
-
             Problem problem = new Problem();
             problem.setDeviceId(device);
             problem.setDescription(description);
             problem.setFatalLevelId(fatalLevel);
             problem.setHappenedDate(happenedDate);
-            problem.setStatusId(defaultStatus);
+            problem.setProblemStatus("Chưa xác nhận");
             problem.setUserId(existingUser);
             problem.setCreatedDate(new Date());
             problem.setUpdatedDate(new Date());

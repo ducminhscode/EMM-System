@@ -33,7 +33,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
- * @author Tran Nguyen Duc Minh
+ * @author ADMIN
  */
 @Entity
 @Table(name = "problem")
@@ -43,6 +43,7 @@ import org.springframework.format.annotation.DateTimeFormat;
     @NamedQuery(name = "Problem.findById", query = "SELECT p FROM Problem p WHERE p.id = :id"),
     @NamedQuery(name = "Problem.findByHappenedDate", query = "SELECT p FROM Problem p WHERE p.happenedDate = :happenedDate"),
     @NamedQuery(name = "Problem.findByDescription", query = "SELECT p FROM Problem p WHERE p.description = :description"),
+    @NamedQuery(name = "Problem.findByProblemStatus", query = "SELECT p FROM Problem p WHERE p.problemStatus = :problemStatus"),
     @NamedQuery(name = "Problem.findByCreatedDate", query = "SELECT p FROM Problem p WHERE p.createdDate = :createdDate"),
     @NamedQuery(name = "Problem.findByUpdatedDate", query = "SELECT p FROM Problem p WHERE p.updatedDate = :updatedDate")})
 public class Problem implements Serializable {
@@ -62,6 +63,11 @@ public class Problem implements Serializable {
     @Size(max = 255)
     @Column(name = "description")
     private String description;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 13)
+    @Column(name = "problem_status")
+    private String problemStatus;
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
@@ -80,18 +86,13 @@ public class Problem implements Serializable {
     @JoinColumn(name = "fatal_level_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private FatalLevel fatalLevelId;
-    @JsonIgnore
-    @JoinColumn(name = "status_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private ProblemStatus statusId;
-    @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private User userId;
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "problemId")
     private Set<RepairHistory> repairHistorySet;
-    
+
     public Problem() {
     }
 
@@ -99,9 +100,10 @@ public class Problem implements Serializable {
         this.id = id;
     }
 
-    public Problem(Integer id, Date happenedDate) {
+    public Problem(Integer id, Date happenedDate, String problemStatus) {
         this.id = id;
         this.happenedDate = happenedDate;
+        this.problemStatus = problemStatus;
     }
 
     public Integer getId() {
@@ -126,6 +128,14 @@ public class Problem implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getProblemStatus() {
+        return problemStatus;
+    }
+
+    public void setProblemStatus(String problemStatus) {
+        this.problemStatus = problemStatus;
     }
 
     public Date getCreatedDate() {
@@ -158,14 +168,6 @@ public class Problem implements Serializable {
 
     public void setFatalLevelId(FatalLevel fatalLevelId) {
         this.fatalLevelId = fatalLevelId;
-    }
-
-    public ProblemStatus getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(ProblemStatus statusId) {
-        this.statusId = statusId;
     }
 
     public User getUserId() {
@@ -209,4 +211,5 @@ public class Problem implements Serializable {
     public String toString() {
         return "com.tndm.pojo.Problem[ id=" + id + " ]";
     }
+    
 }

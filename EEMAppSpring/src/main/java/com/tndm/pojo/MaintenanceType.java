@@ -25,7 +25,7 @@ import java.util.Set;
 
 /**
  *
- * @author Tran Nguyen Duc Minh
+ * @author ADMIN
  */
 @Entity
 @Table(name = "maintenance_type")
@@ -112,5 +112,5 @@ public class MaintenanceType implements Serializable {
     public String toString() {
         return "com.tndm.pojo.MaintenanceType[ id=" + id + " ]";
     }
-
+    
 }

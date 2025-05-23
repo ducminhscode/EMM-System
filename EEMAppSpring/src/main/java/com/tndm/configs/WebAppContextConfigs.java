@@ -5,7 +5,6 @@
 package com.tndm.configs;
 
 import com.tndm.formatters.DeviceFormatter;
-import com.tndm.formatters.DeviceStatusFormatter;
 import com.tndm.formatters.DeviceTypeFormatter;
 import com.tndm.formatters.FacilityFormatter;
 import java.util.Locale;
@@ -49,7 +48,6 @@ public class WebAppContextConfigs implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addFormatter(new FacilityFormatter());
-        registry.addFormatter(new DeviceStatusFormatter());
         registry.addFormatter(new DeviceTypeFormatter());
         registry.addFormatter(new DeviceFormatter());
     }

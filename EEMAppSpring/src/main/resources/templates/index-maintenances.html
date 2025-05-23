@@ -77,7 +77,9 @@
                                                   'px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800' : 
                                                   (maintenance.maintenanceStatus == 'Đã bảo trì' ? 
                                                   'px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800' : 
-                                                  'px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800'))}" 
+                                                   (maintenance.maintenanceStatus == 'Đang bảo trì' ? 
+                                                  'px-2 py-1 text-xs font-semibold rounded-full bg-pink-100 text-pink-800' : 
+                                                  'px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800')))}" 
                                                   class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                                                   th:text="${maintenance.maintenanceStatus}"></span>
                                         </td>

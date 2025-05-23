@@ -33,7 +33,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
- * @author Tran Nguyen Duc Minh
+ * @author ADMIN
  */
 @Entity
 @Table(name = "device")
@@ -70,6 +70,11 @@ public class Device implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date purchaseDate;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 14)
+    @Column(name = "device_status")
+    private String deviceStatus;
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
@@ -86,10 +91,6 @@ public class Device implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "deviceId")
     @JsonIgnore
     private Set<Problem> problemSet;
-    @JoinColumn(name = "status_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    @JsonIgnore
-    private DeviceStatus statusId;
     @JoinColumn(name = "type_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     @JsonIgnore
@@ -110,11 +111,12 @@ public class Device implements Serializable {
         this.id = id;
     }
 
-    public Device(Integer id, String name, String manufacturer, Date purchaseDate) {
+    public Device(Integer id, String name, String manufacturer, Date purchaseDate, String deviceStatus) {
         this.id = id;
         this.name = name;
         this.manufacturer = manufacturer;
         this.purchaseDate = purchaseDate;
+        this.deviceStatus = deviceStatus;
     }
 
     public Integer getId() {
@@ -149,6 +151,14 @@ public class Device implements Serializable {
         this.purchaseDate = purchaseDate;
     }
 
+    public String getDeviceStatus() {
+        return deviceStatus;
+    }
+
+    public void setDeviceStatus(String deviceStatus) {
+        this.deviceStatus = deviceStatus;
+    }
+
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -181,14 +191,6 @@ public class Device implements Serializable {
 
     public void setProblemSet(Set<Problem> problemSet) {
         this.problemSet = problemSet;
-    }
-
-    public DeviceStatus getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(DeviceStatus statusId) {
-        this.statusId = statusId;
     }
 
     public DeviceType getTypeId() {

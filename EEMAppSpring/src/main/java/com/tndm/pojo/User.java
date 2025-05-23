@@ -35,7 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
- * @author Tran Nguyen Duc Minh
+ * @author ADMIN
  */
 @Entity
 @Table(name = "user")
@@ -110,18 +110,18 @@ public class User implements Serializable {
     @UpdateTimestamp
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updatedDate;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
-    @PrimaryKeyJoinColumn
-    @JsonIgnore
-    private Technician technician;
     @OneToMany(mappedBy = "userId")
     @JsonIgnore
     private Set<MaintenanceSchedule> maintenanceScheduleSet;
     @OneToMany(mappedBy = "userId")
     @JsonIgnore
     private Set<Problem> problemSet;
-    @OneToMany(mappedBy = "userId")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    @PrimaryKeyJoinColumn
     @JsonIgnore
+    private Technician technician;
+    @JsonIgnore
+    @OneToMany(mappedBy = "userId")
     private Set<Device> deviceSet;
     @JsonIgnore
     @OneToMany(mappedBy = "userId")
@@ -242,14 +242,6 @@ public class User implements Serializable {
         this.updatedDate = updatedDate;
     }
 
-    public Technician getTechnician() {
-        return technician;
-    }
-
-    public void setTechnician(Technician technician) {
-        this.technician = technician;
-    }
-
     @XmlTransient
     public Set<MaintenanceSchedule> getMaintenanceScheduleSet() {
         return maintenanceScheduleSet;
@@ -266,6 +258,14 @@ public class User implements Serializable {
 
     public void setProblemSet(Set<Problem> problemSet) {
         this.problemSet = problemSet;
+    }
+
+    public Technician getTechnician() {
+        return technician;
+    }
+
+    public void setTechnician(Technician technician) {
+        this.technician = technician;
     }
 
     @XmlTransient
@@ -310,7 +310,7 @@ public class User implements Serializable {
     public String toString() {
         return "com.tndm.pojo.User[ id=" + id + " ]";
     }
-    
+
     /**
      * @return the file
      */

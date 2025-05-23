@@ -247,7 +247,7 @@ public class ExcelExportController {
             safeCreateCell(row, 2, problem.getDescription(), mergedCenterStyle);
 
             safeCreateCell(row, 3,
-                    (problem.getStatusId() != null) ? problem.getStatusId().getName() : "N/A",
+                    (problem.getProblemStatus()!= null) ? problem.getProblemStatus() : "N/A",
                     mergedCenterStyle);
 
             Cell dateCell = row.createCell(4);
@@ -357,7 +357,7 @@ public class ExcelExportController {
         Map<String, Object> model = new HashMap<>();
 
         List<Problem> problems = fetchProblems(deviceId, typeId).stream()
-                .filter(p -> p.getStatusId() != null && "Đã sửa chữa".equals(p.getStatusId().getName()))
+                .filter(p -> p.getProblemStatus() != null && "Đã sửa chữa".equals(p.getProblemStatus()))
                 .collect(Collectors.toList());
 
         Map<Integer, List<RepairHistory>> repairMap = problems.stream()

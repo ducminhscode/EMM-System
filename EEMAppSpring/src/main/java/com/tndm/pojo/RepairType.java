@@ -23,7 +23,7 @@ import java.util.Set;
 
 /**
  *
- * @author Tran Nguyen Duc Minh
+ * @author ADMIN
  */
 @Entity
 @Table(name = "repair_type")

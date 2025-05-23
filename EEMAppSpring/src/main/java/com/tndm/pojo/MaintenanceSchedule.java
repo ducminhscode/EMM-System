@@ -32,7 +32,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
- * @author Tran Nguyen Duc Minh
+ * @author ADMIN
  */
 @Entity
 @Table(name = "maintenance_schedule")

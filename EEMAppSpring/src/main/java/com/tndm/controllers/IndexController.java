@@ -15,7 +15,6 @@ import com.tndm.repositories.impl.MaintenanceScheduleRepositoryImpl;
 import com.tndm.repositories.impl.ProblemRepositoryImpl;
 import com.tndm.repositories.impl.UserRepositoryImpl;
 import com.tndm.services.DeviceService;
-import com.tndm.services.DeviceStatusService;
 import com.tndm.services.DeviceTypeService;
 import com.tndm.services.FacilityService;
 import com.tndm.services.MaintenanceScheduleService;
@@ -55,8 +54,6 @@ public class IndexController {
     @Autowired
     private DeviceTypeService deviceTypeService;
 
-    @Autowired
-    private DeviceStatusService devStatusService;
 
     @Autowired
     private ProblemService proService;
@@ -77,7 +74,6 @@ public class IndexController {
     public void commonResponse(Model model, @AuthenticationPrincipal UserDetails userDetails, @RequestParam Map<String, String> params) {
         model.addAttribute("facilities", this.facService.getFacilities(null, false));
         model.addAttribute("deviceTypes", this.deviceTypeService.getDeviceTypes());
-        model.addAttribute("deviceStatus", this.devStatusService.getDeviceStatus());
         model.addAttribute("maintenanceTypes", this.mainTypeService.getMaintenanceTypes());
         model.addAttribute("countMaintenances", this.mainScheduleService.countMaintenances(params));
         model.addAttribute("countProblems", this.proService.countProblems(params));

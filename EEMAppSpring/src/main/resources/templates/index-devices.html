@@ -92,7 +92,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${d.manufacturer}"></td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${#dates.format(d.purchaseDate, 'dd/MM/yyyy')}"></td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800" th:text="${d.statusId.name}"></span>
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800" th:text="${d.deviceStatus}"></span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${d.facilityId.name}"></td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">

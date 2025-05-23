@@ -4,9 +4,11 @@
  */
 package com.tndm.controllers;
 
+import com.tndm.pojo.Device;
 import com.tndm.pojo.MaintenanceAssignment;
 import com.tndm.pojo.MaintenanceSchedule;
 import com.tndm.pojo.User;
+import com.tndm.services.DeviceService;
 import com.tndm.services.MaintenanceAssignmentService;
 import com.tndm.services.MaintenanceScheduleService;
 import com.tndm.services.UserService;
@@ -45,6 +47,9 @@ public class ApiMaintenanceController {
     @Autowired
     private UserService userDetailsService;
 
+    @Autowired
+    private DeviceService devService;
+
     @GetMapping("/maintenance/technician/{technicianId}")
     @CrossOrigin
     public ResponseEntity<?> getMaintenanceByTechnicianId(@PathVariable("technicianId") int id, @RequestParam("page") String page) {
@@ -66,6 +71,36 @@ public class ApiMaintenanceController {
         return ResponseEntity.ok(listData);
     }
 
+    @PatchMapping("secure/maintenance/{maintenanceId}")
+    @CrossOrigin
+    public ResponseEntity<?> updateMaintenance(@PathVariable("maintenanceId") int maintenanceId,
+            Principal principal) {
+
+        try {
+            String username = principal.getName();
+            User existingUser = this.userDetailsService.getUserByUsername(username);
+            if (existingUser == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
+            }
+            MaintenanceSchedule mainSchedule = this.mainScheduleService.getMaintenanceScheduleById(maintenanceId);
+            MaintenanceAssignment mainAssign = this.mainAssignService.getAssignmentByTechnicianIdAndMaintenanceId(existingUser.getId(), maintenanceId);
+
+            if (mainAssign.getIsCap()) {
+                Device d = this.devService.getDeviceById(mainSchedule.getDeviceId().getId());
+                d.setDeviceStatus("Bảo trì");
+                this.devService.addOrUpdateDevice(d);
+                mainSchedule.setMaintenanceStatus("Đang bảo trì");
+                this.mainScheduleService.addOrUpdateMaintenanceSchedule(mainSchedule);
+                return ResponseEntity.ok().body("Cập nhật thành công");
+            } else {
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Bạn không có quyền cập nhật thông tin bảo trì");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi khi cập nhật: " + e.getMessage());
+        }
+    }
+
     @PatchMapping("secure/maintenance/technician/{maintenanceId}")
     @CrossOrigin
     public ResponseEntity<?> updateMaintenance(@PathVariable("maintenanceId") int maintenanceId,
@@ -79,7 +114,7 @@ public class ApiMaintenanceController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
             }
             MaintenanceAssignment mainAssign = this.mainAssignService.getAssignmentByTechnicianIdAndMaintenanceId(existingUser.getId(), maintenanceId);
-            
+
             if (mainAssign.getIsCap()) {
                 String expenseLast = params.get("expenseLast");
                 String description = params.get("description");
@@ -92,7 +127,10 @@ public class ApiMaintenanceController {
                 BigDecimal expense = new BigDecimal(expenseLast);
 
                 MaintenanceSchedule mainSaved = this.mainScheduleService.getMaintenanceScheduleById(maintenanceId);
-
+                Device d = this.devService.getDeviceById(mainSaved.getDeviceId().getId());
+                d.setDeviceStatus("Hoạt động");
+                this.devService.addOrUpdateDevice(d);
+                
                 mainSaved.setDescription(description);
                 mainSaved.setExpenseLast(expense);
                 mainSaved.setMaintenanceDate(maintenanceDate);

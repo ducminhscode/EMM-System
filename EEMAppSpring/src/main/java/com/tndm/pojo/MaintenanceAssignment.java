@@ -21,14 +21,15 @@ import java.io.Serializable;
 
 /**
  *
- * @author Tran Nguyen Duc Minh
+ * @author ADMIN
  */
 @Entity
 @Table(name = "maintenance_assignment")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "MaintenanceAssignment.findAll", query = "SELECT m FROM MaintenanceAssignment m"),
-    @NamedQuery(name = "MaintenanceAssignment.findById", query = "SELECT m FROM MaintenanceAssignment m WHERE m.id = :id")})
+    @NamedQuery(name = "MaintenanceAssignment.findById", query = "SELECT m FROM MaintenanceAssignment m WHERE m.id = :id"),
+    @NamedQuery(name = "MaintenanceAssignment.findByIsCap", query = "SELECT m FROM MaintenanceAssignment m WHERE m.isCap = :isCap")})
 public class MaintenanceAssignment implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,6 +38,8 @@ public class MaintenanceAssignment implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+    @Column(name = "is_cap")
+    private Boolean isCap;
     @JoinColumn(name = "maintenance_schedule_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     @JsonIgnore
@@ -45,8 +48,6 @@ public class MaintenanceAssignment implements Serializable {
     @ManyToOne
     @JsonIgnore
     private Technician technicianId;
-    @Column(name = "is_cap")
-    private Boolean isCap;
 
     public MaintenanceAssignment() {
     }
@@ -61,6 +62,14 @@ public class MaintenanceAssignment implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Boolean getIsCap() {
+        return isCap;
+    }
+
+    public void setIsCap(Boolean isCap) {
+        this.isCap = isCap;
     }
 
     public MaintenanceSchedule getMaintenanceScheduleId() {
@@ -103,19 +112,5 @@ public class MaintenanceAssignment implements Serializable {
     public String toString() {
         return "com.tndm.pojo.MaintenanceAssignment[ id=" + id + " ]";
     }
-
-    /**
-     * @return the isCap
-     */
-    public Boolean getIsCap() {
-        return isCap;
-    }
-
-    /**
-     * @param isCap the isCap to set
-     */
-    public void setIsCap(Boolean isCap) {
-        this.isCap = isCap;
-    }
-
+    
 }

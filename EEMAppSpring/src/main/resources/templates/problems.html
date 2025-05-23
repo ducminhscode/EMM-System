@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Chi tiết Sửa chữa</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <head>
+        <title>Chi tiết Sửa chữa</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <th:block th:replace="base :: styles"></th:block>
 </head>
 <body class="bg-gray-50 font-sans min-h-screen">
@@ -25,18 +25,24 @@
 
 
     <main class="max-w-7xl mx-auto px-4 pt-24 pb-12 sm:px-6 lg:px-8">
-    
+
         <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 transition-transform transform hover:scale-[1.02]">
             <div class="flex flex-col md:flex-row justify-between items-start gap-6">
-         
+
                 <div class="flex-1">
                     <div class="flex items-center gap-3 mb-4">
                         <h2 class="text-xl font-semibold text-gray-900" th:text="${problem.deviceId.name}"></h2>
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                              th:classappend="${problem.statusId.name == 'Xác nhận' ? 'bg-green-100 text-green-800' : 
-                                              problem.statusId.name == 'Đã sửa chữa' ? 'bg-yellow-100 text-yellow-800' : 
-                                              'bg-red-100 text-red-800'}">
-                            <span th:text="${problem.statusId.name}"></span>
+                        <span th:class="${problem.problemStatus == 'Chưa xác nhận' ? 
+                              'px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800' : 
+                              (problem.problemStatus == 'Xác nhận' ? 
+                              'px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800' : 
+                              (problem.problemStatus == 'Đã sửa chữa' ? 
+                              'px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800' :
+                              (problem.problemStatus == 'Đang sửa chữa' ? 
+                              'px-2 py-1 text-xs font-semibold rounded-full bg-pink-100 text-pink-800' :
+                              'px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800')))}" 
+                              class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                              th:text="${problem.problemStatus}"></span>
                         </span>
                     </div>
                     <p class="text-gray-600 text-sm mb-4" th:text="${problem.description} ?: 'Không có mô tả'"></p>
@@ -51,7 +57,7 @@
                         </div>
                     </div>
                 </div>
-               
+
                 <div class="text-right">
                     <label class="block text-sm text-gray-500 mb-1">Người báo cáo</label>
                     <p class="font-semibold text-gray-900" 
@@ -64,23 +70,23 @@
             </div>
         </div>
 
-      
+
         <div class="bg-white rounded-2xl shadow-xl p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
                 <i class="fas fa-tools text-blue-600 mr-2"></i>
                 Lịch sử sửa chữa
             </h3>
-       
+
             <div th:if="${#lists.isEmpty(repairs)}" class="text-center py-12 text-gray-400">
                 <i class="fas fa-history text-5xl mb-4"></i>
                 <p class="text-base">Chưa có hoạt động sửa chữa nào</p>
             </div>
-       
+
             <div th:unless="${#lists.isEmpty(repairs)}" class="space-y-6">
                 <div th:each="repair : ${repairs}" 
                      class="border rounded-xl p-4 hover:bg-gray-50 transition-colors">
                     <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
-                  
+
                         <div class="flex-1">
                             <div class="flex items-center gap-3 mb-2">
                                 <h4 class="font-semibold text-blue-600" th:text="${repair.typeId == null ? 'Chưa có thông tin' : repair.typeId.name}"></h4>
@@ -100,7 +106,7 @@
                                 <span th:unless="${repair.description}" class="text-gray-400">Không có mô tả chi tiết</span>
                             </p>
                         </div>
-                
+
                         <div class="sm:text-right mt-2 sm:mt-0">
                             <p class="text-lg font-semibold text-green-600">
                                 <span th:if="${repair.expense != null}">
@@ -116,8 +122,8 @@
     </main>
 
 
-    <th:block th:replace="base :: footer"></th:block>
+<th:block th:replace="base :: footer"></th:block>
 
-    <th:block th:replace="base :: scripts"></th:block>
+<th:block th:replace="base :: scripts"></th:block>
 </body>
 </html>

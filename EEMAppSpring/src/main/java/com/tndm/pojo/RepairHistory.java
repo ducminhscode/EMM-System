@@ -27,7 +27,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
- * @author Tran Nguyen Duc Minh
+ * @author ADMIN
  */
 @Entity
 @Table(name = "repair_history")
@@ -77,13 +77,6 @@ public class RepairHistory implements Serializable {
 
     public RepairHistory(Integer id) {
         this.id = id;
-    }
-
-    public RepairHistory(Integer id, BigDecimal expense, Date startDate, Date endDate) {
-        this.id = id;
-        this.expense = expense;
-        this.startDate = startDate;
-        this.endDate = endDate;
     }
 
     public Integer getId() {
@@ -178,5 +171,4 @@ public class RepairHistory implements Serializable {
     public boolean isDone() {
         return this.description != null && this.expense != null && this.endDate != null && this.typeId != null;
     }
-
 }

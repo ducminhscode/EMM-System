@@ -115,7 +115,7 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
     @Override
     public List<MaintenanceSchedule> findScheduleOverTheTime() {
         Session s = this.factory.getObject().getCurrentSession();
-        String hql = "FROM MaintenanceSchedule WHERE endDate < CURRENT_DATE " + "AND maintenanceStatus = 'Chưa bảo trì'";
+        String hql = "FROM MaintenanceSchedule WHERE endDate < CURRENT_DATE " + "AND maintenanceStatus = 'Chưa bảo trì'" + "AND maintenanceStatus != 'Đang bảo trì'";
         Query<MaintenanceSchedule> q = s.createQuery(hql, MaintenanceSchedule.class);
         return q.getResultList();
     }
@@ -137,6 +137,7 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
         String hql = "SELECT ma.maintenanceScheduleId FROM MaintenanceAssignment ma "
                 + "WHERE ma.technicianId.id = :technicianId "
                 + "AND ma.maintenanceScheduleId.maintenanceStatus = 'Chưa bảo trì'"
+                + "OR ma.maintenanceScheduleId.maintenanceStatus = 'Đang bảo trì'"
                 + "OR ma.maintenanceScheduleId.maintenanceStatus = 'Quá hạn bảo trì'";
 
         Query query = s.createQuery(hql, MaintenanceSchedule.class).setParameter("technicianId", technicianId);

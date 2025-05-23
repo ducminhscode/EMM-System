@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -53,7 +54,7 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     }
 
     @Override
-//    @Scheduled(cron = "0 */3 * * * *")
+    @Scheduled(cron = "0 */3 * * * *")
     public void notifySchedule() {
         List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.findSchedulesToNotify();
         for (MaintenanceSchedule maintenance : listMaintenances) {
@@ -65,7 +66,7 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     }
 
     @Override
-//    @Scheduled(cron = "0 */3 * * * *") 
+    @Scheduled(cron = "0 */3 * * * *") 
     public void createNewSchedule() {
         List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.findScheduleToCreateNew();
         for (MaintenanceSchedule maintenance : listMaintenances) {
@@ -133,7 +134,7 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     }
 
     @Override
-    //    @Scheduled(cron = "0 */3 * * * *") 
+    @Scheduled(cron = "0 */3 * * * *") 
     public void changeMaintenanceStatus() {
         List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.findScheduleOverTheTime();
         for (MaintenanceSchedule main : listMaintenances) {

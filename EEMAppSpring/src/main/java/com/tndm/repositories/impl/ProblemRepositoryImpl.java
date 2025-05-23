@@ -99,7 +99,7 @@ public class ProblemRepositoryImpl implements ProblemRepository {
         Session s = this.factory.getObject().getCurrentSession();
         String hql = "SELECT rh.problemId FROM RepairHistory rh "
                 + "WHERE rh.technicianId.id = :technicianId "
-                + "AND rh.problemId.statusId.name != 'Đã sửa chữa'";
+                + "AND rh.problemId.problemStatus != 'Đã sửa chữa'";
 
         Query query = s.createQuery(hql, Problem.class).setParameter("technicianId", technicianId);
         

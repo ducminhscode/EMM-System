@@ -4,12 +4,12 @@
  */
 package com.tndm.controllers;
 
+import com.tndm.pojo.Device;
 import com.tndm.pojo.Problem;
-import com.tndm.pojo.ProblemStatus;
 import com.tndm.pojo.RepairHistory;
 import com.tndm.pojo.Technician;
+import com.tndm.services.DeviceService;
 import com.tndm.services.ProblemService;
-import com.tndm.services.ProblemStatusService;
 import com.tndm.services.RepairHistoryService;
 import com.tndm.services.TechnicianService;
 import java.util.Date;
@@ -39,12 +39,11 @@ public class ProblemController {
     private ProblemService proService;
 
     @Autowired
-    private ProblemStatusService proStatusService;
+    private DeviceService devService;
     
     @Autowired
     private TechnicianService techService;
-   
-    
+
     @GetMapping("/problems/{problemId}")
     public String getProblemDetails(@PathVariable("problemId") int id, Model model) {
         model.addAttribute("problem", proService.getProblemById(id));
@@ -58,8 +57,10 @@ public class ProblemController {
             @RequestParam("technicianIds") List<Integer> technicianIds) {
 
         Problem problem = this.proService.getProblemById(id);
-        ProblemStatus proStatusSave = this.proStatusService.getProblemStatusByName("Xác nhận");
-        problem.setStatusId(proStatusSave);
+        problem.setProblemStatus("Xác nhận");
+        Device deviceSaved = this.devService.getDeviceById(problem.getDeviceId().getId());
+        deviceSaved.setDeviceStatus("Sửa chữa");
+        this.devService.addOrUpdateDevice(deviceSaved);
         Problem problemSaved = this.proService.addOrUpdateProblem(problem);
 
         if (technicianIds != null && !technicianIds.isEmpty()) {
@@ -67,7 +68,7 @@ public class ProblemController {
                 RepairHistory repairSave = new RepairHistory();
                 repairSave.setProblemId(problemSaved);
                 repairSave.setStartDate(new Date());
-                
+
                 Technician technician = techService.getTechnicianById(techId);
                 repairSave.setTechnicianId(technician);
 
