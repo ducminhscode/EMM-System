@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useCallback } from "react";
-import { Card, Button, Spinner } from "react-bootstrap";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Card, Button, Spinner, Modal, Alert, Form } from "react-bootstrap";
+import { useLocation } from "react-router-dom";
 import { authApis, endpoints } from "../configs/Apis";
 import { MyUserContext } from "../configs/Contexts";
 
@@ -11,8 +11,17 @@ const ProblemTechnicianList = () => {
   const [loading, setLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState(null);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [selectedProblemId, setSelectedProblemId] = useState(null);
+  const [updateModalMessage, setUpdateModalMessage] = useState(null);
+  const [updateModalError, setUpdateModalError] = useState(null);
+  const [updateSubmitting, setUpdateSubmitting] = useState(false);
+  const [expense, setExpense] = useState("");
+  const [description, setDescription] = useState("");
+  const [repairTypeId, setRepairTypeId] = useState("");
+  const [repairTypes, setRepairTypes] = useState([]);
+  const [loadingRepairTypes, setLoadingRepairTypes] = useState(true);
   const user = useContext(MyUserContext);
-  const navigate = useNavigate();
   const location = useLocation();
 
   const filterDuplicates = useCallback((arr) => {
@@ -62,6 +71,88 @@ const ProblemTechnicianList = () => {
     [user, filterDuplicates]
   );
 
+  const loadRepairTypes = useCallback(async () => {
+    try {
+      const res = await authApis().get(endpoints["repairType"]);
+      setRepairTypes(res.data);
+    } catch (err) {
+      console.error("Lỗi khi lấy danh sách Repair Type:", err);
+      setUpdateModalError("Không thể tải loại sửa chữa");
+    } finally {
+      setLoadingRepairTypes(false);
+    }
+  }, []);
+
+  const refreshProblems = () => {
+    setProblems([]);
+    setPage(1);
+    setHasNext(true);
+    setLoading(true);
+    loadProblems(1);
+  };
+
+  const handleUpdateRepair = async () => {
+    if (!expense || !repairTypeId) {
+      setUpdateModalError("Vui lòng nhập chi phí và chọn loại sửa chữa");
+      return;
+    }
+
+    setUpdateSubmitting(true);
+    setUpdateModalMessage(null);
+    setUpdateModalError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("expense", expense);
+      formData.append("description", description);
+      formData.append("repairTypeId", repairTypeId);
+
+      const response = await authApis().patch(
+        `${endpoints["updateProblemTechnicianId"]}${selectedProblemId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setUpdateModalMessage(response.data);
+      setTimeout(() => {
+        setShowUpdateModal(false);
+        setSelectedProblemId(null);
+        setUpdateModalMessage(null);
+        setUpdateModalError(null);
+        setExpense("");
+        setDescription("");
+        setRepairTypeId("");
+        refreshProblems();
+      }, 1000);
+    } catch (err) {
+      setUpdateModalError(err.response?.data || "Lỗi không xác định");
+    } finally {
+      setUpdateSubmitting(false);
+    }
+  };
+
+  const handleOpenUpdateModal = (problemId) => {
+    setSelectedProblemId(problemId);
+    setExpense("");
+    setDescription("");
+    setRepairTypeId("");
+    setShowUpdateModal(true);
+  };
+
+  const handleCloseUpdateModal = () => {
+    setShowUpdateModal(false);
+    setSelectedProblemId(null);
+    setUpdateModalMessage(null);
+    setUpdateModalError(null);
+    setExpense("");
+    setDescription("");
+    setRepairTypeId("");
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -86,18 +177,15 @@ const ProblemTechnicianList = () => {
       setHasNext(true);
       setLoading(true);
       loadProblems(1);
+      loadRepairTypes();
     }
-  }, [user, loadProblems, location.state?.refresh]);
+  }, [user, loadProblems, loadRepairTypes, location.state?.refresh]);
 
   useEffect(() => {
     if (page > 1) {
       loadProblems(page);
     }
   }, [page, loadProblems]);
-
-  const handleNavigateToRepair = (problemId) => {
-    navigate(`/problem-technician/${problemId}`);
-  };
 
   if (loading) return <div className="text-center mt-4"><Spinner animation="border" /></div>;
   if (error) return <div className="text-danger text-center mt-4">{error}</div>;
@@ -116,18 +204,102 @@ const ProblemTechnicianList = () => {
               <strong>Mô tả:</strong> {p.description}<br />
               <strong>Ngày xảy ra:</strong>{" "}
               {new Date(p.happenedDate).toLocaleDateString()}<br />
-              <strong>Mức độ:</strong> {p.fatalLevel}
+              <strong>Mức độ:</strong> {p.fatalLevel}<br />
+              <strong>Trạng thái:</strong> {p.problemStatus}
             </Card.Text>
 
             <Button
-              variant={p.isDone ? "secondary" : "success"}
-              onClick={() => handleNavigateToRepair(p.id)}
+              variant={p.isDone ? "secondary" : "primary"}
+              onClick={() => handleOpenUpdateModal(p.id)}
             >
-              {p.isDone ? "Đã sửa chữa, cập nhật lại" : "Xác nhận sửa chữa"}
+              {p.isDone ? "Cập nhật sửa chữa" : ""}
             </Button>
+            <Card.Text> {p.isDone ? "Bạn đã hoàn thành sửa chữa, chờ kĩ thuật viên còn lại" : ""}</Card.Text>
           </Card.Body>
         </Card>
       ))}
+
+      {/* Update Repair Modal */}
+      <Modal show={showUpdateModal} onHide={handleCloseUpdateModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Cập nhật sửa chữa</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {updateModalMessage ? (
+            <Alert variant="success">{updateModalMessage}</Alert>
+          ) : (
+            <>
+              {updateModalError && <Alert variant="danger">{updateModalError}</Alert>}
+              <Form>
+                <Form.Group className="mb-3">
+                  <Form.Label>Chi phí <span className="text-danger">*</span></Form.Label>
+                  <Form.Control
+                    type="number"
+                    min="0"
+                    value={expense}
+                    onChange={(e) => setExpense(e.target.value)}
+                    required
+                    disabled={updateSubmitting}
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Loại sửa chữa <span className="text-danger">*</span></Form.Label>
+                  {loadingRepairTypes ? (
+                    <Spinner animation="border" size="sm" />
+                  ) : (
+                    <Form.Select
+                      value={repairTypeId}
+                      onChange={(e) => setRepairTypeId(e.target.value)}
+                      required
+                      disabled={updateSubmitting}
+                    >
+                      <option value="">Chọn loại sửa chữa</option>
+                      {repairTypes.map((rt) => (
+                        <option key={rt.id} value={rt.id}>
+                          {rt.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  )}
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Mô tả</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    disabled={updateSubmitting}
+                    placeholder="Mô tả chi tiết sửa chữa..."
+                  />
+                </Form.Group>
+              </Form>
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          {!updateModalMessage && (
+            <>
+              <Button
+                variant="secondary"
+                onClick={handleCloseUpdateModal}
+                disabled={updateSubmitting}
+              >
+                Hủy
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleUpdateRepair}
+                disabled={updateSubmitting}
+              >
+                {updateSubmitting ? (
+                  <Spinner as="span" size="sm" animation="border" role="status" />
+                ) : "Cập nhật"}
+              </Button>
+            </>
+          )}
+        </Modal.Footer>
+      </Modal>
 
       {isLoadingMore && (
         <div className="text-center my-3">

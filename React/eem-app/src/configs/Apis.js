@@ -12,11 +12,13 @@ export const endpoints = {
     'problemTechnicianId': '/problem/technician/',
     'devices': '/devices',
     'updateProblemTechnicianId': '/secure/problem/technician/',
+    'updateProblemStatus': '/secure/problem/',
     'repairType': '/repair-type',
     'maintenanceTechnicianId': '/maintenance/technician/',
     'updateMaintenanceTechnicianId': '/secure/maintenance/technician/',
-    'problem':'/secure/problem',
-    'fatal-level':'/fatal-level',
+    'updateMaintenanceStatus': '/secure/maintenance/',
+    'problem': '/secure/problem',
+    'fatal-level': '/fatal-level',
 }
 
 export const authApis = () => {

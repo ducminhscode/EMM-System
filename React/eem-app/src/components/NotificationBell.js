@@ -103,10 +103,10 @@ const NotificationBell = () => {
 
   const handleItemClick = (notification) => {
     if (notification.type === "problem") {
-      navigate(`/problem-technician/${notification.id.replace("problem-", "")}`);
+      navigate(`/problem-technician-list/`);
     } else if (notification.type === "maintenance") {
       navigate(
-        `/maintenance-technician/${notification.id.replace("maintenance-", "")}`
+        `/maintenance-technician-list/`
       );
     }
     setShowDropdown(false);

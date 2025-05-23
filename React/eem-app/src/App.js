@@ -13,11 +13,9 @@ import cookie from 'react-cookies';
 import { authApis, endpoints } from "./configs/Apis";
 import Profile from "./components/Profile";
 import ChatBox from "./components/ChatBox";
-import ProblemTechnician from "./components/ProblemTechnician";
 import ProblemTechnicianList from "./components/ProblemTechnicianList";
 import DeviceList from "./components/DeviceList";
 import MaintenanceTechnicianList from "./components/MaintenanceTechnicianList";
-import MaintenanceTechnician from "./components/MaintenanceTechnician";
 
 const App = () => {
   const [user, dispatch] = useReducer(MyUserReducer, null);
@@ -68,9 +66,7 @@ const App = () => {
                           <Route path="/chat" element={user ? (user.userRole === "ROLE_TECHNICIAN" ? (<ChatBox />) : <Navigate to="/" />) : <Navigate to="/login" />} />
                           <Route path="/problem-technician-list" element={user ? (user.userRole === "ROLE_TECHNICIAN" ? (<ProblemTechnicianList />) : <Navigate to="/" />) : <Navigate to="/login" />} />
                           <Route path="/devices" element={user ? (user.userRole === "ROLE_EMPLOYEE" ? (<DeviceList />) : <Navigate to="/" />) : <Navigate to="/login" />} />
-                          <Route path="/problem-technician/:problemId" element={user ? (user.userRole === "ROLE_TECHNICIAN" ? (<ProblemTechnician />) : <Navigate to="/" />) : <Navigate to="/login" />} />
                           <Route path="/maintenance-technician-list" element={user ? (user.userRole === "ROLE_TECHNICIAN" ? (<MaintenanceTechnicianList />) : <Navigate to="/" />) : <Navigate to="/login" />} />
-                          <Route path="/maintenance-technician/:maintenanceId" element={user ? (user.userRole === "ROLE_TECHNICIAN" ? (<MaintenanceTechnician />) : <Navigate to="/" />) : <Navigate to="/login" />} />
                         </Routes>
                       </Container>
                     </div>
