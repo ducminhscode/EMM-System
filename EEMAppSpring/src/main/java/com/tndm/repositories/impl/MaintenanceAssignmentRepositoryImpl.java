@@ -55,16 +55,6 @@ public class MaintenanceAssignmentRepositoryImpl implements MaintenanceAssignmen
     }
 
     @Override
-    public MaintenanceAssignment getLastestMainAssignByMaintenanceId(int maintenanceId) {
-        Session s = this.factory.getObject().getCurrentSession();
-        String hql = "FROM MaintenanceAssignment ma WHERE ma.maintenanceId.id = :maintenanceId ORDER BY ma.id DESC";
-        return s.createQuery(hql, MaintenanceAssignment.class)
-                .setParameter("maintenanceId", maintenanceId)
-                .setMaxResults(1)
-                .uniqueResult();
-    }
-
-    @Override
     public void deleteMaintenanceAssignment(int id) {
         Session s = this.factory.getObject().getCurrentSession();
         MaintenanceAssignment m = this.getMaintenanceAssignmentById(id);

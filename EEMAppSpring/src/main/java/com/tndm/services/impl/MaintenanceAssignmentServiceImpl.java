@@ -37,11 +37,6 @@ public class MaintenanceAssignmentServiceImpl implements MaintenanceAssignmentSe
     }
 
     @Override
-    public MaintenanceAssignment getLastestMainAssignByMaintenanceId(int maintenanceId) {
-        return this.mainAssignmentRepo.getLastestMainAssignByMaintenanceId(maintenanceId);
-    }
-
-    @Override
     public MaintenanceAssignment getMaintenanceAssignmentById(int id) {
         return this.mainAssignmentRepo.getMaintenanceAssignmentById(id);
     }

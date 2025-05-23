@@ -23,7 +23,5 @@ public interface MaintenanceAssignmentRepository {
 
     MaintenanceAssignment addMaintenanceAssignment(MaintenanceAssignment m);
 
-    MaintenanceAssignment getLastestMainAssignByMaintenanceId(int maintenanceId);
-
     void deleteMaintenanceAssignment(int id);
 }

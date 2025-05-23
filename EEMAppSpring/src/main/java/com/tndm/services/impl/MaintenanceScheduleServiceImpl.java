@@ -4,10 +4,12 @@
  */
 package com.tndm.services.impl;
 
+import com.tndm.pojo.Device;
 import com.tndm.pojo.MaintenanceAssignment;
 import com.tndm.pojo.MaintenanceSchedule;
 import com.tndm.repositories.MaintenanceAssignmentRepository;
 import com.tndm.repositories.MaintenanceScheduleRepository;
+import com.tndm.services.DeviceService;
 import com.tndm.services.MailService;
 import com.tndm.services.MaintenanceScheduleService;
 import java.util.Calendar;
@@ -32,6 +34,9 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
 
     @Autowired
     private MailService mailSer;
+
+    @Autowired
+    private DeviceService devService;
 
     @Override
     public List<MaintenanceSchedule> getMaintenanceSchedule(Map<String, String> params) {
@@ -68,62 +73,65 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     @Override
     @Scheduled(cron = "0 */3 * * * *")
     public void createNewSchedule() {
-        List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.findScheduleToCreateNew();
-        for (MaintenanceSchedule maintenance : listMaintenances) {
-            if (maintenance.getFrequency() == null || maintenance.getEndDate() == null) {
-                continue;
-            }
+        List<Device> devList = this.devService.getAllDevices();
 
-            Calendar calStart = Calendar.getInstance();
-            Calendar calEnd = Calendar.getInstance();
-            calStart.setTime(maintenance.getStartDate());
-            calEnd.setTime(maintenance.getEndDate());
+        for (Device d : devList) {
+            MaintenanceSchedule maintenance = this.mainScheduleRepo.findTheLastestScheduleByDeviceId(d.getId()); 
+            if (maintenance.getFrequency() != null || maintenance.getEndDate() != null || "Đã bảo trì".equals(maintenance.getMaintenanceStatus())) {
+                Calendar calStart = Calendar.getInstance();
+                Calendar calEnd = Calendar.getInstance();
+                calStart.setTime(maintenance.getStartDate());
+                calEnd.setTime(maintenance.getEndDate());
 
-            switch (maintenance.getFrequency()) {
-                case "Hàng ngày":
-                    calStart.add(Calendar.DAY_OF_MONTH, 1);
-                    calEnd.add(Calendar.DAY_OF_MONTH, 1);
-                    break;
-                case "Hàng tuần":
-                    calStart.add(Calendar.WEEK_OF_YEAR, 1);
-                    calEnd.add(Calendar.WEEK_OF_YEAR, 1);
-                    break;
-                case "Hàng tháng":
-                    calStart.add(Calendar.MONTH, 1);
-                    calEnd.add(Calendar.MONTH, 1);
-                    break;
-                case "Hàng quý":
-                    calStart.add(Calendar.MONTH, 3);
-                    calEnd.add(Calendar.MONTH, 3);
-                    break;
-                case "Hàng năm":
-                    calStart.add(Calendar.YEAR, 1);
-                    calEnd.add(Calendar.YEAR, 1);
-                    break;
-                default:
-                    continue;
-            }
+                switch (maintenance.getFrequency()) {
+                    case "Hàng ngày":
+                        calStart.add(Calendar.DAY_OF_MONTH, 1);
+                        calEnd.add(Calendar.DAY_OF_MONTH, 1);
+                        break;
+                    case "Hàng tuần":
+                        calStart.add(Calendar.WEEK_OF_YEAR, 1);
+                        calEnd.add(Calendar.WEEK_OF_YEAR, 1);
+                        break;
+                    case "Hàng tháng":
+                        calStart.add(Calendar.MONTH, 1);
+                        calEnd.add(Calendar.MONTH, 1);
+                        break;
+                    case "Hàng quý":
+                        calStart.add(Calendar.MONTH, 3);
+                        calEnd.add(Calendar.MONTH, 3);
+                        break;
+                    case "Hàng năm":
+                        calStart.add(Calendar.YEAR, 1);
+                        calEnd.add(Calendar.YEAR, 1);
+                        break;
+                    default:
+                        continue;
+                }
 
-            MaintenanceSchedule newSchedule = new MaintenanceSchedule();
-            newSchedule.setTypeId(maintenance.getTypeId());
-            newSchedule.setUserId(maintenance.getUserId());
-            newSchedule.setDeviceId(maintenance.getDeviceId());
-            newSchedule.setStartDate(calStart.getTime());
-            newSchedule.setEndDate(calEnd.getTime());
-            newSchedule.setTitle(maintenance.getTitle());
-            newSchedule.setDescription(maintenance.getDescription());
-            newSchedule.setExpenseFirst(maintenance.getExpenseFirst());
-            newSchedule.setFrequency(maintenance.getFrequency());
-            newSchedule.setMaintenanceStatus("Chưa bảo trì");
+                MaintenanceSchedule newSchedule = new MaintenanceSchedule();
+                newSchedule.setTypeId(maintenance.getTypeId());
+                newSchedule.setUserId(maintenance.getUserId());
+                newSchedule.setDeviceId(maintenance.getDeviceId());
+                newSchedule.setStartDate(calStart.getTime());
+                newSchedule.setEndDate(calEnd.getTime());
+                newSchedule.setTitle(maintenance.getTitle());
+                newSchedule.setDescription(maintenance.getDescription());
+                newSchedule.setExpenseFirst(maintenance.getExpenseFirst());
+                newSchedule.setFrequency(maintenance.getFrequency());
+                newSchedule.setMaintenanceStatus("Chưa bảo trì");
 
-            this.mainScheduleRepo.addOrUpdateMaintenanceSchedule(newSchedule);
+                MaintenanceSchedule mainSaved = this.mainScheduleRepo.addOrUpdateMaintenanceSchedule(newSchedule);
 
-            MaintenanceAssignment latestAssign = this.mainAssignRepo.getLastestMainAssignByMaintenanceId(maintenance.getId());
-            if (latestAssign != null) {
-                MaintenanceAssignment newAssign = new MaintenanceAssignment();
-                newAssign.setTechnicianId(latestAssign.getTechnicianId());
-                newAssign.setMaintenanceScheduleId(newSchedule);
-                this.mainAssignRepo.addMaintenanceAssignment(newAssign);
+                List<MaintenanceAssignment> mainAssign = this.mainAssignRepo.getAssignmentByMaintenanceId(maintenance.getId());
+
+                if (mainAssign != null) {
+                    for (MaintenanceAssignment m : mainAssign) {
+                        MaintenanceAssignment newAssign = new MaintenanceAssignment();
+                        newAssign.setTechnicianId(m.getTechnicianId());
+                        newAssign.setMaintenanceScheduleId(mainSaved);
+                        this.mainAssignRepo.addMaintenanceAssignment(newAssign);
+                    }
+                }
             }
         }
     }
@@ -157,5 +165,4 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     public List<MaintenanceSchedule> getMaintenanceScheduleByDeviceIdAndYear(int deviceId, int year) {
         return this.mainScheduleRepo.getMaintenanceScheduleByDeviceIdAndYear(deviceId, year);
     }
-
 }

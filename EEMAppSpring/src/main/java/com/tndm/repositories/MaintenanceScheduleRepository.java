@@ -31,8 +31,8 @@ public interface MaintenanceScheduleRepository {
     List<MaintenanceSchedule> findSchedulesToNotify();
 
     List<MaintenanceSchedule> findScheduleOverTheTime();
-
-    List<MaintenanceSchedule> findScheduleToCreateNew();
+    
+    MaintenanceSchedule findTheLastestScheduleByDeviceId(int deviceId);
 
     long countMaintenances(Map<String, String> params);
 }

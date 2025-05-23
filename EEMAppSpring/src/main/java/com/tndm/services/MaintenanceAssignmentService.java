@@ -22,9 +22,7 @@ public interface MaintenanceAssignmentService {
     MaintenanceAssignment getMaintenanceAssignmentById(int id);
 
     MaintenanceAssignment addMaintenanceAssignment(MaintenanceAssignment m);
-
-    MaintenanceAssignment getLastestMainAssignByMaintenanceId(int maintenanceId);
-
+    
     void deleteMaintenanceAssignment(int id);
 
 }
