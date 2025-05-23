@@ -190,7 +190,7 @@
                                 <option value="">Chọn thiết bị</option>
                                 <option th:each="d : ${devices}"
                                         th:value="${d.id}"
-                                        th:text="${d.name}"
+                                        th:text="${d.name} + ' ' + ${d.facilityId.name}"
                                         th:selected="${deviceId == d.id}"></option>
                             </select>
                         </div>

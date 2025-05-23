@@ -174,4 +174,19 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
 
         return query.getResultList();
     }
+
+    @Override
+    public List<MaintenanceSchedule> getMaintenanceScheduleByDeviceIdAndYear(int deviceId, int year) {
+        Session s = this.factory.getObject().getCurrentSession();
+        String hql = "FROM MaintenanceSchedule ms "
+                + "WHERE ms.deviceId.id = :deviceId "
+                + "AND YEAR(ms.maintenanceDate) = :year "
+                + "AND ms.maintenanceStatus = 'Đã bảo trì'";
+
+        Query<MaintenanceSchedule> query = s.createQuery(hql, MaintenanceSchedule.class);
+        query.setParameter("deviceId", deviceId);
+        query.setParameter("year", year);
+
+        return query.getResultList();
+    }
 }

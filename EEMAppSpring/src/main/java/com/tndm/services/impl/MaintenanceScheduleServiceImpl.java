@@ -66,7 +66,7 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     }
 
     @Override
-    @Scheduled(cron = "0 */3 * * * *") 
+    @Scheduled(cron = "0 */3 * * * *")
     public void createNewSchedule() {
         List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.findScheduleToCreateNew();
         for (MaintenanceSchedule maintenance : listMaintenances) {
@@ -134,7 +134,7 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     }
 
     @Override
-    @Scheduled(cron = "0 */3 * * * *") 
+    @Scheduled(cron = "0 */3 * * * *")
     public void changeMaintenanceStatus() {
         List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.findScheduleOverTheTime();
         for (MaintenanceSchedule main : listMaintenances) {
@@ -151,6 +151,11 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     @Override
     public List<MaintenanceSchedule> getMaintenanceScheduleByDeviceIdAndTime(int deviceId, int month, int year) {
         return this.mainScheduleRepo.getMaintenanceScheduleByDeviceIdAndTime(deviceId, month, year);
+    }
+
+    @Override
+    public List<MaintenanceSchedule> getMaintenanceScheduleByDeviceIdAndYear(int deviceId, int year) {
+        return this.mainScheduleRepo.getMaintenanceScheduleByDeviceIdAndYear(deviceId, year);
     }
 
 }

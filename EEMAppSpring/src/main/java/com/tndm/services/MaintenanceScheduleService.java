@@ -18,6 +18,8 @@ public interface MaintenanceScheduleService {
 
     List<MaintenanceSchedule> getMaintenanceScheduleByDeviceIdAndTime(int deviceId, int month, int year);
 
+    List<MaintenanceSchedule> getMaintenanceScheduleByDeviceIdAndYear(int deviceId, int year);
+
     MaintenanceSchedule addOrUpdateMaintenanceSchedule(MaintenanceSchedule m);
 
     void deleteMaintenanceSchedule(int id);

@@ -177,6 +177,9 @@ public class MaintenanceController {
         if (deviceId != null && year != null && month != null) {
             schedules = this.mainScheduleService.getMaintenanceScheduleByDeviceIdAndTime(deviceId, month, year);
         }
+        if (deviceId != null && year != null && month == null) {
+            schedules = this.mainScheduleService.getMaintenanceScheduleByDeviceIdAndYear(deviceId, year);
+        }
         model.addAttribute("devices", this.devService.getAllDevices());
         model.addAttribute("month", month);
         model.addAttribute("year", year);
