@@ -189,7 +189,6 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
         String hql = "FROM MaintenanceSchedule "
                 + "WHERE deviceId.id = :deviceId "
                 + "AND typeId.name = 'Định kỳ' "
-                + "AND (endDate < CURRENT_DATE OR CURRENT_DATE BETWEEN startDate AND endDate) "
                 + "ORDER BY id DESC";
 
         Query<MaintenanceSchedule> q = s.createQuery(hql, MaintenanceSchedule.class);

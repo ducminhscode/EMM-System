@@ -28,6 +28,8 @@ public interface MaintenanceScheduleService {
 
     List<MaintenanceSchedule> findSchedulesToNotifyToTechnician(int technicianId, String pageStr);
 
+    MaintenanceSchedule findTheLastestScheduleByDeviceId(int deviceId);
+
     void notifySchedule();
 
     void createNewSchedule();

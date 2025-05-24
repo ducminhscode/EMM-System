@@ -76,8 +76,8 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
         List<Device> devList = this.devService.getAllDevices();
 
         for (Device d : devList) {
-            MaintenanceSchedule maintenance = this.mainScheduleRepo.findTheLastestScheduleByDeviceId(d.getId()); 
-            if ((maintenance.getFrequency() != null || maintenance.getEndDate() != null) && !maintenance.getMaintenanceStatus().equals("Chưa bảo trì")) {
+            MaintenanceSchedule maintenance = findTheLastestScheduleByDeviceId(d.getId());     
+            if (!maintenance.getMaintenanceStatus().equals("Ngừng bảo trì") && !maintenance.getMaintenanceStatus().equals("Chưa bảo trì")) {
                 Calendar calStart = Calendar.getInstance();
                 Calendar calEnd = Calendar.getInstance();
                 calStart.setTime(maintenance.getStartDate());
@@ -165,5 +165,10 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
     @Override
     public List<MaintenanceSchedule> getMaintenanceScheduleByDeviceIdAndYear(int deviceId, int year) {
         return this.mainScheduleRepo.getMaintenanceScheduleByDeviceIdAndYear(deviceId, year);
+    }
+
+    @Override
+    public MaintenanceSchedule findTheLastestScheduleByDeviceId(int deviceId) {
+        return this.mainScheduleRepo.findTheLastestScheduleByDeviceId(deviceId);
     }
 }
