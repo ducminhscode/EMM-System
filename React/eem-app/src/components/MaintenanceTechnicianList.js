@@ -89,7 +89,7 @@ const MaintenanceTechnicianList = () => {
       const response = await authApis().patch(
         `${endpoints["updateMaintenanceStatus"]}${selectedMaintenanceId}`
       );
-      setConfirmModalMessage(response.data); // e.g., "Cập nhật thành công"
+      setConfirmModalMessage(response.data);
       setTimeout(() => {
         setShowConfirmModal(false);
         setSelectedMaintenanceId(null);
@@ -212,40 +212,49 @@ const MaintenanceTechnicianList = () => {
   if (maintenances.length === 0 && !loading)
     return <div className="text-center mt-4">Không có công việc bảo trì nào được giao</div>;
 
+  const today = new Date();
+
   return (
     <div className="container mt-4">
       <h4 className="mb-4">Danh sách công việc bảo trì được giao</h4>
 
-      {maintenances.map((m) => (
-        <Card key={m.id} className="mb-3 shadow-sm">
-          <Card.Body>
-            <Card.Title>{m.deviceName}</Card.Title>
-            <Card.Text>
-              <strong>Tiêu đề:</strong> {m.title}<br />
-              <strong>Bắt đầu:</strong> {new Date(m.startDate).toLocaleDateString()}<br />
-              <strong>Kết thúc:</strong> {new Date(m.endDate).toLocaleDateString()}<br />
-              <strong>Trạng thái:</strong> {m.maintenanceStatus}
-            </Card.Text>
+      {maintenances.map((m) => {
+        const startDate = new Date(m.startDate);
+        const isPastDue = startDate > today; 
 
-            {m.isCap && m.maintenanceStatus === "Chưa bảo trì" ? (
-              <Button
-                variant="success"
-                onClick={() => handleOpenConfirmModal(m.id)}
-              >
-                Xác nhận bảo trì
-              </Button>
-            ) : (
-              <Button
-                variant={m.maintenanceStatus === "Đang bảo trì" ? "primary" : "secondary"}
-                onClick={() => handleOpenUpdateModal(m.id)}
-                hidden={!m.isCap}
-              >
-                Cập nhật bảo trì
-              </Button>
-            )}
-          </Card.Body>
-        </Card>
-      ))}
+        return (
+          <Card key={m.id} className="mb-3 shadow-sm">
+            <Card.Body>
+              <Card.Title>{m.deviceName}</Card.Title>
+              <Card.Text>
+                <strong>Tiêu đề:</strong> {m.title}<br />
+                <strong>Bắt đầu:</strong> {new Date(m.startDate).toLocaleDateString()}<br />
+                <strong>Kết thúc:</strong> {new Date(m.endDate).toLocaleDateString()}<br />
+                <strong>Trạng thái:</strong> {m.maintenanceStatus}
+              </Card.Text>
+
+              {!isPastDue && m.isCap && m.maintenanceStatus === "Chưa bảo trì" ? (
+                <Button
+                  variant="success"
+                  onClick={() => handleOpenConfirmModal(m.id)}
+                >
+                  Xác nhận bảo trì
+                </Button>
+              ) : (
+                !isPastDue && (
+                  <Button
+                    variant={m.maintenanceStatus === "Đang bảo trì" ? "primary" : "secondary"}
+                    onClick={() => handleOpenUpdateModal(m.id)}
+                    hidden={!m.isCap}
+                  >
+                    Cập nhật bảo trì
+                  </Button>
+                )
+              )}
+            </Card.Body>
+          </Card>
+        );
+      })}
 
       {/* Confirm Maintenance Modal */}
       <Modal show={showConfirmModal} onHide={handleCloseConfirmModal}>
@@ -340,7 +349,6 @@ const MaintenanceTechnicianList = () => {
           <Spinner animation="border" variant="primary" />
         </div>
       )}
-
     </div>
   );
 };
