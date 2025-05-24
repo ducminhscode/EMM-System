@@ -20,17 +20,25 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public class MaintenanceTypeRepositoryImpl implements MaintenanceTypeRepository{
+public class MaintenanceTypeRepositoryImpl implements MaintenanceTypeRepository {
+
     @Autowired
     private LocalSessionFactoryBean factory;
-    
+
     @Override
     public List<MaintenanceType> getMaintenanceTypes() {
-                
+
         Session s = this.factory.getObject().getCurrentSession();
         Query q = s.createQuery("FROM MaintenanceType", MaintenanceType.class);
 
         return q.getResultList();
     }
-    
+
+    @Override
+    public MaintenanceType getMaintenaceTypeByName(String name) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Query<MaintenanceType> q = s.createQuery("FROM MaintenanceType WHERE name = :name", MaintenanceType.class);
+        q.setParameter("name", name);
+        return q.uniqueResult();
+    }
 }

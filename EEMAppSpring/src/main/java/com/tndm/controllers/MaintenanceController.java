@@ -108,6 +108,7 @@ public class MaintenanceController {
                 } else {
                     assignment.setIsCap(Boolean.FALSE);
                 }
+                assignment.setIsNotify(Boolean.FALSE);
                 Technician technician = techService.getTechnicianById(techId);
                 assignment.setTechnicianId(technician);
 
@@ -149,6 +150,7 @@ public class MaintenanceController {
                         } else {
                             assignment.setIsCap(Boolean.FALSE);
                         }
+                        assignment.setIsNotify(Boolean.FALSE);
                         Technician technician = techService.getTechnicianById(techId);
                         assignment.setTechnicianId(technician);
 

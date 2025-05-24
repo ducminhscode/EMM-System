@@ -7,11 +7,13 @@ package com.tndm.controllers;
 import com.tndm.pojo.Device;
 import com.tndm.pojo.MaintenanceAssignment;
 import com.tndm.pojo.MaintenanceSchedule;
+import com.tndm.pojo.MaintenanceType;
 import com.tndm.pojo.Technician;
 import com.tndm.pojo.User;
 import com.tndm.services.DeviceService;
 import com.tndm.services.MaintenanceAssignmentService;
 import com.tndm.services.MaintenanceScheduleService;
+import com.tndm.services.MaintenanceTypeService;
 import com.tndm.services.TechnicianService;
 import com.tndm.services.UserService;
 import java.security.Principal;
@@ -51,6 +53,9 @@ public class DeviceController {
 
     @Autowired
     private MaintenanceAssignmentService mainAssignmentService;
+    
+    @Autowired
+    private MaintenanceTypeService mainTypeService;
 
     @GetMapping("/devices-by-facilityId")
     @ResponseBody
@@ -86,7 +91,7 @@ public class DeviceController {
         d.setUserId(currentUser);
         Device devCheck = this.devSer.getDeviceById(d.getId());
         if (!devCheck.getFacilityId().equals(d.getFacilityId())) {
-            MaintenanceSchedule mainSaved = this.mainScheduleService.findTheLastestScheduleByDeviceId(d.getId());
+            MaintenanceSchedule mainSaved = this.mainScheduleService.findTheLastestScheduleByDeviceId(devCheck.getId());
             if (mainSaved.getMaintenanceStatus().equals("Chưa bảo trì")) {
                 mainSaved.setMaintenanceStatus("Ngừng bảo trì");
             }
@@ -132,9 +137,9 @@ public class DeviceController {
 
         Device deviceSaved = devSer.getDeviceById(id);
         m.setDeviceId(deviceSaved);
-
         m.setMaintenanceStatus("Chưa bảo trì");
-
+        MaintenanceType mainType = this.mainTypeService.getMaintenaceTypeByName("Định kỳ");
+        m.setTypeId(mainType);
         MaintenanceSchedule ms = this.mainScheduleService.addOrUpdateMaintenanceSchedule(m);
 
         if (technicianIds != null && !technicianIds.isEmpty()) {
@@ -146,6 +151,7 @@ public class DeviceController {
                 } else {
                     assignment.setIsCap(Boolean.FALSE);
                 }
+                assignment.setIsNotify(Boolean.FALSE);
                 Technician technician = techSer.getTechnicianById(techId);
                 assignment.setTechnicianId(technician);
 

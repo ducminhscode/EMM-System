@@ -65,7 +65,11 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
         for (MaintenanceSchedule maintenance : listMaintenances) {
             List<MaintenanceAssignment> listAssigns = this.mainAssignRepo.getAssignmentByMaintenanceId(maintenance.getId());
             for (MaintenanceAssignment mainAssign : listAssigns) {
-                mailSer.sendMail(mainAssign.getTechnicianId().getUser().getEmail(), "Tới hạn bảo trì", maintenance.getTitle());
+                if (mainAssign.getIsNotify().equals(Boolean.FALSE)) {
+                    mailSer.sendMail(mainAssign.getTechnicianId().getUser().getEmail(), "Tới hạn bảo trì", maintenance.getTitle());
+                    mainAssign.setIsNotify(Boolean.TRUE);
+                    this.mainAssignRepo.addMaintenanceAssignment(mainAssign);
+                }
             }
         }
     }
@@ -76,7 +80,7 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
         List<Device> devList = this.devService.getAllDevices();
 
         for (Device d : devList) {
-            MaintenanceSchedule maintenance = findTheLastestScheduleByDeviceId(d.getId());     
+            MaintenanceSchedule maintenance = findTheLastestScheduleByDeviceId(d.getId());
             if (!maintenance.getMaintenanceStatus().equals("Ngừng bảo trì") && !maintenance.getMaintenanceStatus().equals("Chưa bảo trì")) {
                 Calendar calStart = Calendar.getInstance();
                 Calendar calEnd = Calendar.getInstance();
@@ -130,6 +134,7 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
                         newAssign.setTechnicianId(m.getTechnicianId());
                         newAssign.setMaintenanceScheduleId(mainSaved);
                         newAssign.setIsCap(m.getIsCap());
+                        newAssign.setIsNotify(Boolean.FALSE);
                         this.mainAssignRepo.addMaintenanceAssignment(newAssign);
                     }
                 }

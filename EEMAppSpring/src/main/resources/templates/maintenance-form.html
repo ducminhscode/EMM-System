@@ -55,31 +55,6 @@
 
                     </div>
 
-                    <div class="space-y-6">
-                        <div class="grid grid-cols-1 gap-6">
-                            <div class="hidden">
-                                <select th:field="*{typeId.id}" required>
-                                    <option th:each="type : ${maintenanceTypes}" 
-                                            th:value="${type.id}" 
-                                            th:selected="${type.id == 1}"></option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    <span th:text="#{ms.typeMain}"></span> <span class="text-red-500">*</span>
-                                </label>
-                                <div class="px-4 py-2 bg-gray-100 rounded-md">
-                                    <span th:text="${#lists.contains(maintenanceTypes.![id], 1)} 
-                                          ? ${maintenanceTypes.?[id == 1].get(0).name} 
-                                          : 'Không xác định'"></span>
-                                    <input type="hidden" name="typeId.id" value="1"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                         <div>

@@ -97,17 +97,15 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
     public List<MaintenanceSchedule> findSchedulesToNotify() {
         Session s = this.factory.getObject().getCurrentSession();
         String hql = "FROM MaintenanceSchedule "
-                + "WHERE maintenanceStatus = 'Chưa bảo trì' "
-                + "OR maintenanceStatus = 'Quá hạn bảo trì'";
+                + "WHERE maintenanceStatus = 'Chưa bảo trì' OR maintenanceStatus = 'Quá hạn bảo trì' ";
         Query<MaintenanceSchedule> q = s.createQuery(hql, MaintenanceSchedule.class);
-
         return q.getResultList();
     }
 
     @Override
     public List<MaintenanceSchedule> findScheduleOverTheTime() {
         Session s = this.factory.getObject().getCurrentSession();
-        String hql = "FROM MaintenanceSchedule WHERE endDate < CURRENT_DATE " + "AND maintenanceStatus = 'Chưa bảo trì'" + "AND maintenanceStatus != 'Đang bảo trì'";
+        String hql = "FROM MaintenanceSchedule WHERE endDate < CURRENT_DATE " + "AND maintenanceStatus = 'Chưa bảo trì'";
         Query<MaintenanceSchedule> q = s.createQuery(hql, MaintenanceSchedule.class);
         return q.getResultList();
     }
@@ -129,9 +127,8 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
         String hql = "SELECT ma.maintenanceScheduleId FROM MaintenanceAssignment ma "
                 + "WHERE ma.technicianId.id = :technicianId "
                 + "AND ma.maintenanceScheduleId.maintenanceStatus = 'Chưa bảo trì'"
-                + "OR ma.maintenanceScheduleId.maintenanceStatus = 'Đang bảo trì'"
-                + "OR ma.maintenanceScheduleId.maintenanceStatus = 'Quá hạn bảo trì'";
-
+                + "OR ma.maintenanceScheduleId.maintenanceStatus = 'Đang bảo trì'";
+        
         Query query = s.createQuery(hql, MaintenanceSchedule.class).setParameter("technicianId", technicianId);
 
         int page = 1;

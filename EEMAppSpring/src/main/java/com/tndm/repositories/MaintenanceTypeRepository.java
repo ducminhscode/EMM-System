@@ -14,4 +14,6 @@ import java.util.List;
 public interface MaintenanceTypeRepository {
 
     List<MaintenanceType> getMaintenanceTypes();
+    
+    MaintenanceType getMaintenaceTypeByName(String name);
 }

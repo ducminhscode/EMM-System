@@ -156,7 +156,7 @@
 
                         <div class="flex space-x-2">
 
-                            <a th:href="@{/?page=1(searchType=${param.searchType}, value=${param.value})}"
+                            <a th:href="@{?page=1(searchType=${param.searchType}, value=${param.value})}"
                                class="px-3 py-1 border rounded-md" 
                                th:if="${currentPage > 1 and totalPages > 1}">
                                 &laquo;
@@ -167,7 +167,7 @@
                             </span>
 
                             <a th:with="previousPage=${currentPage} > 1 ? ${currentPage - 1} : 1"
-                               th:href="@{'/?page=' + ${previousPage}(searchType=${param.searchType}, value=${param.value})}"
+                               th:href="@{'?page=' + ${previousPage}(searchType=${param.searchType}, value=${param.value})}"
                                class="px-3 py-1 border rounded-md" 
 
                                th:if="${currentPage > 1 and totalPages > 1}">
@@ -179,7 +179,7 @@
                             </span>
 
                             <a th:with="nextPage=${currentPage} < ${totalPages} ? ${currentPage + 1} : ${totalPages}"
-                               th:href="@{'/?page=' + ${nextPage}(searchType=${param.searchType}, value=${param.value})}"
+                               th:href="@{'?page=' + ${nextPage}(searchType=${param.searchType}, value=${param.value})}"
                                class="px-3 py-1 border rounded-md" 
                                th:if="${currentPage < totalPages and totalPages > 1}">
                                 &rsaquo;
@@ -189,7 +189,7 @@
                                 &rsaquo;
                             </span>
 
-                            <a th:href="@{'/?page=' + ${totalPages}(searchType=${param.searchType}, value=${param.value})}" 
+                            <a th:href="@{'?page=' + ${totalPages}(searchType=${param.searchType}, value=${param.value})}" 
                                class="px-3 py-1 border rounded-md" 
                                th:if="${currentPage < totalPages and totalPages > 1}">
                                 &raquo;

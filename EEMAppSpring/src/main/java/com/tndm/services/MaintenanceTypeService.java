@@ -12,5 +12,9 @@ import java.util.List;
  * @author ADMIN
  */
 public interface MaintenanceTypeService {
+
     List<MaintenanceType> getMaintenanceTypes();
+
+    MaintenanceType getMaintenaceTypeByName(String name);
+
 }

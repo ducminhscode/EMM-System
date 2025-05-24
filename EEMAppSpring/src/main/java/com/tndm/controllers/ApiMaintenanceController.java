@@ -50,6 +50,7 @@ public class ApiMaintenanceController {
     @Autowired
     private DeviceService devService;
 
+
     @GetMapping("/maintenance/technician/{technicianId}")
     @CrossOrigin
     public ResponseEntity<?> getMaintenanceByTechnicianId(@PathVariable("technicianId") int id, @RequestParam("page") String page) {
@@ -83,7 +84,7 @@ public class ApiMaintenanceController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
             }
             MaintenanceSchedule mainSchedule = this.mainScheduleService.getMaintenanceScheduleById(maintenanceId);
-            if (!mainSchedule.getMaintenanceStatus().equals("Ngừng bảo trì")) {
+            if (!mainSchedule.getMaintenanceStatus().equals("Ngừng bảo trì") || mainSchedule.getMaintenanceStatus().equals("Quá hạn bảo trì")) {
                 MaintenanceAssignment mainAssign = this.mainAssignService.getAssignmentByTechnicianIdAndMaintenanceId(existingUser.getId(), maintenanceId);
 
                 if (mainAssign.getIsCap()) {
@@ -119,7 +120,7 @@ public class ApiMaintenanceController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
             }
             MaintenanceSchedule mainSchedule = this.mainScheduleService.getMaintenanceScheduleById(maintenanceId);
-            if (!mainSchedule.getMaintenanceStatus().equals("Ngừng bảo trì")) {
+            if (!mainSchedule.getMaintenanceStatus().equals("Ngừng bảo trì") || mainSchedule.getMaintenanceStatus().equals("Quá hạn bảo trì")) {
                 MaintenanceAssignment mainAssign = this.mainAssignService.getAssignmentByTechnicianIdAndMaintenanceId(existingUser.getId(), maintenanceId);
 
                 if (mainAssign.getIsCap()) {

@@ -25,5 +25,10 @@ public class MaintenanceTypeServiceImpl implements MaintenanceTypeService{
     public List<MaintenanceType> getMaintenanceTypes() {
         return this.mainTypeRepo.getMaintenanceTypes();
     }
+
+    @Override
+    public MaintenanceType getMaintenaceTypeByName(String name) {
+        return this.mainTypeRepo.getMaintenaceTypeByName(name);
+    }
     
 }

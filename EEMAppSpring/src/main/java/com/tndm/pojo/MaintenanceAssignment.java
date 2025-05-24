@@ -40,6 +40,8 @@ public class MaintenanceAssignment implements Serializable {
     private Integer id;
     @Column(name = "is_cap")
     private Boolean isCap;
+    @Column(name = "is_notify")
+    private Boolean isNotify;
     @JoinColumn(name = "maintenance_schedule_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     @JsonIgnore
@@ -111,6 +113,20 @@ public class MaintenanceAssignment implements Serializable {
     @Override
     public String toString() {
         return "com.tndm.pojo.MaintenanceAssignment[ id=" + id + " ]";
+    }
+
+    /**
+     * @return the isNotify
+     */
+    public Boolean getIsNotify() {
+        return isNotify;
+    }
+
+    /**
+     * @param isNotify the isNotify to set
+     */
+    public void setIsNotify(Boolean isNotify) {
+        this.isNotify = isNotify;
     }
     
 }
