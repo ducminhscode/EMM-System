@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Chi tiết bảo trì</title>
+        <title th:text="#{mc.detailMain}"></title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
             </div>
             <a th:href="@{/index-maintenances}" class="flex items-center gap-2 text-sm hover:text-gray-200 transition-colors">
                 <i class="fas fa-arrow-left"></i>
-                Quay lại danh sách
+                <span th:text="#{ps.back}"></span>
             </a>
         </div>
     </nav>
@@ -32,16 +32,16 @@
                 <div>
                     <div class="flex items-center gap-3 mb-2">
                         <span class="text-sm text-blue-600 font-semibold">
-                            Mã:<span th:text="${' ' + schedules.id}"></span>
+                            <span th:text="#{idd.iD}"></span>:<span th:text="${' ' + schedules.id}"></span>
                         </span>
                     </div>
-                    <p class="text-gray-600 text-sm">Mô tả:
+                    <p class="text-gray-600 text-sm"><span th:text="#{ms.desc}"></span>:
                         <span th:text="${' ' + schedules.description} ?: ' Không có mô tả'"></span>
                     </p>
                 </div>
 
                 <div class="text-right">
-                    <p class="text-sm text-gray-500 mb-1">Người tạo</p>
+                    <p class="text-sm text-gray-500 mb-1" th:text="#{idf.createBy}"></p>
                     <p class="font-semibold text-gray-900" 
                        th:text="${schedules.userId.firstName + ' ' + schedules.userId.lastName}"></p>
                     <p class="text-xs text-gray-400" th:text="${schedules.userId.email}"></p>
@@ -55,26 +55,26 @@
             <div class="bg-white rounded-2xl shadow-xl p-6 transition-transform transform hover:scale-[1.02]">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                     <i class="fas fa-calendar-alt text-blue-600 mr-2"></i>
-                    Thông tin thời gian
+                    <span th:text="#{mr.infoTime}"></span>
                 </h3>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm text-gray-500">Thời gian bắt đầu</label>
+                        <label class="block text-sm text-gray-500" th:text="#{mr.timeStart}"></label>
                         <p class="font-medium text-gray-900" 
                            th:text="${#dates.format(schedules.startDate, 'HH:mm dd/MM/yyyy')}"></p>
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-500">Thời gian kết thúc</label>
+                        <label class="block text-sm text-gray-500" th:text="#{mr.timeEnd}"></label>
                         <p class="font-medium text-gray-900" 
                            th:text="${#dates.format(schedules.endDate, 'HH:mm dd/MM/yyyy')}"></p>
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-500">Ngày bảo trì</label>
+                        <label class="block text-sm text-gray-500" th:text="#{mr.dateMain}"></label>
                         <p class="font-medium text-gray-900">
                             <span th:if="${schedules.maintenanceDate != null}" 
                                   th:text="${#dates.format(schedules.maintenanceDate, 'HH:mm dd/MM/yyyy')}"></span>
                             <span th:unless="${schedules.maintenanceDate != null}" 
-                                  class="text-gray-400">Chưa cập nhật</span>
+                                  class="text-gray-400" th:text="#{mr.noUpYet}"></span>
                         </p>
                     </div>
                 </div>
@@ -84,11 +84,11 @@
             <div class="bg-white rounded-2xl shadow-xl p-6 transition-transform transform hover:scale-[1.02]">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                     <i class="fas fa-money-bill-wave text-blue-600 mr-2"></i>
-                    Chi phí bảo trì
+                    <span th:text="#{mr.expenseMain}"></span>
                 </h3>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm text-gray-500">Giá tiền trước</label>
+                        <label class="block text-sm text-gray-500" th:text="#{mc.expenseF}"></label>
                         <p class="font-medium text-gray-900">
                             <span th:if="${schedules.expenseFirst != null}" 
                                   th:text="${#numbers.formatDecimal(schedules.expenseFirst, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
@@ -97,7 +97,7 @@
                         </p>
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-500">Giá tiền sau</label>
+                        <label class="block text-sm text-gray-500" th:text="#{mc.expenseL}"></label>
                         <p class="font-medium text-gray-900">
                             <span th:if="${schedules.expenseLast != null}" 
                                   th:text="${#numbers.formatDecimal(schedules.expenseLast, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span>
@@ -106,7 +106,7 @@
                         </p>
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-500">Hiệu quả bảo trì</label>
+                        <label class="block text-sm text-gray-500" th:text="#{mc.hieuQua}"></label>
                         <p class="font-medium">
                             <span th:if="${schedules.expenseFirst != null and schedules.expenseLast != null and schedules.expenseFirst != 0}" 
                                   th:classappend="${(schedules.expenseLast - schedules.expenseFirst) > 0 ? 'text-red-600' : 'text-green-600'}">
@@ -127,11 +127,11 @@
                 </h3>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm text-gray-500">Tần suất bảo trì</label>
+                        <label class="block text-sm text-gray-500" th:text="#{mr.freMain}"></label>
                         <p class="font-medium text-gray-900" th:text="${schedules.frequency}"></p>
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-500">Loại bảo trì</label>
+                        <label class="block text-sm text-gray-500" th:text="#{ms.typeMain}"></label>
                         <p class="font-medium text-gray-900" th:text="${schedules.typeId.name}"></p>
                     </div>
                 </div>
@@ -142,12 +142,12 @@
         <div class="bg-white rounded-2xl shadow-xl p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
                 <i class="fas fa-users-cog text-blue-600 mr-2"></i>
-                Kỹ thuật viên được phân công
+                <span th:text="#{mr.technicianCap}"></span>
             </h3>
 
             <div th:if="${#lists.isEmpty(assignments)}" class="text-center py-12 text-gray-400">
                 <i class="fas fa-user-times text-5xl mb-4"></i>
-                <p class="text-base">Chưa có phân công nào</p>
+                <p class="text-base" th:text="#{mr.noCap}"></p>
             </div>
 
             <div th:unless="${#lists.isEmpty(assignments)}" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -162,7 +162,7 @@
                             <p class="text-sm text-gray-500" th:text="${assignment.technicianId.user.phone}"></p>
                             <p class="text-sm text-gray-600 mt-1">
                                 <i class="fas fa-tools mr-1"></i>
-                                Chuyên môn: <span class="font-medium" 
+                                <span th:text="#{us.specialty}"></span>: <span class="font-medium" 
                                                   th:text="${assignment.technicianId.specialization}"></span>
                             </p>
                         </div>

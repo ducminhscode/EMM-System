@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Thông tin cá nhân</title>
+        <title th:text="#{pr.info}"></title>
     <th:block th:replace="base :: styles"></th:block>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -15,7 +15,7 @@
                 <a th:href="@{/}" class="flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
                     <i class="fas fa-arrow-left text-lg"></i>
                 </a>
-                <h1 class="text-2xl font-bold">THÔNG TIN CÁ NHÂN</h1>
+                <h1 class="text-2xl font-bold uppercase" th:text="#{pr.info}"></h1>
                 <div class="w-24"></div>
             </div>
         </header>
@@ -24,7 +24,7 @@
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
 
                 <div class="bg-blue-600 px-6 py-4">
-                    <h2 class="text-xl font-semibold text-white">Chỉnh sửa thông tin</h2>
+                    <h2 class="text-xl font-semibold text-white" th:text="#{pr.edit}"></h2>
                 </div>
 
                 <form th:action="@{/profile/update}" method="post" th:object="${user}" class="p-6 space-y-6" enctype="multipart/form-data">
@@ -52,7 +52,7 @@
                                (user.userRole == 'ROLE_TECHNICIAN' ? 'Kỹ thuật viên' : 
                                (user.userRole == 'ROLE_EMPLOYEE' ? 'Nhân viên' : 'Khác'))}"></p>
                             <div class="mt-2">
-                                <span class="text-sm text-gray-500">Tên đăng nhập: </span>
+                                <span class="text-sm text-gray-500" th:text="#{username}">: </span>
                                 <span class="font-medium" th:text="${user.username}"></span>
                             </div>
                         </div>
@@ -60,17 +60,16 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">Họ <span class="text-red-500">*</span></label>
+                            <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1"><span th:text="#{us.lastName}"></span> <span class="text-red-500">*</span></label>
                             <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                   id="firstName" th:field="*{firstName}" placeholder="Nhập họ" required>
-                            <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
-                        </div>
-
-                        <div>
-                            <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Tên <span class="text-red-500">*</span></label>
-                            <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                   id="lastName" th:field="*{lastName}" placeholder="Nhập tên" required>
+                                   id="lastName" th:field="*{lastName}" th:placeholder="#{us.inputLN}" required>
                             <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                        </div>
+                        <div>
+                            <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1"><span th:text="#{us.firstName}"></span> <span class="text-red-500">*</span></label>
+                            <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   id="firstName" th:field="*{firstName}" th:placeholder="#{us.inputFN}" required>
+                            <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
                         </div>
                     </div>
 
@@ -78,62 +77,62 @@
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
                             <input type="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                   id="email" th:field="*{email}" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" placeholder="Nhập email" required>
+                                   id="email" th:field="*{email}" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" th:placeholder="#{us.inputEmail}" required>
                             <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                         </div>
 
                         <div>
-                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Số điện thoại <span class="text-red-500">*</span></label>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1"><span th:text="#{idu.phone}"></span> <span class="text-red-500">*</span></label>
                             <input type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                   id="phone" th:field="*{phone}" placeholder="Nhập số điện thoại" pattern="[0-9]{10}" maxlength="10" required>
+                                   id="phone" th:field="*{phone}" th:placeholder="#{us.inputPhone}" pattern="[0-9]{10}" maxlength="10" required>
                             <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
                         </div>
                     </div>
 
                     <div class="pt-6">
                         <button type="submit" class="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
-                            Cập nhật thông tin
+                            <span th:text="#{us.updateInfo}"></span>
                         </button>
                     </div>
                 </form>
 
                 <div class="border-t border-gray-200">
                     <div class="bg-green-600 px-6 py-4">
-                        <h3 class="text-xl font-semibold text-white">Đổi mật khẩu</h3>
+                        <h3 class="text-xl font-semibold text-white" th:text="#{pr.changePass}"></h3>
                     </div>
 
                     <div class="px-6 py-6">
                         <form th:action="@{/profile/change-password}" method="post" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-1">Mật khẩu hiện tại <span class="text-red-500">*</span></label>
+                                    <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-1"><span th:text="#{pr.currPass}"></span> <span class="text-red-500">*</span></label>
                                     <input type="password" 
                                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                            id="currentPassword" 
                                            name="currentPassword" 
-                                           placeholder="Nhập mật khẩu hiện tại" 
+                                           th:placeholder="#{pr.inputCurrPass}" 
                                            required>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">Mật khẩu mới <span class="text-red-500">*</span></label>
+                                    <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1"><span th:text="#{pr.newPass}"></span> <span class="text-red-500">*</span></label>
                                     <input type="password" 
                                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                            id="newPassword" 
                                            name="newPassword" 
-                                           placeholder="Nhập mật khẩu mới" 
+                                           th:placeholder="#{pr.inputNewPass}"
                                            required>
                                 </div>
 
                                 <div>
-                                    <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Xác nhận mật khẩu <span class="text-red-500">*</span></label>
+                                    <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1"><span th:text="#{pr.confPass}"></span> <span class="text-red-500">*</span></label>
                                     <input type="password" 
                                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                            id="confirmPassword" 
                                            name="confirmPassword" 
-                                           placeholder="Nhập lại mật khẩu mới" 
+                                           th:placeholder="#{pr.reinputNewPass}" 
                                            required>
                                     <div class="text-red-500 text-xs mt-1" id="confirmPasswordError"></div>
                                 </div>
@@ -141,7 +140,7 @@
 
                             <div class="pt-2">
                                 <button type="submit" class="w-full md:w-auto px-6 py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors">
-                                    Đổi mật khẩu
+                                    <span th:text="#{pr.changePass}"></span>
                                 </button>
                             </div>
                         </form>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Báo cáo hiệu suất bảo trì</title>
+        <title th:text="#{mc.reportMain}"></title>
     <th:block th:replace="base :: styles"></th:block>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -171,12 +171,11 @@
                 <a th:href="@{/index-maintenances}" class="flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
                     <i class="fas fa-arrow-left text-lg"></i>
                 </a>
-                <h1 class="text-2xl font-bold">Báo cáo hiệu quả bảo trì</h1>
+                <h1 class="text-2xl font-bold uppercase" th:text="#{mc.reportMain}"></h1>
                 <div class="w-24"></div>
             </div>
         </header>
 
-     
         <main class="flex-grow container px-4 py-6">
     
             <div class="filter-section">
@@ -185,9 +184,9 @@
 
                  
                         <div id="deviceSection">
-                            <label>Thiết bị</label>
+                            <label th:text="#{base.device}"></label>
                             <select name="deviceId" id="deviceId">
-                                <option value="">Chọn thiết bị</option>
+                                <option value="" th:text="#{idr.chooseDevice2}"></option>
                                 <option th:each="d : ${devices}"
                                         th:value="${d.id}"
                                         th:text="${d.name} + ' ' + ${d.facilityId.name}"
@@ -196,21 +195,21 @@
                         </div>
 
                         <div>
-                            <label>Tháng</label>
+                            <label th:text="#{month}"></label>
                             <select name="month" id="monthSelect">
-                                <option value="">Chọn tháng</option>
+                                <option value="" th:text="#{mc.selectMonth}"></option>
                                 <option th:each="i : ${#numbers.sequence(1,12)}"
                                         th:value="${i}"
-                                        th:text="'Tháng ' + ${i}"
+                                        th:text="#{month} + ' ' + ${i}"
                                         th:selected="${month == i}"></option>
                             </select>
                         </div>
 
               
                         <div>
-                            <label>Năm</label>
+                            <label th:text="#{year}"></label>
                             <select name="year" id="yearSelect">
-                                <option value="">Chọn năm</option>
+                                <option value="" th:text="#{mc.selectYear}"></option>
                                 <option th:each="y : ${#numbers.sequence(T(java.time.Year).now().value - 10, T(java.time.Year).now().value)}"
                                         th:value="${y}"
                                         th:text="${y}"
@@ -221,7 +220,7 @@
                    
                         <div class="flex items-end">
                             <button type="submit" class="btn-primary w-full">
-                                Lọc
+                                <span th:text="#{idr.filter}"></span>
                             </button>
                         </div>
                     </div>
@@ -230,28 +229,28 @@
 
   
             <div class="card">
-                <h3><i class="fas fa-chart-bar"></i> Hiệu suất bảo trì (Tỷ lệ chênh lệch chi phí)</h3>
+                <h3><i class="fas fa-chart-bar"></i> <span th:text="#{mc.desc}"></span></h3>
                 <div class="chart-container">
                     <div id="chart-loading" class="text-center">
                         <i class="fas fa-spinner fa-spin"></i>
                     </div>
                     <canvas id="maintenanceEfficiencyChart" style="display: none;"></canvas>
                     <div id="chart-error" class="text-center" style="display: none;">
-                        Đã xảy ra lỗi khi tải biểu đồ
+                        <span th:text="#{mc.error}"></span>
                     </div>
                 </div>
             </div>
 
     
             <div class="card">
-                <h3><i class="fas fa-money-bill-wave"></i> Chi tiết bảo trì</h3>
+                <h3><i class="fas fa-money-bill-wave"></i> <span th:text="#{mc.detailMain}"></span></h3>
                 <table>
                     <thead>
                         <tr>
-                            <th>Tiêu đề</th>
-                            <th>Giá tiền trước</th>
-                            <th>Giá tiền sau</th>
-                            <th>Hiệu quả bảo trì</th>
+                            <th th:text="#{idm.title}"></th>
+                            <th th:text="#{mc.expenseF}"></th>
+                            <th th:text="#{mc.expenseL}"></th>
+                            <th th:text="#{mc.hieuQua}"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -277,7 +276,7 @@
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(schedules)}">
-                            <td colspan="4" class="text-center text-gray-500 py-4">Không có dữ liệu bảo trì để hiển thị</td>
+                            <td colspan="4" class="text-center text-gray-500 py-4" th:text="#{mc.noData}"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -320,7 +319,7 @@
             });
 
             if (chartLabels.length === 0 || chartData.length === 0) {
-                loading.innerHTML = '<p class="text-center text-gray-500">Không có dữ liệu hợp lệ để hiển thị biểu đồ.</p>';
+                loading.innerHTML = '<p class="text-center text-gray-500">Không có dữ liệu hợp lệ để hiển thị biểu đồ</p>';
                 return;
             }
 

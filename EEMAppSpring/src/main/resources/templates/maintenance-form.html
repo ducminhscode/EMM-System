@@ -1,45 +1,42 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Thêm lịch bảo trì định kì</title>
+        <title th:text="#{mf.addMainSche}"></title>
     <th:block th:replace="base :: styles"></th:block>
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen flex flex-col">
 
-     
+
         <header class="bg-blue-600 text-white shadow-md">
             <div class="container mx-auto px-4 py-6 flex justify-between items-center">
                 <a th:href="@{/devices}" class="flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
                     <i class="fas fa-arrow-left text-lg"></i>
                 </a>
-                <h1 class="text-2xl font-bold">Thêm lịch bảo trì định kì</h1>
+                <h1 class="text-2xl font-bold uppercase" th:text="#{mf.addMainSche}"></h1>
                 <div class="w-24"></div>
             </div>
         </header>
 
- 
+
         <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
 
-             
                 <form method="post" 
                       th:action="@{/devices/maintenance-form/{deviceId}/add(deviceId=${deviceId})}" 
                       th:object="${maintenance}" 
                       class="p-6 space-y-6">
 
-
-             
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
-                                Tiêu đề <span class="text-red-500">*</span>
+                                <span th:text="#{idm.title}"></span> <span class="text-red-500">*</span>
                             </label>
                             <input type="text" 
                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                    id="title" 
                                    th:field="*{title}" 
-                                   placeholder="Nhập tiêu đề"
+                                   th:placeholder="#{ms.inputTitle}"
                                    required
                                    maxlength="50">
                             <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
@@ -47,7 +44,7 @@
 
                         <div>
                             <label for="expenseFirst" class="block text-sm font-medium text-gray-700 mb-1">
-                                Chi phí dự kiến <span class="text-red-500">*</span>
+                                <span th:text="#{ms.expenseEst}"></span> <span class="text-red-500">*</span>
                             </label>
                             <input type="number"
                                    class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -55,7 +52,6 @@
                                    th:field="*{expenseFirst}" required>
                             <span>VNĐ</span>
                         </div>
-
 
                     </div>
 
@@ -71,7 +67,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Loại bảo trì <span class="text-red-500">*</span>
+                                    <span th:text="#{ms.typeMain}"></span> <span class="text-red-500">*</span>
                                 </label>
                                 <div class="px-4 py-2 bg-gray-100 rounded-md">
                                     <span th:text="${#lists.contains(maintenanceTypes.![id], 1)} 
@@ -83,12 +79,12 @@
                         </div>
                     </div>
 
-                
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     
+
                         <div>
                             <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">
-                                Ngày bắt đầu <span class="text-red-500">*</span>
+                                <span th:text="#{ms.startDate}"></span> <span class="text-red-500">*</span>
                             </label>
                             <input type="date" 
                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -98,10 +94,10 @@
                             <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
                         </div>
 
-             
+
                         <div>
                             <label for="endDate" class="block text-sm font-medium text-gray-700 mb-1">
-                                Ngày kết thúc <span class="text-red-500">*</span>
+                                <span th:text="#{ms.endDate}"></span> <span class="text-red-500">*</span>
                             </label>
                             <input type="date" 
                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -113,10 +109,10 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Kỹ thuật viên <span class="text-red-500">*</span>
+                                <span th:text="#{idp.technician}"></span> <span class="text-red-500">*</span>
                             </label>
                             <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     multiple
@@ -127,68 +123,68 @@
                                         th:value="${tech.id}" 
                                         th:text="${tech.user.firstName} + ' ' + ${tech.user.lastName}"></option>
                             </select>
-                            <small class="text-gray-500 text-xs">Giữ Ctrl (hoặc Cmd trên Mac) để chọn nhiều</small>
+                            <small class="text-gray-500 text-xs" th:text="#{ctrl}"></small>
                         </div>
 
                         <div>
                             <label for="leaderId" class="block text-sm font-medium text-gray-700 mb-1">
-                                Nhóm trưởng <span class="text-red-500">*</span>
+                                <span th:text="#{ms.cap}"></span> <span class="text-red-500">*</span>
                             </label>
                             <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                     name="leaderId"
                                     id="leaderSelect"
                                     required>
-                                <option value="" disabled selected>-- Chọn nhóm trưởng --</option>
+                                <option value="" disabled selected th:text="#{me.chooseCap}"></option>
                                 <option th:each="tech : ${technicians}" 
                                         th:value="${tech.id}" 
                                         th:text="${tech.user.firstName} + ' ' + ${tech.user.lastName}"></option>
                             </select>
-                            <small class="text-gray-500 text-xs">Người này sẽ là trưởng nhóm kỹ thuật viên.</small>
+                            <small class="text-gray-500 text-xs" th:text="#{ms.desCap}"></small>
                         </div>
 
                         <div class="md:col-span-2">
                             <label for="frequency" class="block text-sm font-medium text-gray-700 mb-1">
-                                Tần suất <span class="text-red-500">*</span>
+                                <span th:text="#{ms.fre}"></span> <span class="text-red-500">*</span>
                             </label>
                             <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     th:field="*{frequency}" 
                                     id="frequency"
                                     required>
-                                <option value="Hàng ngày">Hàng ngày</option>
-                                <option value="Hàng tuần">Hàng tuần</option>
-                                <option value="Hàng tháng">Hàng tháng</option>
-                                <option value="Hàng quý">Hàng quý</option>
-                                <option value="Hàng năm">Hàng năm</option>
+                                <option value="Hàng ngày" th:text="#{ms.daily}"></option>
+                                <option value="Hàng tuần" th:text="#{ms.weekly}"></option>
+                                <option value="Hàng tháng" th:text="#{ms.monthly}"></option>
+                                <option value="Hàng quý" th:text="#{ms.quarterly}"></option>
+                                <option value="Hàng năm" th:text="#{ms.yearly}"></option>
                             </select>
                             <div class="text-red-500 text-xs mt-1" th:if="${#fields.hasErrors('frequency')}" th:errors="*{frequency}"></div>
                         </div>
                     </div>
 
-           
+
                     <div class="hidden">
-                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
-                            Mô tả
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1" th:text="#{ms.desc}">
+                   
                         </label>
                         <textarea class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                   id="description" 
                                   th:field="*{description}" 
                                   rows="3"
                                   maxlength="255"
-                                  placeholder="Nhập mô tả chi tiết..."></textarea>
+                                  th:placeholder="#{ms.inputTitleDetail}"></textarea>
                     </div>
 
-              
+
                     <div class="pt-6">
                         <input type="hidden" th:field="*{id}"/>
                         <button type="submit" class="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
-                            <span th:text="'Thêm lịch bảo trì'"></span>
+                            <span th:text="#{mf.addMainSche}"></span>
                         </button>
                     </div>
                 </form>
             </div>
         </main>
 
-      
+
         <th:block th:replace="base :: footer"></th:block>
     </div>
 <th:block th:replace="base :: scripts"></th:block>
@@ -197,15 +193,15 @@
     document.addEventListener('DOMContentLoaded', function () {
         const startDateInput = document.getElementById('startDate');
         const endDateInput = document.getElementById('endDate');
-        const frequencySelect = document.getElementById('frequency'); 
+        const frequencySelect = document.getElementById('frequency');
 
-   
+
         if (!startDateInput || !endDateInput || !frequencySelect) {
             console.error('Không tìm thấy các phần tử cần thiết');
             return;
         }
 
-      
+
         const initialStartDate = '[[${startDate}]]';
         if (initialStartDate) {
             const datePart = initialStartDate.split(' ')[0];
@@ -213,7 +209,7 @@
             startDateInput.min = datePart;
         }
 
-   
+
         startDateInput.addEventListener('change', function () {
             startDateInput.min = this.value;
             calculateEndDate();
