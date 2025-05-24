@@ -50,7 +50,6 @@ public class ApiMaintenanceController {
     @Autowired
     private DeviceService devService;
 
-
     @GetMapping("/maintenance/technician/{technicianId}")
     @CrossOrigin
     public ResponseEntity<?> getMaintenanceByTechnicianId(@PathVariable("technicianId") int id, @RequestParam("page") String page) {
@@ -83,23 +82,27 @@ public class ApiMaintenanceController {
             if (existingUser == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
             }
+            Date today = new Date();
             MaintenanceSchedule mainSchedule = this.mainScheduleService.getMaintenanceScheduleById(maintenanceId);
-            if (!mainSchedule.getMaintenanceStatus().equals("Ngừng bảo trì") || mainSchedule.getMaintenanceStatus().equals("Quá hạn bảo trì")) {
-                MaintenanceAssignment mainAssign = this.mainAssignService.getAssignmentByTechnicianIdAndMaintenanceId(existingUser.getId(), maintenanceId);
+            if (mainSchedule.getStartDate().before(today)) {
+                if (!mainSchedule.getMaintenanceStatus().equals("Ngừng bảo trì") || mainSchedule.getMaintenanceStatus().equals("Quá hạn bảo trì")) {
+                    MaintenanceAssignment mainAssign = this.mainAssignService.getAssignmentByTechnicianIdAndMaintenanceId(existingUser.getId(), maintenanceId);
 
-                if (mainAssign.getIsCap()) {
-                    Device d = this.devService.getDeviceById(mainSchedule.getDeviceId().getId());
-                    d.setDeviceStatus("Bảo trì");
-                    this.devService.addOrUpdateDevice(d);
-                    mainSchedule.setMaintenanceStatus("Đang bảo trì");
-                    this.mainScheduleService.addOrUpdateMaintenanceSchedule(mainSchedule);
-                    return ResponseEntity.ok().body("Cập nhật thành công");
+                    if (mainAssign.getIsCap()) {
+                        Device d = this.devService.getDeviceById(mainSchedule.getDeviceId().getId());
+                        d.setDeviceStatus("Bảo trì");
+                        this.devService.addOrUpdateDevice(d);
+                        mainSchedule.setMaintenanceStatus("Đang bảo trì");
+                        this.mainScheduleService.addOrUpdateMaintenanceSchedule(mainSchedule);
+                        return ResponseEntity.ok().body("Cập nhật thành công");
+                    } else {
+                        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Bạn không có quyền cập nhật thông tin bảo trì");
+                    }
                 } else {
-                    return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Bạn không có quyền cập nhật thông tin bảo trì");
-
+                    return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Bảo trì này không được phép cập nhật");
                 }
             } else {
-                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Bảo trì này đã ngưng hoạt động");
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Bảo trì chưa tới hạn cập nhật");
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -119,38 +122,44 @@ public class ApiMaintenanceController {
             if (existingUser == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
             }
+            Date today = new Date();
             MaintenanceSchedule mainSchedule = this.mainScheduleService.getMaintenanceScheduleById(maintenanceId);
-            if (!mainSchedule.getMaintenanceStatus().equals("Ngừng bảo trì") || mainSchedule.getMaintenanceStatus().equals("Quá hạn bảo trì")) {
-                MaintenanceAssignment mainAssign = this.mainAssignService.getAssignmentByTechnicianIdAndMaintenanceId(existingUser.getId(), maintenanceId);
 
-                if (mainAssign.getIsCap()) {
-                    String expenseLast = params.get("expenseLast");
-                    String description = params.get("description");
+            if (mainSchedule.getStartDate().before(today)) {
+                if (!mainSchedule.getMaintenanceStatus().equals("Ngừng bảo trì") || mainSchedule.getMaintenanceStatus().equals("Quá hạn bảo trì")) {
+                    MaintenanceAssignment mainAssign = this.mainAssignService.getAssignmentByTechnicianIdAndMaintenanceId(existingUser.getId(), maintenanceId);
 
-                    if (expenseLast == null) {
-                        return ResponseEntity.badRequest().body("Thiếu expenseLast");
+                    if (mainAssign.getIsCap()) {
+                        String expenseLast = params.get("expenseLast");
+                        String description = params.get("description");
+
+                        if (expenseLast == null) {
+                            return ResponseEntity.badRequest().body("Thiếu expenseLast");
+                        }
+
+                        Date maintenanceDate = new Date();
+                        BigDecimal expense = new BigDecimal(expenseLast);
+
+                        MaintenanceSchedule mainSaved = this.mainScheduleService.getMaintenanceScheduleById(maintenanceId);
+                        Device d = this.devService.getDeviceById(mainSaved.getDeviceId().getId());
+                        d.setDeviceStatus("Hoạt động");
+                        this.devService.addOrUpdateDevice(d);
+
+                        mainSaved.setDescription(description);
+                        mainSaved.setExpenseLast(expense);
+                        mainSaved.setMaintenanceDate(maintenanceDate);
+                        mainSaved.setMaintenanceStatus("Đã bảo trì");
+                        this.mainScheduleService.addOrUpdateMaintenanceSchedule(mainSaved);
+
+                        return ResponseEntity.ok().body("Cập nhật thành công");
+                    } else {
+                        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Bạn không có quyền cập nhật thông tin bảo trì");
                     }
-
-                    Date maintenanceDate = new Date();
-                    BigDecimal expense = new BigDecimal(expenseLast);
-
-                    MaintenanceSchedule mainSaved = this.mainScheduleService.getMaintenanceScheduleById(maintenanceId);
-                    Device d = this.devService.getDeviceById(mainSaved.getDeviceId().getId());
-                    d.setDeviceStatus("Hoạt động");
-                    this.devService.addOrUpdateDevice(d);
-
-                    mainSaved.setDescription(description);
-                    mainSaved.setExpenseLast(expense);
-                    mainSaved.setMaintenanceDate(maintenanceDate);
-                    mainSaved.setMaintenanceStatus("Đã bảo trì");
-                    this.mainScheduleService.addOrUpdateMaintenanceSchedule(mainSaved);
-
-                    return ResponseEntity.ok().body("Cập nhật thành công");
                 } else {
-                    return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Bạn không có quyền cập nhật thông tin bảo trì");
+                    return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Bảo trì này không được phép cập nhật");
                 }
             } else {
-                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Bảo trì này đã ngưng hoạt động");
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Bảo trì chưa tới hạn cập nhật");
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

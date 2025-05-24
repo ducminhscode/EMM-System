@@ -25,39 +25,39 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleService {
-
+    
     @Autowired
     private MaintenanceScheduleRepository mainScheduleRepo;
-
+    
     @Autowired
     private MaintenanceAssignmentRepository mainAssignRepo;
-
+    
     @Autowired
     private MailService mailSer;
-
+    
     @Autowired
     private DeviceService devService;
-
+    
     @Override
     public List<MaintenanceSchedule> getMaintenanceSchedule(Map<String, String> params) {
         return this.mainScheduleRepo.getMaintenanceSchedule(params);
     }
-
+    
     @Override
     public MaintenanceSchedule addOrUpdateMaintenanceSchedule(MaintenanceSchedule m) {
         return this.mainScheduleRepo.addOrUpdateMaintenanceSchedule(m);
     }
-
+    
     @Override
     public void deleteMaintenanceSchedule(int id) {
         this.mainScheduleRepo.deleteMaintenanceSchedule(id);
     }
-
+    
     @Override
     public MaintenanceSchedule getMaintenanceScheduleById(int id) {
         return this.mainScheduleRepo.getMaintenanceScheduleById(id);
     }
-
+    
     @Override
     @Scheduled(cron = "0 */3 * * * *")
     public void notifySchedule() {
@@ -66,19 +66,19 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
             List<MaintenanceAssignment> listAssigns = this.mainAssignRepo.getAssignmentByMaintenanceId(maintenance.getId());
             for (MaintenanceAssignment mainAssign : listAssigns) {
                 if (mainAssign.getIsNotify().equals(Boolean.FALSE)) {
-                    mailSer.sendMail(mainAssign.getTechnicianId().getUser().getEmail(), "Tới hạn bảo trì", maintenance.getTitle());
+                    mailSer.sendMail(mainAssign.getTechnicianId().getUser().getEmail(), maintenance.getMaintenanceStatus() == "Chưa bảo trì" ? "Tới hạn bảo trì thiết bị" : "Quá hạn bảo trì thiết bị", "Thiết bị: " + maintenance.getDeviceId().getName() + "Cơ sở: " + maintenance.getDeviceId().getFacilityId().getName());
                     mainAssign.setIsNotify(Boolean.TRUE);
                     this.mainAssignRepo.addMaintenanceAssignment(mainAssign);
                 }
             }
         }
     }
-
+    
     @Override
     @Scheduled(cron = "0 */3 * * * *")
     public void createNewSchedule() {
         List<Device> devList = this.devService.getAllDevices();
-
+        
         for (Device d : devList) {
             MaintenanceSchedule maintenance = findTheLastestScheduleByDeviceId(d.getId());
             if (!maintenance.getMaintenanceStatus().equals("Ngừng bảo trì") && !maintenance.getMaintenanceStatus().equals("Chưa bảo trì") && !maintenance.getMaintenanceStatus().equals("Đang bảo trì")) {
@@ -86,7 +86,7 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
                 Calendar calEnd = Calendar.getInstance();
                 calStart.setTime(maintenance.getStartDate());
                 calEnd.setTime(maintenance.getEndDate());
-
+                
                 switch (maintenance.getFrequency()) {
                     case "Hàng ngày":
                         calStart.add(Calendar.DAY_OF_MONTH, 1);
@@ -111,7 +111,7 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
                     default:
                         continue;
                 }
-
+                
                 MaintenanceSchedule newSchedule = new MaintenanceSchedule();
                 newSchedule.setTypeId(maintenance.getTypeId());
                 newSchedule.setUserId(maintenance.getUserId());
@@ -123,11 +123,11 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
                 newSchedule.setExpenseFirst(maintenance.getExpenseFirst());
                 newSchedule.setFrequency(maintenance.getFrequency());
                 newSchedule.setMaintenanceStatus("Chưa bảo trì");
-
+                
                 MaintenanceSchedule mainSaved = this.mainScheduleRepo.addOrUpdateMaintenanceSchedule(newSchedule);
-
+                
                 List<MaintenanceAssignment> mainAssign = this.mainAssignRepo.getAssignmentByMaintenanceId(maintenance.getId());
-
+                
                 if (mainAssign != null) {
                     for (MaintenanceAssignment m : mainAssign) {
                         MaintenanceAssignment newAssign = new MaintenanceAssignment();
@@ -141,37 +141,41 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
             }
         }
     }
-
+    
     @Override
     public long countMaintenances(Map<String, String> params) {
         return this.mainScheduleRepo.countMaintenances(params);
     }
-
+    
     @Override
     @Scheduled(cron = "0 */3 * * * *")
     public void changeMaintenanceStatus() {
         List<MaintenanceSchedule> listMaintenances = this.mainScheduleRepo.findScheduleOverTheTime();
         for (MaintenanceSchedule main : listMaintenances) {
             main.setMaintenanceStatus("Quá hạn bảo trì");
-            mainScheduleRepo.addOrUpdateMaintenanceSchedule(main);
+            MaintenanceSchedule mainSaved = mainScheduleRepo.addOrUpdateMaintenanceSchedule(main);
+            List<MaintenanceAssignment> mainAssignList = this.mainAssignRepo.getAssignmentByMaintenanceId(mainSaved.getId());
+            for (MaintenanceAssignment mainAssign : mainAssignList) {
+                mainAssign.setIsNotify(Boolean.FALSE);
+            }            
         }
     }
-
+    
     @Override
     public List<MaintenanceSchedule> findSchedulesToNotifyToTechnician(int technicianId, String pageStr) {
         return this.mainScheduleRepo.findSchedulesToNotifyToTechnician(technicianId, pageStr);
     }
-
+    
     @Override
     public List<MaintenanceSchedule> getMaintenanceScheduleByDeviceIdAndTime(int deviceId, int month, int year) {
         return this.mainScheduleRepo.getMaintenanceScheduleByDeviceIdAndTime(deviceId, month, year);
     }
-
+    
     @Override
     public List<MaintenanceSchedule> getMaintenanceScheduleByDeviceIdAndYear(int deviceId, int year) {
         return this.mainScheduleRepo.getMaintenanceScheduleByDeviceIdAndYear(deviceId, year);
     }
-
+    
     @Override
     public MaintenanceSchedule findTheLastestScheduleByDeviceId(int deviceId) {
         return this.mainScheduleRepo.findTheLastestScheduleByDeviceId(deviceId);
