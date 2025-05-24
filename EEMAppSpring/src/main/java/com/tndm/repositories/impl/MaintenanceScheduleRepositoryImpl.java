@@ -104,7 +104,6 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
         return q.getResultList();
     }
 
-
     @Override
     public List<MaintenanceSchedule> findScheduleOverTheTime() {
         Session s = this.factory.getObject().getCurrentSession();
@@ -189,7 +188,8 @@ public class MaintenanceScheduleRepositoryImpl implements MaintenanceScheduleRep
 
         String hql = "FROM MaintenanceSchedule "
                 + "WHERE deviceId.id = :deviceId "
-                + "AND frequency != '' "
+                + "AND typeId.name = 'Định kỳ' "
+                + "AND (endDate < CURRENT_DATE OR CURRENT_DATE BETWEEN startDate AND endDate) "
                 + "ORDER BY id DESC";
 
         Query<MaintenanceSchedule> q = s.createQuery(hql, MaintenanceSchedule.class);
