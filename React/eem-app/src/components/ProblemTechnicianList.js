@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import { Card, Button, Spinner, Modal, Alert, Form } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { authApis, endpoints } from "../configs/Apis";
 import { MyUserContext } from "../configs/Contexts";
 
@@ -23,6 +23,7 @@ const ProblemTechnicianList = () => {
   const [loadingRepairTypes, setLoadingRepairTypes] = useState(true);
   const user = useContext(MyUserContext);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const filterDuplicates = useCallback((arr) => {
     const seen = new Set();
@@ -127,6 +128,7 @@ const ProblemTechnicianList = () => {
         setDescription("");
         setRepairTypeId("");
         refreshProblems();
+        navigate(location.pathname, { state: { refresh: Date.now() } });
       }, 1000);
     } catch (err) {
       setUpdateModalError(err.response?.data || "Lỗi không xác định");
@@ -306,7 +308,7 @@ const ProblemTechnicianList = () => {
           <Spinner animation="border" variant="primary" />
         </div>
       )}
-      
+
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import { Card, Button, Spinner, Modal, Alert, Form } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { authApis, endpoints } from "../configs/Apis";
-import { MyUserContext } from "../configs/Contexts";
+import { MyUserContext} from "../configs/Contexts";
 
 const MaintenanceTechnicianList = () => {
   const [maintenances, setMaintenances] = useState([]);
@@ -24,6 +24,7 @@ const MaintenanceTechnicianList = () => {
   const [description, setDescription] = useState("");
   const user = useContext(MyUserContext);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const filterDuplicates = useCallback((arr) => {
     const seen = new Set();
@@ -138,6 +139,7 @@ const MaintenanceTechnicianList = () => {
         setExpenseLast("");
         setDescription("");
         refreshMaintenances();
+        navigate(location.pathname, { state: { refresh: Date.now() } });
       }, 1000);
     } catch (err) {
       setUpdateModalError(err.response?.data || "Lỗi không xác định");
@@ -220,7 +222,7 @@ const MaintenanceTechnicianList = () => {
 
       {maintenances.map((m) => {
         const startDate = new Date(m.startDate);
-        const isPastDue = startDate > today; 
+        const isPastDue = startDate > today;
 
         return (
           <Card key={m.id} className="mb-3 shadow-sm">
