@@ -106,7 +106,7 @@ const MaintenanceTechnicianList = () => {
 
   const handleUpdateMaintenance = async () => {
     if (!expenseLast) {
-      setUpdateModalError("Vui lòng nhập chi phí cuối");
+      setUpdateModalError("Vui lòng nhập chi phí thực tế");
       return;
     }
 
@@ -290,7 +290,7 @@ const MaintenanceTechnicianList = () => {
               {updateModalError && <Alert variant="danger">{updateModalError}</Alert>}
               <Form>
                 <Form.Group className="mb-3">
-                  <Form.Label>Chi phí cuối <span className="text-danger">*</span></Form.Label>
+                  <Form.Label>Chi phí thực tế <span className="text-danger">*</span></Form.Label>
                   <Form.Control
                     type="number"
                     min="0"
@@ -341,11 +341,6 @@ const MaintenanceTechnicianList = () => {
         </div>
       )}
 
-      {!hasNext && maintenances.length > 0 && (
-        <div className="text-center text-muted py-3">
-          Đã tải hết danh sách công việc bảo trì
-        </div>
-      )}
     </div>
   );
 };

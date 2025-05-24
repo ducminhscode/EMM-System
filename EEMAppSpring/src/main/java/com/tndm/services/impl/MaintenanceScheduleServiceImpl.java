@@ -81,7 +81,7 @@ public class MaintenanceScheduleServiceImpl implements MaintenanceScheduleServic
 
         for (Device d : devList) {
             MaintenanceSchedule maintenance = findTheLastestScheduleByDeviceId(d.getId());
-            if (!maintenance.getMaintenanceStatus().equals("Ngừng bảo trì") && !maintenance.getMaintenanceStatus().equals("Chưa bảo trì")) {
+            if (!maintenance.getMaintenanceStatus().equals("Ngừng bảo trì") && !maintenance.getMaintenanceStatus().equals("Chưa bảo trì") && !maintenance.getMaintenanceStatus().equals("Đang bảo trì")) {
                 Calendar calStart = Calendar.getInstance();
                 Calendar calEnd = Calendar.getInstance();
                 calStart.setTime(maintenance.getStartDate());

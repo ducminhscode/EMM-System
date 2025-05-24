@@ -103,7 +103,7 @@ const DevicesList = () => {
     const handleReportClick = (device) => {
         setSelectedDevice(device);
         setPurchaseDate(device.purchaseDate);
-        console.log( new Date(Number(device.purchaseDate)).toISOString().split("T")[0]);
+        console.log(new Date(Number(device.purchaseDate)).toISOString().split("T")[0]);
         setShowReportDialog(true);
     };
 
@@ -266,16 +266,18 @@ const DevicesList = () => {
                                         <Col sm={6}><strong>Trạng thái:</strong> {device.statusId}</Col>
                                     </Row>
                                 </Col>
-                                <Col md={4} className="d-flex flex-column justify-content-center align-items-end gap-2 mt-3 mt-md-0">
-                                    <Button
-                                        variant="danger"
-                                        size="sm"
-                                        className="rounded-pill px-3 w-50"
-                                        onClick={() => handleReportClick(device)}
-                                    >
-                                        Báo cáo sự cố
-                                    </Button>
-                                </Col>
+                                {device.statusId === 'Hoạt động' && (
+                                    <Col md={4} className="d-flex flex-column justify-content-center align-items-end gap-2 mt-3 mt-md-0">
+                                        <Button
+                                            variant="danger"
+                                            size="sm"
+                                            className="rounded-pill px-3 w-50"
+                                            onClick={() => handleReportClick(device)}
+                                        >
+                                            Báo cáo sự cố
+                                        </Button>
+                                    </Col>
+                                )}
                             </Row>
                         </Card.Body>
                     </Card>

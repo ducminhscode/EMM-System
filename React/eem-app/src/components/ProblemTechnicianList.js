@@ -212,7 +212,7 @@ const ProblemTechnicianList = () => {
               variant={p.isDone ? "secondary" : "primary"}
               onClick={() => handleOpenUpdateModal(p.id)}
             >
-              {p.isDone ? "Cập nhật sửa chữa" : ""}
+              {p.isDone ? "Cập nhật sửa chữa" : "Sửa chữa"}
             </Button>
             <Card.Text> {p.isDone ? "Bạn đã hoàn thành sửa chữa, chờ kĩ thuật viên còn lại" : ""}</Card.Text>
           </Card.Body>
@@ -306,12 +306,7 @@ const ProblemTechnicianList = () => {
           <Spinner animation="border" variant="primary" />
         </div>
       )}
-
-      {!hasNext && problems.length > 0 && (
-        <div className="text-center text-muted py-3">
-          Đã tải hết danh sách lỗi
-        </div>
-      )}
+      
     </div>
   );
 };

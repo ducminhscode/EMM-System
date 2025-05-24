@@ -212,6 +212,10 @@ public class ApiProblemController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy thiết bị");
             }
 
+            if (!device.getDeviceStatus().equals("Hoạt động")) {
+                return ResponseEntity.badRequest().body("Thiết bị không hoạt động");
+            }
+
             FatalLevel fatalLevel = this.fatalLevelService.getFatalLevelById(fatalLevelId);
             if (fatalLevel == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy mức độ nghiêm trọng");
