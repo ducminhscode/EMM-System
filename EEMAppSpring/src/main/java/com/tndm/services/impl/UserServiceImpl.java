@@ -68,81 +68,109 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User addOrUpdateUser(User u) {
-        if (u.getId() != null) {
-            User existingUser = usrRepo.getUserById(u.getId());
-            if (u.getPassword() == null || u.getPassword().isEmpty()) {
-                u.setPassword(existingUser.getPassword());
-            } else if (!u.getPassword().equals(existingUser.getPassword())) {
-                u.setPassword(this.passwordEncoder.encode(u.getPassword()));
-            }
-
-            if (u.getFile() != null && !u.getFile().isEmpty()) {
-                try {
-                    Map res = cloudinary.uploader().upload(u.getFile().getBytes(), ObjectUtils.asMap(
-                            "resource_type", "auto",
-                            "folder", "BaoTriThietBi"
-                    ));
-                    u.setAvatar(res.get("secure_url").toString());
-                } catch (IOException ex) {
-                    Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                u.setAvatar(existingUser.getAvatar());
-            }
-
-            if (u.getActive() != null) {
-                u.setActive(u.getActive());
-            } else {
-                u.setActive(existingUser.getActive());
-            }
-
-        } else {
-            u.setPassword(this.passwordEncoder.encode("ou@123"));
-            if (u.getFile() != null && !u.getFile().isEmpty()) {
-                try {
-                    Map res = cloudinary.uploader().upload(u.getFile().getBytes(), ObjectUtils.asMap(
-                            "resource_type", "auto",
-                            "folder", "BaoTriThietBi"
-                    ));
-                    u.setAvatar(res.get("secure_url").toString());
-                } catch (IOException ex) {
-                    Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                u.setAvatar("https://res.cloudinary.com/dp9b0dkkt/image/upload/v1745512749/de995be2-6311-4125-9ac2-19e11fcaf801_jo8gcs.png");
-            }
+    if (u.getId() == null) {
+        if (usrRepo.getUserByUsername(u.getUsername()) != null) {
+            throw new IllegalArgumentException("Username đã tồn tại!");
+        }
+        if (usrRepo.getUserByEmail(u.getEmail()) != null) {
+            throw new IllegalArgumentException("Email đã tồn tại!");
+        }
+        if (usrRepo.getUserByPhone(u.getPhone()) != null) {
+            throw new IllegalArgumentException("Số điện thoại đã tồn tại!");
+        }
+    } else {
+        User existingUser = usrRepo.getUserById(u.getId());
+        
+        User userByEmail = usrRepo.getUserByEmail(u.getEmail());
+        if (userByEmail != null && !userByEmail.getId().equals(u.getId())) {
+            throw new IllegalArgumentException("Email đã tồn tại!");
+        }
+        
+        User userByPhone = usrRepo.getUserByPhone(u.getPhone());
+        if (userByPhone != null && !userByPhone.getId().equals(u.getId())) {
+            throw new IllegalArgumentException("Số điện thoại đã tồn tại!");
         }
 
-        return this.usrRepo.addOrUpdateUser(u);
+        if (u.getPassword() == null || u.getPassword().isEmpty()) {
+            u.setPassword(existingUser.getPassword());
+        } else if (!u.getPassword().equals(existingUser.getPassword())) {
+            u.setPassword(this.passwordEncoder.encode(u.getPassword()));
+        }
+
+        if (u.getFile() != null && !u.getFile().isEmpty()) {
+            try {
+                Map res = cloudinary.uploader().upload(u.getFile().getBytes(), ObjectUtils.asMap(
+                        "resource_type", "auto",
+                        "folder", "BaoTriThietBi"
+                ));
+                u.setAvatar(res.get("secure_url").toString());
+            } catch (IOException ex) {
+                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            u.setAvatar(existingUser.getAvatar());
+        }
+
+        if (u.getActive() != null) {
+            u.setActive(u.getActive());
+        } else {
+            u.setActive(existingUser.getActive());
+        }
+    }
+
+    if (u.getId() == null) {
+        u.setPassword(this.passwordEncoder.encode("ou@123"));
+        if (u.getFile() != null && !u.getFile().isEmpty()) {
+            try {
+                Map res = cloudinary.uploader().upload(u.getFile().getBytes(), ObjectUtils.asMap(
+                        "resource_type", "auto",
+                        "folder", "BaoTriThietBi"
+                ));
+                u.setAvatar(res.get("secure_url").toString());
+            } catch (IOException ex) {
+                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            u.setAvatar("https://res.cloudinary.com/dp9b0dkkt/image/upload/v1745512749/de995be2-6311-4125-9ac2-19e11fcaf801_jo8gcs.png");
+        }
+    }
+
+    return this.usrRepo.addOrUpdateUser(u);
     }
 
     @Override
-    public void deleteUser(int id
-    ) {
+    public void deleteUser(int id) {
         this.usrRepo.deleteUser(id);
     }
 
     @Override
-    public User getUserById(int id
-    ) {
+    public User getUserById(int id) {
         return this.usrRepo.getUserById(id);
     }
 
     @Override
-    public List<User> getUsers(Map<String, String> params
-    ) {
+    public List<User> getUsers(Map<String, String> params) {
         return this.usrRepo.getUsers(params);
     }
 
     @Override
-    public long countUsers(Map<String, String> params
-    ) {
+    public long countUsers(Map<String, String> params) {
         return this.usrRepo.countUsers(params);
     }
 
     @Override
     public long countActiveUsers() {
         return this.usrRepo.countActiveUsers();
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return this.usrRepo.getUserByEmail(email);
+    }
+
+    @Override
+    public User getUserByPhone(String phone) {
+        return this.usrRepo.getUserByPhone(phone);
     }
 
 }

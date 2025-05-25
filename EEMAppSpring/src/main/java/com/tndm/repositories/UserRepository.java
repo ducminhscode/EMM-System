@@ -29,4 +29,8 @@ public interface UserRepository {
     long countUsers(Map<String, String> params);
     
     long countActiveUsers();
+    
+    User getUserByEmail(String email);
+    
+    User getUserByPhone(String phone);
 }

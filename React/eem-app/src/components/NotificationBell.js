@@ -73,7 +73,7 @@ const NotificationBell = () => {
         id: `maintenance-${m.id}`,
         type: "maintenance",
         deviceName: m.deviceName,
-        title: m.tittle,
+        title: m.title,
         description: m.description,
         startDate: new Date(m.startDate).toLocaleDateString(),
         endDate: new Date(m.endDate).toLocaleDateString(),

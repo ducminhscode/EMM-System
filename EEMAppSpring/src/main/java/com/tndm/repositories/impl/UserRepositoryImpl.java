@@ -6,6 +6,7 @@ package com.tndm.repositories.impl;
 
 import com.tndm.pojo.User;
 import com.tndm.repositories.UserRepository;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -29,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserRepositoryImpl implements UserRepository {
 
-    public static final int PAGE_SIZE = 8;
+    public static final int PAGE_SIZE = 6;
 
     @Autowired
     private LocalSessionFactoryBean factory;
@@ -43,7 +44,11 @@ public class UserRepositoryImpl implements UserRepository {
         Query q = s.createNamedQuery("User.findByUsername", User.class);
         q.setParameter("username", username);
 
-        return (User) q.getSingleResult();
+        try {
+            return (User) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override
@@ -149,5 +154,31 @@ public class UserRepositoryImpl implements UserRepository {
         q.select(b.count(root)).where(b.equal(root.get("active"), true));
 
         return s.createQuery(q).getSingleResult();
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Query q = s.createNamedQuery("User.findByEmail", User.class);
+        q.setParameter("email", email);
+
+        try {
+            return (User) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public User getUserByPhone(String phone) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Query q = s.createNamedQuery("User.findByPhone", User.class);
+        q.setParameter("phone", phone);
+
+        try {
+            return (User) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 }

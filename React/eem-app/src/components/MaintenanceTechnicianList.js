@@ -365,7 +365,6 @@ const MaintenanceTechnicianList = () => {
         );
       })}
 
-      {/* Confirm Maintenance Modal */}
       <Modal show={showConfirmModal} onHide={handleCloseConfirmModal}>
         <Modal.Header closeButton>
           <Modal.Title>Xác nhận bảo trì</Modal.Title>
@@ -395,7 +394,6 @@ const MaintenanceTechnicianList = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* Update Maintenance Modal */}
       <Modal show={showUpdateModal} onHide={handleCloseUpdateModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>Cập nhật bảo trì</Modal.Title>

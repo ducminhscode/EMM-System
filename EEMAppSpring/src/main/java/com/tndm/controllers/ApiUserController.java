@@ -75,7 +75,7 @@ public class ApiUserController {
 
             User existingUser = this.userDetailsService.getUserByUsername(username);
             if (existingUser == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("errorMessage", "Không tìm thấy người dùng"));
             }
 
             User updatedUser = new User();
@@ -87,6 +87,22 @@ public class ApiUserController {
             updatedUser.setEmail(params.getOrDefault("email", existingUser.getEmail()));
             updatedUser.setPhone(params.getOrDefault("phone", existingUser.getPhone()));
             updatedUser.setUserRole(existingUser.getUserRole());
+
+            if (!updatedUser.getEmail().equals(existingUser.getEmail())) {
+                User checkEmail = this.userDetailsService.getUserByEmail(updatedUser.getEmail());
+                if (checkEmail != null && !checkEmail.getId().equals(existingUser.getId())) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("errorMessage", "Email đã tồn tại!"));
+                }
+            }
+
+            if (!updatedUser.getPhone().equals(existingUser.getPhone())) {
+                User checkPhone = this.userDetailsService.getUserByPhone(updatedUser.getPhone());
+                if (checkPhone != null && !checkPhone.getId().equals(existingUser.getId())) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("errorMessage", "Số điện thoại đã tồn tại!"));
+                }
+            }
 
             if (avatar != null && !avatar.isEmpty()) {
                 updatedUser.setFile(avatar);

@@ -32,4 +32,7 @@ public interface UserService extends UserDetailsService {
     
     long countActiveUsers();
     
+    User getUserByEmail(String email);
+    
+    User getUserByPhone(String phone);
 }

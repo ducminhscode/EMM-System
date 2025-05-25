@@ -38,7 +38,6 @@ const Profile = () => {
         }
     }, [user]);
 
-    // Làm sạch URL tạm thời của avatar
     useEffect(() => {
         return () => {
             if (previewAvatar && previewAvatar.startsWith("blob:")) {
@@ -55,12 +54,10 @@ const Profile = () => {
     const handleAvatarChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            // Kiểm tra định dạng file
             if (!file.type.startsWith("image/")) {
                 setMessage({ text: "Vui lòng chọn file hình ảnh", variant: "danger" });
                 return;
             }
-            // Kiểm tra kích thước file (giới hạn 5MB)
             if (file.size > 5 * 1024 * 1024) {
                 setMessage({ text: "File ảnh quá lớn (tối đa 5MB)", variant: "danger" });
                 return;
@@ -83,7 +80,6 @@ const Profile = () => {
         setLoading(true);
         setMessage({ text: "", variant: "" });
 
-        // Validate dữ liệu
         if (!validateEmail(profile.email)) {
             setMessage({ text: "Email không hợp lệ", variant: "danger" });
             setLoading(false);
@@ -117,9 +113,8 @@ const Profile = () => {
             setMessage({ text: "Cập nhật thông tin thành công", variant: "success" });
             setAvatar(null);
         } catch (error) {
-            console.error("Update profile error:", error);
             setMessage({
-                text: error.response?.data?.message || "Có lỗi xảy ra khi cập nhật thông tin",
+                text: error.response?.data?.errorMessage || "Có lỗi xảy ra khi cập nhật thông tin",
                 variant: "danger",
             });
         } finally {
@@ -132,7 +127,6 @@ const Profile = () => {
         setLoading(true);
         setMessage({ text: "", variant: "" });
 
-        // Validate mật khẩu
         if (profile.password.length < 6) {
             setMessage({ text: "Mật khẩu mới phải có ít nhất 6 ký tự", variant: "danger" });
             setLoading(false);

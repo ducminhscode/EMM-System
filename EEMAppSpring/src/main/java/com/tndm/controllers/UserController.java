@@ -72,7 +72,8 @@ public class UserController {
     @PostMapping("/users/add")
     public String addOrUpdateUser(@ModelAttribute(value = "user") User u,
             @RequestParam("facilityId") int facilityId,
-            @RequestParam("specialization") String specialization) {
+            @RequestParam("specialization") String specialization,
+            RedirectAttributes redirectAttributes) {
 
         if (u.getId() == null) {
             u.setPassword(this.passwordEncoder.encode("ou@123"));
@@ -86,7 +87,15 @@ public class UserController {
                     + "Đội ngũ Admin.");
         }
 
-        this.userService.addOrUpdateUser(u);
+        try {
+            this.userService.addOrUpdateUser(u);
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin thành công!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật thông tin!");
+        }
+
         if (u.getUserRole().equals("ROLE_TECHNICIAN")) {
             Technician tSave = this.techService.getTechnicianById(u.getId());
             if (tSave == null) {
@@ -100,6 +109,10 @@ public class UserController {
                 tSave.setSpecialization(specialization);
                 this.techService.addOrUpdateTechnician(tSave);
             }
+        }
+        if (u.getId() != null) {
+            redirectAttributes.addAttribute("userId", u.getId());
+            return "redirect:/users/{userId}";
         }
 
         return "redirect:/index-users";
@@ -123,17 +136,23 @@ public class UserController {
     public String updateProfile(@ModelAttribute("user") User updatedUser,
             Principal principal,
             RedirectAttributes redirectAttributes) {
-        String username = principal.getName();
-        User currentUser = userService.getUserByUsername(username);
+        try {
+            String username = principal.getName();
+            User currentUser = userService.getUserByUsername(username);
 
-        currentUser.setFirstName(updatedUser.getFirstName());
-        currentUser.setLastName(updatedUser.getLastName());
-        currentUser.setEmail(updatedUser.getEmail());
-        currentUser.setPhone(updatedUser.getPhone());
-        currentUser.setFile(updatedUser.getFile());
+            currentUser.setFirstName(updatedUser.getFirstName());
+            currentUser.setLastName(updatedUser.getLastName());
+            currentUser.setEmail(updatedUser.getEmail());
+            currentUser.setPhone(updatedUser.getPhone());
+            currentUser.setFile(updatedUser.getFile());
 
-        userService.addOrUpdateUser(currentUser);
-        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin thành công!");
+            userService.addOrUpdateUser(currentUser);
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin thành công!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật thông tin!");
+        }
         return "redirect:/profile";
     }
 
