@@ -249,7 +249,7 @@ const DevicesList = () => {
                 {filteredDevices.map((device, index) => (
                     <Card
                         key={device.id}
-                        className="mb-4 shadow-sm border-0 rounded-4"
+                        className="mb-4 shadow-sm border rounded-4"
                         ref={filteredDevices.length === index + 1 ? lastDeviceElementRef : null}
                     >
                         <Card.Body className="p-4">

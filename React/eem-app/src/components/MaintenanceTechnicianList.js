@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useCallback } from "react";
-import { Card, Button, Spinner, Modal, Alert, Form } from "react-bootstrap";
+import { Card, Button, Spinner, Modal, Alert, Form, Container, Row, Col } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { authApis, endpoints } from "../configs/Apis";
 import { MyUserContext} from "../configs/Contexts";
@@ -22,6 +22,9 @@ const MaintenanceTechnicianList = () => {
   const [updateSubmitting, setUpdateSubmitting] = useState(false);
   const [expenseLast, setExpenseLast] = useState("");
   const [description, setDescription] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
+  const [filteredMaintenances, setFilteredMaintenances] = useState([]);
   const user = useContext(MyUserContext);
   const location = useLocation();
   const navigate = useNavigate();
@@ -209,50 +212,154 @@ const MaintenanceTechnicianList = () => {
     }
   }, [page, loadMaintenances]);
 
-  if (loading) return <div className="text-center mt-4"><Spinner animation="border" /></div>;
-  if (error) return <div className="text-danger text-center mt-4">{error}</div>;
-  if (maintenances.length === 0 && !loading)
-    return <div className="text-center mt-4">Không có công việc bảo trì nào được giao</div>;
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 700);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (debouncedQuery.trim() === '') {
+      setFilteredMaintenances(maintenances);
+    } else {
+      const filtered = maintenances.filter((m) =>
+        m.deviceName?.toLowerCase().includes(debouncedQuery.toLowerCase())
+      );
+      setFilteredMaintenances(filtered);
+    }
+  }, [maintenances, debouncedQuery]);
+
+  if (loading)
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '200px' }}>
+        <Spinner animation="border" variant="primary" />
+      </div>
+    );
+  if (error)
+    return (
+      <Container className="mt-4">
+        <Alert variant="danger">{error}</Alert>
+      </Container>
+    );
+  if (filteredMaintenances.length === 0 && !loading)
+    return (
+      <Container className="py-5">
+        <Row className="align-items-center mb-4">
+          <Col>
+            <h3 className="text-3xl font-bold text-gray-900 tracking-tight">Danh sách công việc bảo trì được giao</h3>
+          </Col>
+          <Col md="6">
+            <div className="position-relative">
+              <Form.Control
+                type="text"
+                placeholder="Tìm kiếm theo tên thiết bị..."
+                className="rounded-pill px-4 py-2 shadow-sm border border-secondary"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+              <svg
+                className="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
+            </div>
+          </Col>
+        </Row>
+        <p className="text-center mt-5">
+          {searchQuery ? 'Không tìm thấy công việc bảo trì phù hợp' : 'Không có công việc bảo trì nào được giao'}
+        </p>
+      </Container>
+    );
 
   const today = new Date();
 
   return (
-    <div className="container mt-4">
-      <h4 className="mb-4">Danh sách công việc bảo trì được giao</h4>
+    <Container className="py-5">
+      <Row className="align-items-center mb-4">
+        <Col>
+          <h3 className="text-3xl font-bold text-gray-900 tracking-tight">Danh sách công việc bảo trì được giao</h3>
+        </Col>
+        <Col md="6">
+          <div className="position-relative">
+            <Form.Control
+              type="text"
+              placeholder="Tìm kiếm theo tên thiết bị..."
+              className="rounded-pill px-4 py-2 shadow-sm border border-secondary"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+            <svg
+              className="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              ></path>
+            </svg>
+          </div>
+        </Col>
+      </Row>
 
-      {maintenances.map((m) => {
+      {filteredMaintenances.map((m, idx) => {
         const startDate = new Date(m.startDate);
         const isPastDue = startDate > today;
 
         return (
-          <Card key={m.id} className="mb-3 shadow-sm">
-            <Card.Body>
-              <Card.Title>{m.deviceName}</Card.Title>
-              <Card.Text>
-                <strong>Tiêu đề:</strong> {m.title}<br />
-                <strong>Bắt đầu:</strong> {new Date(m.startDate).toLocaleDateString()}<br />
-                <strong>Kết thúc:</strong> {new Date(m.endDate).toLocaleDateString()}<br />
-                <strong>Trạng thái:</strong> {m.maintenanceStatus}
-              </Card.Text>
-
-              {!isPastDue && m.isCap && m.maintenanceStatus === "Chưa bảo trì" ? (
-                <Button
-                  variant="success"
-                  onClick={() => handleOpenConfirmModal(m.id)}
-                >
-                  Xác nhận bảo trì
-                </Button>
-              ) : (
-                !isPastDue && (
-                  <Button
-                    variant={m.maintenanceStatus === "Đang bảo trì" ? "primary" : "secondary"}
-                    onClick={() => handleOpenUpdateModal(m.id)}
-                    hidden={!m.isCap}
-                  >
-                    Cập nhật bảo trì
-                  </Button>
-                )
-              )}
+          <Card
+            key={m.id}
+            className="mb-4 shadow-sm border rounded-4"
+          >
+            <Card.Body className="p-4">
+              <Row>
+                <Col md={8}>
+                  <h5 className="fw-semibold text-dark mb-1">{m.deviceName}</h5>
+                  <p className="text-muted mb-3">{m.title}</p>
+                  <Row className="mb-2">
+                    <Col sm={6}><strong>Bắt đầu:</strong> {new Date(m.startDate).toLocaleDateString()}</Col>
+                    <Col sm={6}><strong>Kết thúc:</strong> {new Date(m.endDate).toLocaleDateString()}</Col>
+                  </Row>
+                  <Row>
+                    <Col sm={6}><strong>Trạng thái:</strong> {m.maintenanceStatus}</Col>
+                    <Col sm={6}></Col>
+                  </Row>
+                </Col>
+                <Col md={4} className="d-flex flex-column justify-content-center align-items-end gap-2 mt-3 mt-md-0">
+                  {!isPastDue && m.isCap && m.maintenanceStatus === "Chưa bảo trì" ? (
+                    <Button
+                      variant="success"
+                      onClick={() => handleOpenConfirmModal(m.id)}
+                      className="rounded-pill px-3 w-75"
+                    >
+                      Xác nhận bảo trì
+                    </Button>
+                  ) : (
+                    !isPastDue && (
+                      <Button
+                        variant={m.maintenanceStatus === "Đang bảo trì" ? "primary" : "secondary"}
+                        onClick={() => handleOpenUpdateModal(m.id)}
+                        hidden={!m.isCap}
+                        className="rounded-pill px-3 w-75"
+                      >
+                        Cập nhật bảo trì
+                      </Button>
+                    )
+                  )}
+                </Col>
+              </Row>
             </Card.Body>
           </Card>
         );
@@ -347,11 +454,11 @@ const MaintenanceTechnicianList = () => {
       </Modal>
 
       {isLoadingMore && (
-        <div className="text-center my-3">
+        <div className="text-center my-4">
           <Spinner animation="border" variant="primary" />
         </div>
       )}
-    </div>
+    </Container>
   );
 };
 

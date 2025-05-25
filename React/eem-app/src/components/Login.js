@@ -24,7 +24,7 @@ const Login = () => {
   const [msg, setMsg] = useState();
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
-  const [rememberMe, setRememberMe] = useState(true);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const dispatch = useContext(MyDispatchContext);
   const nav = useNavigate();
