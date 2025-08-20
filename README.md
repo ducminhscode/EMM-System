@@ -30,19 +30,3 @@
 
 ---
 
-## ⚙️ Cài đặt & Chạy thử
-
-### Yêu cầu môi trường
-- Node.js >= 18  
-- Java 17 hoặc cao hơn  
-- Maven >= 3.8  
-- MySQL 8  
-
-### Backend
-```bash
-# clone repo
-git clone https://github.com/your-repo/device-maintenance.git
-cd device-maintenance/backend
-
-# build & run
-mvn spring-boot:run
